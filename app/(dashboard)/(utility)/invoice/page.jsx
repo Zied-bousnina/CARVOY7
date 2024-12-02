@@ -140,7 +140,7 @@ const InvoicePage = () => {
                 row?.cell?.value === "paid"
                   ? "text-success-500 bg-success-500"
                   : ""
-              } 
+              }
             ${
               row?.cell?.value === "due"
                 ? "text-warning-500 bg-warning-500"
@@ -151,7 +151,7 @@ const InvoicePage = () => {
                 ? "text-danger-500 bg-danger-500"
                 : ""
             }
-            
+
              `}
             >
               {row?.cell?.value}
@@ -167,27 +167,27 @@ const InvoicePage = () => {
         return (
           <div>
             <Dropdown
-              classMenuItems="right-0 w-[140px] top-[110%] "
+              classMenuItems="right-0 w-[140px] top-[110%] z-50"
               label={
                 <span className="text-xl text-center block w-full">
                   <Icon icon="heroicons-outline:dots-vertical" />
                 </span>
               }
             >
-              <div className="divide-y divide-slate-100 dark:divide-slate-800">
+              <div className="divide-y divide-slate-100 dark:divide-slate-800 max-h-[200px] overflow-y-auto">
                 {actions.map((item, i) => (
                   <div
                     key={i}
                     onClick={() => item.doit()}
                     className={`
-                
-                  ${
-                    item.name === "delete"
-                      ? "bg-danger-500 text-danger-500 bg-opacity-30   hover:bg-opacity-100 hover:text-white"
-                      : "hover:bg-slate-900 hover:text-white dark:hover:bg-slate-600 dark:hover:bg-opacity-50"
-                  }
-                   w-full border-b border-b-gray-500 border-opacity-10 px-4 py-2 text-sm  last:mb-0 cursor-pointer 
-                   first:rounded-t last:rounded-b flex  space-x-2 items-center rtl:space-x-reverse `}
+                      ${
+                        item.name === "delete"
+                          ? "bg-danger-500 text-danger-500 bg-opacity-30 hover:bg-opacity-100 hover:text-white"
+                          : "hover:bg-slate-900 hover:text-white dark:hover:bg-slate-600 dark:hover:bg-opacity-50"
+                      }
+                      w-full border-b border-b-gray-500 border-opacity-10 px-4 py-2 text-sm last:mb-0 cursor-pointer
+                      first:rounded-t last:rounded-b flex space-x-2 items-center rtl:space-x-reverse
+                    `}
                   >
                     <span className="text-base">
                       <Icon icon={item.icon} />
@@ -200,7 +200,8 @@ const InvoicePage = () => {
           </div>
         );
       },
-    },
+    }
+
   ];
 
   const columns = useMemo(() => COLUMNS, []);
@@ -349,7 +350,7 @@ const InvoicePage = () => {
             </div>
           </div>
         </div>
-        <div className="md:flex md:space-y-0 space-y-5 justify-between mt-6 items-center">
+        {/* <div className="md:flex md:space-y-0 space-y-5 justify-between mt-6 items-center">
           <div className=" flex items-center space-x-3 rtl:space-x-reverse">
             <span className=" flex space-x-2  rtl:space-x-reverse items-center">
               <span className=" text-sm font-medium text-slate-600 dark:text-slate-300">
@@ -417,7 +418,7 @@ const InvoicePage = () => {
               </button>
             </li>
           </ul>
-        </div>
+        </div> */}
       </Card>
     </>
   );

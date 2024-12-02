@@ -28,9 +28,9 @@ export async function FetchAllDrivers () {
        method: "POST",
        headers: {
            ...authHeader(),
-           'Content-Type': 'multipart/form-data'
+          //  "Content-Type": "multipart/form-data"
        },
-         body: JSON.stringify(userData)
+         body: userData
        };
     const response = await fetch(`${ApiConfigs.base_url + ApiConfigs.apis.admin.driver.CreateDriver}`, requestOptions)
 
@@ -43,7 +43,8 @@ export async function FetchAllDrivers () {
        method: "POST",
        headers: {
            ...authHeader(),
-           'Content-Type': 'multipart/form-data'
+           'Content-Type': 'application/json'
+
        },
          body: JSON.stringify(userData)
        };

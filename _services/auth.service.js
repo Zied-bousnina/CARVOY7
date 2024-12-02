@@ -37,9 +37,9 @@ export async function CreatePartner(userData){
      method: "POST",
      headers: {
          ...authHeader(),
-         'Content-Type': 'multipart/form-data'
+        //  'Content-Type': 'multipart/form-data'
      },
-       body: JSON.stringify(userData)
+       body: userData
      };
   const response = await fetch(`${ApiConfigs.base_url + ApiConfigs.apis.admin.addPartner}`, requestOptions)
 
@@ -88,7 +88,7 @@ function handleResponse(response) {
       } else if (response.status === 403) {
         window.location.href = "/";
       }
-      const error = (data && data.message) || response.statusText;
+      const error = (data ) || response.statusText;
       return Promise.reject(error);
     }
 

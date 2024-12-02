@@ -19,8 +19,7 @@ import {
 import GlobalFilter from "@/components/partials/table/GlobalFilter";
 import { missionService } from "@/_services/mission.service";
 import CompanyTable from "@/components/partials/table/company-table";
-import { UserService } from "@/_services/user.service";
-import Modal from "@/components/ui/Modal";
+import { DriverService } from "@/_services/driver.service";
 
 const IndeterminateCheckbox = React.forwardRef(
   ({ indeterminate, ...rest }, ref) => {
@@ -44,15 +43,11 @@ const IndeterminateCheckbox = React.forwardRef(
   }
 );
 
-const Partenaires = () => {
-  const [filterMap, setFilterMap] = useState("usa");
+const CategorieList = () => {
   const [Missions, setMissions] = useState([]);
-  const [PartnerList, setPartnerList] = useState([]);
+  const [CategorieLists, setCategorieLists] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const [activeModal, setActiveModal] = useState(false);
-  const [selectedPartner, setSelectedPartner] = useState(null);
-  const [selectedPartnerId, setSelectedPartnerId] = useState(null);
   const actions = [
     // {
     //   name: "send",
@@ -64,22 +59,22 @@ const Partenaires = () => {
     {
       name: "view",
       icon: "heroicons-outline:eye",
-      doit: (id) => {
-        router.push(`/admin/partnerDetail/${id}`);
+      doit: () => {
+        router.push("/invoice-preview");
       },
     },
     {
       name: "edit",
       icon: "heroicons:pencil-square",
       doit: (id) => {
-        router.push(`/admin/EditPartner/${id}`);
+        router.push("/invoice-edit");
       },
     },
     {
       name: "delete",
       icon: "heroicons-outline:trash",
       doit: (id) => {
-        handleDeleteClick(id)
+        return null;
       },
     },
   ];
@@ -92,22 +87,24 @@ const Partenaires = () => {
       Cell: ({ value }) => `#${value?.toString().slice(-5)}`,
     },
     {
-      Header: "Siret",
-      accessor: "siret",
+      Header: "Prix unitaire",
+      accessor: "unitPrice",
+      Cell: ({ value }) => `${Number(value)?.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })}`,
     },
     {
-      Header: "Nom de l'entreprise",
-      accessor: "name",
-    },
-    {
-      Header: "Nom du contact",
-      accessor: "contactName",
-    },
-    {
-      Header: "E-mail",
-      accessor: "email",
+      Header: "Description",
+      accessor: "description",
 
     },
+    {
+      Header: "Distance",
+      accessor: "distance",
+
+    },
+
+
+
+
     {
       Header: "Created At",
       accessor: "createdAt",
@@ -118,6 +115,10 @@ const Partenaires = () => {
           year: '2-digit',
         }).format(new Date("2021-07-16T10:00:00Z")),
     },
+    // {
+    //   Header: "Statuss",
+    //   accessor: "status",
+    // },
 
     {
       Header: "action",
@@ -125,7 +126,7 @@ const Partenaires = () => {
       Cell: (row) => {
         return (
           <div>
-           <Dropdown
+                <Dropdown
   classMenuItems="right-0 w-auto top-[110%] z-50" // Adjust width for horizontal layout
   label={
     <span className="text-xl text-center block w-full">
@@ -137,11 +138,7 @@ const Partenaires = () => {
     {actions.map((item, i) => (
       <div
         key={i}
-        onClick={() => {
-          // deletePartner(row.row.values._id)
-          console.log(row.row)
-          item.doit(    row.row.values._id    )
-          }}
+        onClick={() => item.doit()}
         className={`
           ${
             item.name === "delete"
@@ -159,20 +156,17 @@ const Partenaires = () => {
     ))}
   </div>
 </Dropdown>
-
           </div>
         );
       },
     }
 
   ];
-
-
-  const FetchAllPartnership = () => {
-    return missionService.FetchAllPartnership()
+ const FindAllCategories = () => {
+    return missionService.FindAllCategories()
       .then((res) => {
-        console.log("FindPartner list",res);
-        setPartnerList(res.partner
+        console.log("setCategorieLists list",res);
+        setCategorieLists(res.categorie
         ); // Update the state with the correct value
       })
       .catch((err) => {
@@ -182,30 +176,12 @@ const Partenaires = () => {
         console.log("done");
       });
   };
-  const deletePartner = (id) => {
-    setIsLoading(true);
-    UserService.DeleteUserByAdmin(id)
-      .then((res) => {
-        console.log("Deleted partner:", res);
-        FetchAllPartnership(); // Refresh the table
-        setActiveModal(false); // Close the modal
-      })
-      .catch((err) => {
-        console.error("Error deleting partner:", err);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-  };
-  const handleDeleteClick = (partnerId) => {
-    setSelectedPartnerId(partnerId); // Set the ID of the partner to delete
-    setActiveModal(true); // Open the modal
-  };
+
 
 
   const groupAsyncFunctions = () => {
     setIsLoading(true);
-    Promise.all([FetchAllPartnership()])
+    Promise.all([FindAllCategories()])
       .then(() => {})
       .catch((err) => {
         console.log(err);
@@ -217,10 +193,10 @@ const Partenaires = () => {
 
   useEffect(() => {
     groupAsyncFunctions();
-  }, []); // Empty ar
-// const mission = MissionByPartner ?  MissionsPartner: Missions
+  }, []);
+
   const columns = useMemo(() => (COLUMNS), []);
-  const data = useMemo(() => PartnerList || [], [PartnerList]);
+  const data = useMemo(() => CategorieLists || [], [CategorieLists]);
 
   const tableInstance = useTable(
     {
@@ -276,37 +252,9 @@ const Partenaires = () => {
 
   return (
     <>
-  {/* Confirmation Modal */}
-  {activeModal && (
-        <Modal
-          activeModal={activeModal}
-          onClose={() => setActiveModal(false)}
-          title="Confirm Delete"
-          footerContent={
-            <>
-              <button
-                className="btn btn-secondary"
-                onClick={() => setActiveModal(false)}
-                disabled={isLoading}
-              >
-                Cancel
-              </button>
-              <button
-                className="btn btn-danger"
-                onClick={() => deletePartner(selectedPartnerId)}
-                disabled={isLoading}
-              >
-                {isLoading ? "Deleting..." : "Delete"}
-              </button>
-            </>
-          }
-        >
-          <p>Are you sure you want to delete this partner?</p>
-        </Modal>
-      )}
       <Card noborder>
         <div className="md:flex pb-6 items-center">
-          <h6 className="flex-1 md:mb-0 mb-3">Partenaires</h6>
+          <h6 className="flex-1 md:mb-0 mb-3">Invoice</h6>
           <div className="md:flex md:space-x-3 items-center flex-none rtl:space-x-reverse">
 
             <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
@@ -324,11 +272,11 @@ const Partenaires = () => {
             /> */}
             <Button
               icon="heroicons-outline:plus-sm"
-              text="Créer un partenaire"
+              text="Créer une mission"
               className=" btn-dark font-normal btn-sm "
               iconClass="text-lg"
               onClick={() => {
-                router.push("/admin/addPartner");
+                router.push("/invoice-add");
               }}
             />
           </div>
@@ -476,4 +424,4 @@ const Partenaires = () => {
   );
 };
 
-export default Partenaires;
+export default CategorieList;

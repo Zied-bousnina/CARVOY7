@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import Textinput from "@/components/ui/Textinput";
@@ -13,14 +13,51 @@ import {
 import { AuthService } from "@/_services/auth.service";
 import { toast, ToastContainer } from "react-toastify";
 import { useRouter } from "next/navigation";
+import { missionService } from "@/_services/mission.service";
+import Image from "@/components/ui/Image";
 
 
-const AddPartner = () => {
+const EditPartner = ({ params }) => {
   const [form, setForm] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState({});
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const [PartnerDetails, setPartnerDetails] = useState({});
+  const { id } = params;
+  const [EditKbis,SetEditKbis]= useState(false)
 
+
+  const FetchPartnerDetail = (id) => {
+    return missionService.GetPartnerDetailsById(id)
+      .then((res) => {
+        console.log("FindPartner detail",res);
+        setPartnerDetails(res.partner
+        ); // Update the state with the correct value
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        console.log("done");
+      });
+  };
+
+  const groupAsyncFunctions = (id) => {
+    setIsLoading(true);
+    Promise.all([FetchPartnerDetail(id)])
+      .then(() => {})
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    groupAsyncFunctions(id);
+  }, []);
   const onChangeHandlerFile = (e) => {
     setForm({
       ...form,
@@ -30,6 +67,7 @@ const AddPartner = () => {
 
   const onChangeHandler = (e) => {
     const { name, value } = e.target;
+    console.log(name, value);
     setForm({
       ...form,
       [name]: value,
@@ -38,37 +76,19 @@ const AddPartner = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
+  console.log(
+    form
+  )
 
-    if (
-      form.name === undefined ||
-      form.contactName === undefined ||
-      form.addressPartner === undefined ||
-      form.email === undefined ||
-      form.phoneNumber === undefined ||
-      form.siret === undefined ||
-      form.kbis === undefined
-    ) {
-      console.log("Please fill all required fields");
-      return;
-    }
 
-    const formData = new FormData();
-    Object.keys(form).forEach((key) => {
-      if (Array.isArray(form[key])) {
-        form[key].forEach((value) => {
-          formData.append(key, value);
-        });
-      } else {
-        formData.append(key, form[key]);
-      }
-    });
 
-    createPartner(formData);
+
+    EditPartner(form);
   };
 
-  const createPartner = (data) => {
+  const EditPartner = (data) => {
     setIsSubmitting(true);
-    AuthService.CreatePartner(data)
+   missionService.UpdatePartnerShip(data,id)
       .then((res) => {
         console.log(res);
         setIsSubmitting(false);
@@ -97,12 +117,16 @@ const AddPartner = () => {
       });
   };
 
+  const handleSetEditKbis=()=> {
+    SetEditKbis(!EditKbis)
+  }
+
   return (
     <div>
     <ToastContainer />
-      <Card title="Créer un partenaire"
-
-      headerslot={false}>
+      <Card title="Edit a partner"
+      headerslot={false}
+      >
         <h4 className="text-slate-900 dark:text-white text-xl mb-4">#89572935Kh</h4>
         <form
           onSubmit={onSubmit}
@@ -124,6 +148,7 @@ const AddPartner = () => {
                 required
                 name="name"
                 onChange={onChangeHandler}
+                defaultValue={PartnerDetails.name}
               />
               {error?.name && <div className="text-red-500">{error.name}</div>}
             </div>
@@ -137,6 +162,9 @@ const AddPartner = () => {
                 required
                 name="contactName"
                 onChange={onChangeHandler}
+
+                defaultValue={PartnerDetails.contactName}
+
               />
               {error?.contactName && <div className="text-red-500">{error.contactName}</div>}
             </div>
@@ -152,6 +180,7 @@ const AddPartner = () => {
                 required
                 name="addressPartner"
                 onChange={onChangeHandler}
+                defaultValue={PartnerDetails.addressPartner}
               />
               {error?.addressPartner && <div className="text-red-500">{error.addressPartner}</div>}
             </div>
@@ -167,6 +196,7 @@ const AddPartner = () => {
                 required
                 name="email"
                 onChange={onChangeHandler}
+                defaultValue={PartnerDetails.email}
               />
               {error?.email && <div className="text-red-500">{error.email}</div>}
             </div>
@@ -180,6 +210,7 @@ const AddPartner = () => {
                 required
                 name="phoneNumber"
                 onChange={onChangeHandler}
+                defaultValue={PartnerDetails.phoneNumber}
               />
               {error?.phoneNumber && <div className="text-red-500">{error.phoneNumber}</div>}
             </div>
@@ -197,19 +228,49 @@ const AddPartner = () => {
                 required
                 name="siret"
                 onChange={onChangeHandler}
+                defaultValue={PartnerDetails.siret}
               />
               {error?.siret && <div className="text-red-500">{error.siret}</div>}
             </div>
 
             {/* K-Bis */}
-            <div>
+            <div
+             onClick={() =>handleSetEditKbis()}
+             className="cursor-pointer"
+            >
+            {
+              EditKbis ?
+              <>
+
+              <label
+
+className={"block capitalize  flex-0 mr-6 md:w-[100px] w-[60px] break-words"}
+
+>
+show K-BIS
+</label>
+
               <Textinput
                 label="K-Bis"
                 type="file"
                 placeholder=""
                 name="kbis"
                 onChange={onChangeHandlerFile}
+
               />
+              </>
+              :
+              <>
+              <label
+
+className={"block capitalize  flex-0 mr-6 md:w-[100px] w-[60px] break-words"}
+
+>
+edit K-BIS
+</label>
+            <Image src={PartnerDetails.kbis}  />
+              </>
+            }
             </div>
           </div>
 
@@ -229,4 +290,4 @@ const AddPartner = () => {
   );
 };
 
-export default AddPartner;
+export default EditPartner;

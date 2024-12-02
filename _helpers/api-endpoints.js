@@ -1,8 +1,8 @@
-import { notifications } from "@/constant/data";
 
 
 function server() {
     return `https://convoyage.onrender.com/api/`;
+    // return `http://localhost:3600/api/`;
   }
   // http://api.nasa.gov/neo/rest/v1/neo/browse?page=1&size=20&api_key=DEMO_KEY
   export const ApiConfigs = {
@@ -42,6 +42,8 @@ function server() {
           getUsersCounts: 'users/getUserCounts',
           getPartnerCounts: 'users/getPartnerCounts',
           FetchAllPartnership: 'users/partnerShip/fetchAll',
+          GetPartnerDetailsById: 'users/partnerShip/fetchByID/{id}',
+          UpdatePartnerShip : 'users/UpdatePartner/{id}',
 
           categorie: {
             createCategorie: 'users/categorie/create',

@@ -5,11 +5,17 @@ const Image = ({
   src,
   className,
   alt = "image-title",
+  onClick
 }) => {
   return (
-    <div className={`relative ${wrapperClass}`}>
+    <div className={`relative ${wrapperClass}`}
+
+
+    >
       {src ? (
-        <img src={src} alt={alt} className={`max-w-full block ${className}`} />
+        <img src={src}
+        onClick={onClick}
+        alt={alt} className={`max-w-full block ${className}`} />
       ) : (
         <div className="bg-neutral-300 w-full h-[200px] flex flex-col items-center justify-center font-medium rounded-md text-xl text-slate-900 capitalize">
           Please Set Image

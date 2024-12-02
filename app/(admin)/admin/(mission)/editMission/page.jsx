@@ -4,7 +4,7 @@ import Icon from "@/components/ui/Icon";
 import Link from "next/link";
 import useDarkMode from "@/hooks/useDarkMode";
 
-const ListFactureDrivers = () => {
+const EditMission = () => {
   const [isDark] = useDarkMode();
   return (
     <div className="min-h-screen">
@@ -101,4 +101,4 @@ const ListFactureDrivers = () => {
   );
 };
 
-export default ListFactureDrivers;
+export default EditMission;

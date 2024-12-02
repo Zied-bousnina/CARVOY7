@@ -38,7 +38,9 @@ export const missionService =  {
   PayeFactureByPartnerHorLigne,
   createFacture,
   FindFacturesByPartner,
-  FetchAllPartnership
+  FetchAllPartnership,
+  GetPartnerDetailsById,
+  UpdatePartnerShip
 
 
 }
@@ -89,6 +91,17 @@ export async function FinddevisById (devisId) {
     };
 
     const response =  await fetch(`${ApiConfigs.base_url + ApiConfigs.apis.admin.FinddevisById.replace('{id}', devisId)}`, requestOptions)
+    return handleResponse(response)
+}
+
+
+export async function GetPartnerDetailsById (partnerId) {
+    const requestOptions =  {
+        method : 'GET',
+        headers :  authHeader()
+    };
+
+    const response =  await fetch(`${ApiConfigs.base_url + ApiConfigs.apis.admin.GetPartnerDetailsById.replace('{id}', partnerId)}`, requestOptions)
     return handleResponse(response)
 }
 
@@ -387,6 +400,20 @@ export async function AddDevis(userData){
        body: JSON.stringify(userData)
      };
   const response = await fetch(`${ApiConfigs.base_url + ApiConfigs.apis.partner.devis.UpdateDevis.replace('{id}', id)}`, requestOptions)
+
+  return handleResponse(response);
+
+ }
+ export async function UpdatePartnerShip(userData,id){
+  const requestOptions =  {
+     method: "POST",
+     headers: {
+         ...authHeader(),
+         'Content-Type': 'application/json'
+     },
+       body: JSON.stringify(userData)
+     };
+  const response = await fetch(`${ApiConfigs.base_url + ApiConfigs.apis.admin.UpdatePartnerShip.replace('{id}', id)}`, requestOptions)
 
   return handleResponse(response);
 

@@ -1,15 +1,14 @@
 import React, { useState } from "react";
-import Icon from "@/components/ui/Icon";
-import Cleave from "cleave.js/react";
-import "cleave.js/dist/addons/cleave-phone.us";
+import PropTypes from "prop-types";
+
 const Textinput = ({
+  name,
   type,
   label,
   placeholder = "Add placeholder",
   classLabel = "form-label",
   className = "",
   classGroup = "",
-  name,
   readonly,
   value,
   error,
@@ -27,24 +26,25 @@ const Textinput = ({
   onFocus,
   defaultValue,
   helperText,
-  comment=null,
+  comment = null,
   ...rest
 }) => {
-  const [open, setOpen] = useState(false);
-  const handleOpen = () => {
-    setOpen(!open);
-  };
+  const [isPasswordVisible, setPasswordVisible] = useState(false);
+
+  if (!name) {
+    console.error("The 'name' prop is required for TextInput.");
+  }
 
   return (
     <div
-      className={`fromGroup  ${error ? "has-error" : ""}  ${
+      className={`formGroup ${error ? "has-error" : ""} ${
         horizontal ? "flex" : ""
-      }  ${validate ? "is-valid" : ""} `}
+      } ${validate ? "is-valid" : ""}`}
     >
       {label && (
         <label
           htmlFor={id}
-          className={`block capitalize ${classLabel}  ${
+          className={`block capitalize ${classLabel} ${
             horizontal ? "flex-0 mr-6 md:w-[100px] w-[60px] break-words" : ""
           }`}
         >
@@ -52,129 +52,40 @@ const Textinput = ({
         </label>
       )}
       <div className={`relative ${horizontal ? "flex-1" : ""}`}>
-        {name && !isMask && (
-          <input
-            type={type === "password" && open === true ? "text" : type}
-            {...rest}
-            className={`${
-              error ? " has-error" : " "
-            } form-control py-2 ${className}  `}
-            placeholder={placeholder}
-            readOnly={readonly}
-            defaultValue={defaultValue}
-            disabled={disabled}
-            id={id}
-            onChange={onChange}
-          />
+        <input
+          type={type === "password" && isPasswordVisible ? "text" : type}
+          name={name}
+          {...rest}
+          className={`${
+            error ? "has-error" : ""
+          } form-control py-2 ${className}`}
+          placeholder={placeholder}
+          readOnly={readonly}
+          defaultValue={defaultValue}
+          disabled={disabled}
+          id={id}
+          onChange={onChange}
+        />
+        {type === "password" && (
+          <button
+            type="button"
+            onClick={() => setPasswordVisible(!isPasswordVisible)}
+            className="absolute right-2 top-1/2 transform -translate-y-1/2"
+          >
+            {isPasswordVisible ? "Hide" : "Show"}
+          </button>
         )}
-        {!name && !isMask && (
-          <input
-            type={type === "password" && open === true ? "text" : type}
-            className={`form-control py-2 ${className}`}
-            placeholder={placeholder}
-            readOnly={readonly}
-            disabled={disabled}
-            defaultValue={defaultValue}
-            onChange={onChange}
-            id={id}
-          />
-        )}
-        {name && isMask && (
-          <Cleave
-            {...rest}
-            placeholder={placeholder}
-            options={options}
-            className={`${
-              error ? " has-error" : " "
-            } form-control py-2 ${className}  `}
-            onFocus={onFocus}
-            id={id}
-            readOnly={readonly}
-            disabled={disabled}
-            onChange={onChange}
-          />
-        )}
-        {!name && isMask && (
-          <Cleave
-            placeholder={placeholder}
-            options={options}
-            className={`${
-              error ? " has-error" : " "
-            } form-control py-2 ${className}  `}
-            onFocus={onFocus}
-            id={id}
-            readOnly={readonly}
-            disabled={disabled}
-            onChange={onChange}
-          />
-        )}
-        {/* icon */}
-        <div className="flex text-xl absolute ltr:right-[14px] rtl:left-[14px] top-1/2 -translate-y-1/2  space-x-1 rtl:space-x-reverse">
-          {hasicon && (
-            <span
-              className="cursor-pointer text-secondary-500"
-              onClick={handleOpen}
-            >
-              {open && type === "password" && (
-                <Icon icon="heroicons-outline:eye" />
-              )}
-              {!open && type === "password" && (
-                <Icon icon="heroicons-outline:eye-off" />
-              )}
-            </span>
-          )}
-
-          {error && type!=="date" && (
-            <span className="text-danger-500">
-              <Icon icon="heroicons-outline:information-circle" />
-            </span>
-          )}
-          {validate && (
-            <span className="text-success-500">
-              <Icon icon="bi:check-lg" />
-            </span>
-          )}
-        </div>
       </div>
-      {/* error and success message*/}
-      {error && (
-        <div
-          className={` mt-2 ${
-            msgTooltip
-              ? " inline-block bg-danger-500 text-white text-[10px] px-2 py-1 rounded"
-              : " text-danger-500 block text-sm"
-          }`}
-        >
-          {helperText}
-        </div>
-      )}
-      {!!comment && (
-        <div
-          className={` mt-2 ${
-            msgTooltip
-              ? " inline-block bg-danger-500 text-white text-[10px] px-2 py-1 rounded"
-              : " text-danger-500 block text-sm"
-          }`}
-        >
-          <span className="font-semibold">Commentaire: </span>{comment}
-        </div>
-      )}
-      {/* validated and success message*/}
-      {validate && (
-        <div
-          className={` mt-2 ${
-            msgTooltip
-              ? " inline-block bg-success-500 text-white text-[10px] px-2 py-1 rounded"
-              : " text-success-500 block text-sm"
-          }`}
-        >
-          {validate}
-        </div>
-      )}
-      {/* only description */}
-      {description && <span className="input-description">{description}</span>}
     </div>
   );
+};
+
+Textinput.propTypes = {
+  name: PropTypes.string,
+  type: PropTypes.string,
+  label: PropTypes.string,
+  placeholder: PropTypes.string,
+  onChange: PropTypes.func,
 };
 
 export default Textinput;

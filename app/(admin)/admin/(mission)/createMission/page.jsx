@@ -1,133 +1,100 @@
 "use client";
-import dynamic from "next/dynamic";
-import React, { useState } from "react";
-import Card from "@/components/ui/Card";
-import ImageBlock1 from "@/components/partials/widget/block/image-block-1";
-import GroupChart1 from "@/components/partials/widget/chart/group-chart-1";
-import RevenueBarChart from "@/components/partials/widget/chart/revenue-bar-chart";
-import RadialsChart from "@/components/partials/widget/chart/radials";
-import SelectMonth from "@/components/partials/SelectMonth";
-import CompanyTable from "@/components/partials/table/company-table";
-import RecentActivity from "@/components/partials/widget/recent-activity";
-import RadarChart from "@/components/partials/widget/chart/radar-chart";
-import HomeBredCurbs from "@/components/partials/HomeBredCurbs";
+import Button from "@/components/ui/Button";
+import Icon from "@/components/ui/Icon";
+import Link from "next/link";
+import useDarkMode from "@/hooks/useDarkMode";
 
-const MostSales = dynamic(
-  () => import("@/components/partials/widget/most-sales"),
-  {
-    ssr: false,
-  }
-);
 const CreateMission = () => {
-  const [filterMap, setFilterMap] = useState("usa");
+  const [isDark] = useDarkMode();
   return (
-    <div>
-      <HomeBredCurbs title="Mission" />
-      <div className="grid grid-cols-12 gap-5 mb-5">
-        <div className="2xl:col-span-3 lg:col-span-4 col-span-12">
-          <ImageBlock1 />
-        </div>
-        <div className="2xl:col-span-9 lg:col-span-8 col-span-12">
-          <Card bodyClass="p-4">
-            <div className="grid md:grid-cols-3 col-span-1 gap-4">
-              <GroupChart1 />
-            </div>
-          </Card>
+    <div className="min-h-screen">
+      <div className="absolute left-0 top-0 w-full">
+        <div className="flex flex-wrap justify-between items-center py-6 container">
+          <div>
+            <Link href="/">
+              <img
+                src={
+                  isDark
+                    ? "/assets/images/logo/logo-white.svg"
+                    : "/assets/images/logo/logo.svg"
+                }
+                alt=""
+              />
+            </Link>
+          </div>
+          <div>
+            <Button text="Contact us" className=" btn-outline-dark btn-sm" />
+          </div>
         </div>
       </div>
-      <div className="grid grid-cols-12 gap-5">
-        <div className="lg:col-span-8 col-span-12">
-          <Card>
-            <div className="legend-ring">
-              <RevenueBarChart />
+      <div className="container">
+        <div className="flex justify-center flex-wrap items-center min-h-screen flex-col text-center">
+          <img src="/assets/images/svg/img-2.svg" alt="" />
+          <h4 className="text-3xl font-medium text-slate-900 dark:text-white mb-2">
+            We are under maintenance.
+          </h4>
+          <p className="font-normal text-base text-slate-500 dark:text-slate-300">
+            We’re making the system more awesome. <br />
+            We’ll be back shortly.
+          </p>
+        </div>
+      </div>
+      <div className="fixed bottom-0 w-full">
+        <div className="container">
+          <div className="md:flex justify-between items-center flex-wrap space-y-4 py-6">
+            <div>
+              <ul className="flex md:justify-start justify-center space-x-3">
+                <li>
+                  <a href="#" className="social-link">
+                    <Icon icon="icomoon-free:facebook" />
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="social-link">
+                    <Icon icon="icomoon-free:twitter" />
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="social-link">
+                    <Icon icon="icomoon-free:linkedin2" />
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="social-link">
+                    <Icon icon="icomoon-free:google" />
+                  </a>
+                </li>
+              </ul>
             </div>
-          </Card>
-        </div>
-        <div className="lg:col-span-4 col-span-12">
-          <Card title="Overview" headerslot={<SelectMonth />}>
-            <RadialsChart />
-          </Card>
-        </div>
-        <div className="lg:col-span-8 col-span-12">
-          <Card title="All Company" headerslot={<SelectMonth />} noborder>
-            <CompanyTable />
-          </Card>
-        </div>
-        <div className="lg:col-span-4 col-span-12">
-          <Card title="Recent Activity" headerslot={<SelectMonth />}>
-            <RecentActivity />
-          </Card>
-        </div>
-        <div className="lg:col-span-8 col-span-12">
-          <Card
-            title="Most Sales"
-            headerslot={
-              <div className="border border-slate-200 dark:border-slate-700 dark:bg-slate-900 rounded p-1 flex items-center">
-                <span
-                  className={` flex-1 text-sm font-normal px-3 py-1 transition-all duration-150 rounded cursor-pointer
-                ${
-                  filterMap === "global"
-                    ? "bg-slate-900 text-white dark:bg-slate-700 dark:text-slate-300"
-                    : "dark:text-slate-300"
-                }
-                `}
-                  onClick={() => setFilterMap("global")}
-                >
-                  Global
-                </span>
-                <span
-                  className={` flex-1 text-sm font-normal px-3 py-1 rounded transition-all duration-150 cursor-pointer
-                  ${
-                    filterMap === "usa"
-                      ? "bg-slate-900 text-white dark:bg-slate-700 dark:text-slate-300"
-                      : "dark:text-slate-300"
-                  }
-              `}
-                  onClick={() => setFilterMap("usa")}
-                >
-                  USA
-                </span>
-              </div>
-            }
-          >
-            <MostSales filterMap={filterMap} />
-          </Card>
-        </div>
-        <div className="lg:col-span-4 col-span-12">
-          <Card title="Overview" headerslot={<SelectMonth />}>
-            <RadarChart />
-            <div className="bg-slate-50 dark:bg-slate-900 rounded p-4 mt-8 flex justify-between flex-wrap">
-              <div className="space-y-1">
-                <h4 className="text-slate-600 dark:text-slate-200 text-xs font-normal">
-                  Invested amount
-                </h4>
-                <div className="text-sm font-medium text-slate-900 dark:text-white">
-                  $8264.35
-                </div>
-                <div className="text-slate-500 dark:text-slate-300 text-xs font-normal">
-                  +0.001.23 (0.2%)
-                </div>
-              </div>
-
-              <div className="space-y-1">
-                <h4 className="text-slate-600 dark:text-slate-200 text-xs font-normal">
-                  Invested amount
-                </h4>
-                <div className="text-sm font-medium text-slate-900 dark:text-white">
-                  $8264.35
-                </div>
-              </div>
-
-              <div className="space-y-1">
-                <h4 className="text-slate-600 dark:text-slate-200 text-xs font-normal">
-                  Invested amount
-                </h4>
-                <div className="text-sm font-medium text-slate-900 dark:text-white">
-                  $8264.35
-                </div>
-              </div>
+            <div>
+              <ul className="flex md:justify-start justify-center space-x-3">
+                <li>
+                  <a
+                    href="#"
+                    className="text-slate-500 dark:text-slate-400 text-sm transition duration-150 hover:text-slate-900"
+                  >
+                    Privacy policy
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    className="text-slate-500 dark:text-slate-400 text-sm transition duration-150 hover:text-slate-900"
+                  >
+                    Faq
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    className="text-slate-500 dark:text-slate-400 text-sm transition duration-150 hover:text-slate-900"
+                  >
+                    Email us
+                  </a>
+                </li>
+              </ul>
             </div>
-          </Card>
+          </div>
         </div>
       </div>
     </div>

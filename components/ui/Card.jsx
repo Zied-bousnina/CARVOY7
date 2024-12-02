@@ -23,7 +23,8 @@ const Card = ({
   bodyClass = "p-6",
   noborder,
   titleClass = "custom-class ",
-  setMissionByPartner
+  setMissionByPartner,
+ 
 }) => {
   const [skin] = useSkin();
 
@@ -54,6 +55,7 @@ const Card = ({
           </span>
         }
       >
+      
         <div>
           {actions.map((item, i) => (
             <Menu.Item key={i}

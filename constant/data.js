@@ -9,6 +9,12 @@ export const menuItems = [
   link: "admin",
   isHide: false,
 },
+// {
+//   title: "invoice",
+//   icon: "heroicons-outline:home", // Home icon for "Accueil"
+//   link: "admin/invoice",
+//   isHide: false,
+// },
 {
   title: "Liste des Missions",
   icon: "heroicons-outline:clipboard-list", // List icon for "Liste des Missions"
@@ -41,7 +47,7 @@ export const menuItems = [
     },
     {
       childtitle: "Générer Facture",
-      childlink: "admin/mission",
+      childlink: "admin/generateFacture",
     },
     {
       childtitle: "Facture partenaires",
