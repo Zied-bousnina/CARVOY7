@@ -19,6 +19,7 @@ import {
 import GlobalFilter from "@/components/partials/table/GlobalFilter";
 import { missionService } from "@/_services/mission.service";
 import CompanyTable from "@/components/partials/table/company-table";
+import Modal from "@/components/ui/Modal";
 
 const IndeterminateCheckbox = React.forwardRef(
   ({ indeterminate, ...rest }, ref) => {
@@ -48,7 +49,11 @@ const Mission = () => {
   const [MissionsPartner, setMissionsPartner] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [MissionByPartner, setMissionByPartner] = useState(false);
+  const [activeModal, setActiveModal] = useState(false);
+
+  const [selectedPartnerId, setSelectedPartnerId] = useState(null);
   const router = useRouter();
+
   const actions = [
     // {
     //   name: "send",
@@ -75,6 +80,7 @@ const Mission = () => {
       name: "delete",
       icon: "heroicons-outline:trash",
       doit: (id) => {
+        handleDeleteClick(id)
         // return null;
       },
     },
@@ -183,7 +189,7 @@ const Mission = () => {
     {actions.map((item, i) => (
       <div
         key={i}
-        onClick={() => item.doit()}
+        onClick={() => item.doit( row.row.values._id)}
         className={`
           ${
             item.name === "delete"
@@ -225,7 +231,26 @@ const Mission = () => {
 
 
   ];
+  const deletePartner = (id) => {
+    setIsLoading(true);
+    missionService.DeleteMission(id)
+      .then((res) => {
 
+        FindRequestDemandeByPartnerV2(); // Refresh the table
+        FindRequestDemande(); // Refresh the table
+        setActiveModal(false); // Close the modal
+      })
+      .catch((err) => {
+        console.error("Error deleting partner:", err);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
+  const handleDeleteClick = (partnerId) => {
+    setSelectedPartnerId(partnerId); // Set the ID of the partner to delete
+    setActiveModal(true); // Open the modal
+  };
   const FindRequestDemandeByPartnerV2 = () => {
     return missionService.FindRequestDemandeByPartnerV2()
       .then((res) => {
@@ -255,6 +280,7 @@ const Mission = () => {
         console.log("done");
       });
   };
+
 
   const groupAsyncFunctions = () => {
     setIsLoading(true);
@@ -329,9 +355,36 @@ const mission = MissionByPartner ?  MissionsPartner: Missions
 
   return (
     <>
+      {activeModal && (
+        <Modal
+          activeModal={activeModal}
+          onClose={() => setActiveModal(false)}
+          title="Confirm Delete"
+          footerContent={
+            <>
+              <button
+                className="btn btn-secondary"
+                onClick={() => setActiveModal(false)}
+                disabled={isLoading}
+              >
+                Cancel
+              </button>
+              <button
+                className="btn btn-danger"
+                onClick={() => deletePartner(selectedPartnerId)}
+                disabled={isLoading}
+              >
+                {isLoading ? "Deleting..." : "Delete"}
+              </button>
+            </>
+          }
+        >
+          <p>Are you sure you want to delete this mission?</p>
+        </Modal>
+      )}
       <Card noborder>
         <div className="md:flex pb-6 items-center">
-          <h6 className="flex-1 md:mb-0 mb-3">Invoice</h6>
+          <h6 className="flex-1 md:mb-0 mb-3">Missions</h6>
           <div className="md:flex md:space-x-3 items-center flex-none rtl:space-x-reverse">
           <Dropdown
               classMenuItems="right-0 w-[140px] top-[110%] z-50"
@@ -357,7 +410,7 @@ const mission = MissionByPartner ?  MissionsPartner: Missions
                     `}
                   >
                     <span className="text-base">
-                      <Icon icon={item.icon} />
+                      {/* <Icon icon={item.icon} /> */}
                     </span>
                     <span>{item.name}</span>
                   </div>
