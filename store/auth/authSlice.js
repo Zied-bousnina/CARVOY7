@@ -48,8 +48,8 @@ state.onligne = decodedToken.onligne || false;
             action.payload.router.push("/");
             break;
           case "ADMIN":
-            // action.payload.router.push("/admin");
-            action.payload.router.push("/admin/devis/674f51d4a19dfdd91429bfe8");
+            action.payload.router.push("/admin");
+            // action.payload.router.push("/admin/devis/674f51d4a19dfdd91429bfe8");
             break;
 
           default:
