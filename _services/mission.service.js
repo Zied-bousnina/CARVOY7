@@ -40,7 +40,8 @@ export const missionService =  {
   FindFacturesByPartner,
   FetchAllPartnership,
   GetPartnerDetailsById,
-  UpdatePartnerShip
+  UpdatePartnerShip,
+  PayerEnLignePartner
 
 
 }
@@ -302,7 +303,7 @@ export async function UpdateUserInformationById(userData){
      method: "POST",
      headers: {
          ...authHeader(),
-         'Content-Type': 'application/json'
+
      },
        body: JSON.stringify(userData)
      };
@@ -453,6 +454,7 @@ export async function FindDevisByPartnerId (userData,id) {
 
   return handleResponse(response)
 }
+
 export async function PayeFactureByPartnerHorLigne(id){
   const requestOptions =  {
      method: "POST",
@@ -463,6 +465,23 @@ export async function PayeFactureByPartnerHorLigne(id){
 
      };
   const response = await fetch(`${ApiConfigs.base_url + ApiConfigs.apis.partner.facture.PayeFactureByPartnerHorLigne.replace('{id}',id)}`, requestOptions)
+
+  return handleResponse(response);
+
+ }
+
+
+export async function PayerEnLignePartner(data){
+  const requestOptions =  {
+     method: "POST",
+     headers: {
+         ...authHeader(),
+
+     },
+        body: JSON.stringify(data)
+
+     };
+  const response = await fetch(`${ApiConfigs.base_url + ApiConfigs.apis.admin.facture.PayerEnLignePartner }`, requestOptions)
 
   return handleResponse(response);
 

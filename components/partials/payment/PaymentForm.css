@@ -1,0 +1,43 @@
+/* Add these styles to your existing CSS file */
+
+/* Styles for form group */
+.form-group {
+    margin-bottom: 1rem; /* Adjust as needed */
+  }
+
+  /* Styles for form labels */
+  .label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #6e6e6e; /* Adjust the color to match your design */
+    font-size: 0.875rem; /* Adjust the font size to match your design */
+  }
+
+  /* Styles for form inputs, adjust the placeholder color as needed */
+  .input {
+    border-radius: 0.375rem; /* Adjust to match your design */
+    border: 1px solid #ddd; /* Adjust the border color to match your design */
+  }
+
+  /* Styles for Stripe CardElement, if needed */
+  #card-element {
+    padding: 0.875rem;
+    border-radius: 0.375rem;
+    border: 1px solid #ddd;
+    background-color: white;
+  }
+
+  .payment-summary {
+    text-align: left;
+    margin-top: 1rem;
+  }
+
+  .payment-summary .subtotal,
+  .payment-summary .total-ttc {
+    color: #004085;
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+  }
+
+
+  /* You can customize the Button component as well to match the design */

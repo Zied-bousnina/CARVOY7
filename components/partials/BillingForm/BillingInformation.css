@@ -1,0 +1,30 @@
+.billing-info-section {
+    background-color: #f6f9fc;
+    border-radius: .375rem;
+    padding: 1rem;
+  }
+
+  .billing-info-section h6 {
+    font-size: .75rem;
+    color: #8898aa;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .billing-info-section p {
+    font-size: .875rem;
+    color: #525f7f;
+    margin-bottom: .25rem;
+  }
+
+  .card-header h5 {
+    font-size: 1rem;
+  }
+
+  .custom-title {
+    font-weight: bold;
+    font-size: 1.5rem; /* Adjust the size as needed */
+  }
+
+  /* You may adjust the margin and padding as needed to match the design exactly */

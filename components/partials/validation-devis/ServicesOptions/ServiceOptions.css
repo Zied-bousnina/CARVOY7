@@ -1,0 +1,79 @@
+.service-options {
+    display: grid;
+    grid-template-areas:
+      'fuel charge'
+      'exteriorWash interiorCleaning garagePlate';
+    gap: 10px;
+    padding: 20px;
+    margin-top: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+  }
+  .services-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Three columns by default */
+    grid-template-rows: auto auto;
+    grid-template-areas:
+      "fuel charge ."
+      "exteriorWash interiorCleaning garagePlate";
+    gap: 20px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+  }
+
+
+  @media (max-width: 768px) {
+    .services-list {
+      grid-template-columns: 1fr; /* One column for smaller screens */
+      grid-template-areas:
+        "fuel"
+        "charge"
+        "exteriorWash"
+        "interiorCleaning"
+        "garagePlate";
+    }
+  }
+  .service-item {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+
+ /* Assign grid areas to each service */
+.service-item.fuel { grid-area: fuel; }
+.service-item.charge { grid-area: charge; }
+.service-item.exteriorWash { grid-area: exteriorWash; }
+.service-item.interiorCleaning { grid-area: interiorCleaning; }
+.service-item.garagePlate { grid-area: garagePlate; }
+
+/* Style changes for selected items */
+.service-item.selected {
+  background-color: #D6EAF8; /* Light blue background for selected state */
+  border: 1px solid #AED6F1;
+}
+
+  .service-name {
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+
+  .service-description {
+    font-size: 0.8rem;
+    color: #666;
+    margin-bottom: 10px; /* Increased bottom margin */
+  }
+
+  .service-price {
+    font-size: 1.2rem;
+    color: #000;
+    font-weight: bold;
+    align-self: flex-end;
+  }

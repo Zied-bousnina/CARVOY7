@@ -10,23 +10,14 @@ const Textinput = ({
   className = "",
   classGroup = "",
   readonly,
-  value,
+  value, // Controlled value from parent
   error,
-  icon,
   disabled,
   id,
   horizontal,
   validate,
-  isMask,
-  msgTooltip,
-  description,
-  hasicon,
-  onChange,
-  options,
-  onFocus,
-  defaultValue,
+  onChange, // Controlled change handler
   helperText,
-  comment = null,
   ...rest
 }) => {
   const [isPasswordVisible, setPasswordVisible] = useState(false);
@@ -43,7 +34,7 @@ const Textinput = ({
     >
       {label && (
         <label
-          htmlFor={id}
+          htmlFor={id || name}
           className={`block capitalize ${classLabel} ${
             horizontal ? "flex-0 mr-6 md:w-[100px] w-[60px] break-words" : ""
           }`}
@@ -55,16 +46,16 @@ const Textinput = ({
         <input
           type={type === "password" && isPasswordVisible ? "text" : type}
           name={name}
-          {...rest}
-          className={`${
-            error ? "has-error" : ""
-          } form-control py-2 ${className}`}
+          id={id || name}
+          value={value} // Controlled value
+          onChange={onChange} // Pass change handler to parent
           placeholder={placeholder}
           readOnly={readonly}
-          defaultValue={defaultValue}
           disabled={disabled}
-          id={id}
-          onChange={onChange}
+          className={`form-control py-2 ${className} ${
+            error ? "border-red-500" : ""
+          }`}
+          {...rest}
         />
         {type === "password" && (
           <button
@@ -76,16 +67,21 @@ const Textinput = ({
           </button>
         )}
       </div>
+      {helperText && <small className="text-gray-500">{helperText}</small>}
+      {error && <div className="text-red-500 mt-1">{error}</div>}
     </div>
   );
 };
 
 Textinput.propTypes = {
-  name: PropTypes.string,
+  name: PropTypes.string.isRequired,
   type: PropTypes.string,
   label: PropTypes.string,
   placeholder: PropTypes.string,
-  onChange: PropTypes.func,
+  value: PropTypes.string, // Ensure it's a controlled component
+  onChange: PropTypes.func, // Controlled change handler
+  error: PropTypes.string,
+  helperText: PropTypes.string,
 };
 
 export default Textinput;

@@ -1,0 +1,38 @@
+.summary {
+    font-family: 'Arial', sans-serif;
+    color: #333;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+
+  .summary-title {
+    margin-bottom: 10px;
+    font-size: 24px;
+    text-align: left;
+    color: #000;
+  }
+
+  .summary-detail p {
+    margin: 5px 0;
+    line-height: 1.6;
+  }
+
+  .summary-total {
+    border-top: 1px solid #ddd;
+    padding-top: 10px;
+    margin-top: 10px;
+  }
+
+  .summary-total p {
+    font-size: 18px;
+    color: #000;
+    font-weight: bold;
+  }
+
+  .blue-petrol {
+    color: #004953; /* Bleu pétrole color */
+    font-weight: bold;
+  }
