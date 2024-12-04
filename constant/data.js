@@ -177,75 +177,62 @@ export const menuItemsPartner = [
   {
     title: "Profil utilisateur",
     icon: "heroicons-outline:user-circle", // User profile icon for "Profil utilisateur"
-    link: "admin/profile",
+    link: "partner/profile",
     isOpen: true,
   },
   ];
 
 export const topMenuPartner = [
 
-  {
-    isHeadr: true,
-    title: "menu",
-  },
-  {
-    title: "Accueil",
-    icon: "heroicons-outline:home", // Home icon for "Accueil"
-    link: "admin",
-    isHide: false,
-  },
-  {
-    title: "Liste des Missions",
-    icon: "heroicons-outline:clipboard-list", // List icon for "Liste des Missions"
-    link: "admin/mission",
-  },
-  {
-    title: "Partenaires",
-    icon: "heroicons-outline:user-group", // Group icon for "Partenaires"
-    link: "admin/Partenaires",
-  },
-  {
-    title: "Conducteurs",
-    icon: "heroicons-outline:truck", // Truck icon for "Conducteurs"
-    link: "admin/conducteurs",
-    isOpen: true,
-  },
-  {
-    title: "Facturation",
-    icon: "heroicons-outline:document-text", // Document icon for "Facturation"
-    isOpen: true,
-    isHide: true,
-    child: [
-      {
-        childtitle: "Gérer les paramètres",
-        childlink: "admin/addCategorie",
-      },
-      {
-        childtitle: "Liste Categorie",
-        childlink: "admin/categorieList",
-      },
-      {
-        childtitle: "Générer Facture",
-        childlink: "admin/generateFacture",
-      },
-      {
-        childtitle: "Facture partenaires",
-        childlink: "admin/mission",
-      },
-      {
-        childtitle: "Facture conducteurs",
-        childlink: "admin/ListFactureDrivers",
-      },
-    ],
-  },
-  {
-    title: "Profil utilisateur",
-    icon: "heroicons-outline:user-circle", // User profile icon for "Profil utilisateur"
-    link: "admin/profile",
-    isOpen: true,
-  },
 
-  ];
+    {
+      isHeadr: true,
+      title: "menu",
+    },
+    {
+      title: "Accueil",
+      icon: "heroicons-outline:home", // Home icon for "Accueil"
+      link: "partner",
+      isHide: false,
+    },
+    // {
+    //   title: "invoice",
+    //   icon: "heroicons-outline:home", // Home icon for "Accueil"
+    //   link: "admin/invoice",
+    //   isHide: false,
+    // },
+    {
+      title: "j'obtiens mon devis",
+      icon: "heroicons-outline:user-group", // Group icon for "Partenaires"
+      link: "partner/createMission",
+    },
+    {
+      title: "Liste des Missions",
+      icon: "heroicons-outline:clipboard-list", // List icon for "Liste des Missions"
+      link: "partner/mission",
+    },
+
+
+    {
+      title: "Facturation",
+      icon: "heroicons-outline:document-text", // Document icon for "Facturation"
+      isOpen: true,
+      isHide: true,
+      child: [
+
+        {
+          childtitle: "Facture conducteurs",
+          childlink: "partner/ListFactureDrivers",
+        },
+      ],
+    },
+    {
+      title: "Profil utilisateur",
+      icon: "heroicons-outline:user-circle", // User profile icon for "Profil utilisateur"
+      link: "partner/profile",
+      isOpen: true,
+    },
+    ];
 
 export const notifications = [
   {
