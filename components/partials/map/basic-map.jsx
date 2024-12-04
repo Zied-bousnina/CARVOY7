@@ -8,6 +8,8 @@ import "leaflet-control-geocoder/dist/Control.Geocoder.js"
 import L from "leaflet"
 import { socket } from "@/utils/socket";
 import { useRouter } from 'next/navigation';
+import { useSelector } from "react-redux";
+
 const BasicMap = () => {
   const position = [47.31322, -1.319482];
 
@@ -16,6 +18,15 @@ const BasicMap = () => {
   const [currentLocation, setCurrentLocation] = useState([48.709438,2.503570]);
   const defaultCenter = currentLocation || position;
   const router = useRouter();
+  const userAuth = useSelector((state) => state.userAuth);
+  const [Role, setRole] = useState("admin");
+  useEffect(() => {
+    if (userAuth.role === "PARTNER") {
+      setRole("partner");
+    } else if (userAuth.role === "ADMIN") {
+      setRole("admin");
+    }
+  }, [userAuth.role]);
   const FindAllDrivers = () => {
     return UserService.GetAllUsers()
       .then((res) => {
@@ -228,7 +239,11 @@ let DefaultIcon = L.icon({
 
               click: () => {
                 // const navigate = useHistory();
-                router.push(`/admin/driverDetail/${e.userId}`);
+                router.push(
+                  Role === "admin"
+                    ? `/admin/driverDetail/${e.userId}`
+                    : `/partner`
+                  );
                 // alert('A marker has been clicked!')
                 }
             }}

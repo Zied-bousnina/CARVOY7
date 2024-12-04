@@ -1,16 +1,26 @@
 "use client";
-import React from "react";
-import { topMenu } from "@/constant/data";
+import React, { useEffect } from "react";
+import { topMenu,topMenuPartner } from "@/constant/data";
 import Icon from "@/components/ui/Icon";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-
+import { useSelector } from "react-redux";
 const HorizentalMenu = () => {
+
+  const userAuth = useSelector((state) => state.userAuth);
+  const [menuItemsToDisplay, setMenuItemsToDisplay] = useState(topMenu);
+  useEffect(() => {
+    if (userAuth.role === "PARTNER") {
+      setMenuItemsToDisplay(topMenuPartner);
+    } else if (userAuth.role === "ADMIN") {
+      setMenuItemsToDisplay(topMenu);
+    }
+  }, [userAuth.role]);
   const location = usePathname();
   return (
     <div className="main-menu">
       <ul>
-        {topMenu?.map((item, i) => (
+        {menuItemsToDisplay?.map((item, i) => (
           <li
             key={i}
             className={

@@ -7,6 +7,7 @@ import { notifications } from "@/constant/data";
 import { ProfileService } from "@/_services/profile.service";
 import { UserService } from "@/_services/user.service";
 import { formatDistanceToNow } from 'date-fns';
+import { useSelector } from "react-redux";
 const notifyLabel = (notifCount) => {
   return (
     <span className="relative lg:h-[32px] lg:w-[32px] lg:bg-slate-100 text-slate-900 lg:dark:bg-slate-900 dark:text-white cursor-pointer rounded-full text-[20px] flex flex-col items-center justify-center">
@@ -21,8 +22,8 @@ const notifyLabel = (notifCount) => {
 const Notification = () => {
   const [UserNotification, setUserNotification] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-
-
+  const userAuth = useSelector((state) => state.userAuth);
+  const [Role, setRole] = useState("admin");
   const FindCurrentUserNotification = () => {
     return UserService.GetCurrentUser()
       .then((res) => {
@@ -56,6 +57,15 @@ const Notification = () => {
     console.log('profile')
     groupAsyncFunctions();
   }, []); // Empty array to only run on mount
+
+
+  useEffect(() => {
+    if (userAuth.role === "PARTNER") {
+      setRole("partner");
+    } else if (userAuth.role === "ADMIN") {
+      setRole("admin");
+    }
+  }, [userAuth.role]);
   const sortedNotifications = UserNotification?.slice().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   const topThreeNotifications = sortedNotifications?.slice(0, 3);
   return (
@@ -65,7 +75,7 @@ const Notification = () => {
           Notifications
         </div>
         <div className="text-slate-800 dark:text-slate-200 text-xs md:text-right">
-          <Link href="/admin/notifications" className="underline">
+          <Link href={`/${Role}/notifications`} className="underline">
             View all
           </Link>
         </div>

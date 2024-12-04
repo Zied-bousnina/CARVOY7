@@ -4,6 +4,7 @@ import axios from 'axios';
 import { missionService } from '@/_services/mission.service';
 import { toast } from 'react-toastify';
 import { useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
 
 const CARD_OPTIONS = {
   style: {
@@ -29,6 +30,15 @@ export default function PaymentForm({ data, id }) {
   const stripe = useStripe();
   const elements = useElements();
   const router = useRouter();
+  const userAuth = useSelector((state) => state.userAuth);
+  const [Role, setRole] = useState("admin");
+  useEffect(() => {
+    if (userAuth.role === "PARTNER") {
+      setRole("partner");
+    } else if (userAuth.role === "ADMIN") {
+      setRole("admin");
+    }
+  }, [userAuth.role]);
 
   const getUserInformation = () => {
     // Simulate loading user data
@@ -73,7 +83,12 @@ export default function PaymentForm({ data, id }) {
           progress: undefined,
           theme: 'light',
         });
-        router.push("/admin/mission");
+        router.push(
+          Role ==="admin"?
+
+          "/admin/mission"
+          :"partner/mission"
+        );
       });
   };
   const handleSubmit = async (e) => {

@@ -45,7 +45,7 @@ state.onligne = decodedToken.onligne || false;
         console.log("connected++++++++++++++",decodedToken.role)
         switch (decodedToken.role) {
           case "PARTNER":
-            action.payload.router.push("/");
+            action.payload.router.push("/partner");
             break;
           case "ADMIN":
             action.payload.router.push("/admin");
