@@ -8,35 +8,36 @@ import { missionService } from "@/_services/mission.service";
 const BasicArea = ({ height = 350 }) => {
   const [isDark] = useDarkMode();
   const [missionStats, setMissionStats] = useState([]);
+  const getMissionStats = () => {
+    missionService
+      .findDemandsstatisticsadmin()
+      .then((res) => {
+        console.log(res);
+        const demandsStats = res.demands.map((demand, index) => ({
+          label: `Mission ${index + 1}`,
+          price: parseFloat(demand.price || 0),
+          count: 1,
+        }));
+
+        // Prepare data for the chart
+        const priceData = demandsStats.map((d) => d.price);
+        const cumulativeCount = demandsStats.map((_, i) => i + 1);
+
+        setMissionStats({
+          priceData,
+          cumulativeCount: cumulativeCount.map((num) => parseInt(num, 10)), // Ensure integers
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        console.log("done");
+      });
+  };
 
   useEffect(() => {
-    const getMissionStats = () => {
-      missionService
-        .findDemandsstatisticsadmin()
-        .then((res) => {
-          console.log(res);
-          const demandsStats = res.demands.map((demand, index) => ({
-            label: `Mission ${index + 1}`,
-            price: parseFloat(demand.price || 0),
-            count: 1,
-          }));
 
-          // Prepare data for the chart
-          const priceData = demandsStats.map((d) => d.price);
-          const cumulativeCount = demandsStats.map((_, i) => i + 1);
-
-          setMissionStats({
-            priceData,
-            cumulativeCount,
-          });
-        })
-        .catch((err) => {
-          console.log(err);
-        })
-        .finally(() => {
-          console.log("done");
-        });
-    };
 
     getMissionStats();
   }, []);
@@ -51,7 +52,6 @@ const BasicArea = ({ height = 350 }) => {
       data: missionStats.cumulativeCount || [],
     },
   ];
-
   const options = {
     chart: {
       toolbar: {
@@ -68,6 +68,9 @@ const BasicArea = ({ height = 350 }) => {
     colors: ["#4669FA", "#FA6946"],
     tooltip: {
       theme: isDark ? "dark" : "light",
+      y: {
+        formatter: (value) => value.toFixed(0), // Ensures no commas in tooltip values
+      },
     },
     grid: {
       show: true,
@@ -81,6 +84,7 @@ const BasicArea = ({ height = 350 }) => {
           text: "Chiffre d'affaire (€)",
         },
         labels: {
+          formatter: (value) => value.toFixed(0), // Removes commas from y-axis labels
           style: {
             colors: isDark ? "#CBD5E1" : "#475569",
             fontFamily: "Inter",
@@ -93,6 +97,7 @@ const BasicArea = ({ height = 350 }) => {
           text: "Nombre de missions cumulées",
         },
         labels: {
+          formatter: (value) => value.toFixed(0), // Removes commas from y-axis labels
           style: {
             colors: isDark ? "#CBD5E1" : "#475569",
             fontFamily: "Inter",
@@ -121,6 +126,7 @@ const BasicArea = ({ height = 350 }) => {
       position: "top",
     },
   };
+
 
   return (
     <div>
