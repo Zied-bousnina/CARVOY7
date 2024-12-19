@@ -210,10 +210,10 @@ let DefaultIcon = L.icon({
       L.latLngBounds(defaultCenter, defaultCenter)
     );
   return (
-    <div className="w-full h-[300px]">
+    <div className="w-full h-[500px]">
       <MapContainer
         center={{ lat: currentLocation[0], lng: currentLocation[1] }}
-        zoom={1}
+        zoom={2}
 
         bounds={bounds}
         scrollWheelZoom={false}

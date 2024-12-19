@@ -14,7 +14,6 @@ import HomeBredCurbs from "@/components/partials/HomeBredCurbs";
 import MapPage from "@/app/(dashboard)/map/page";
 import { missionService } from "@/_services/mission.service";
 // import BasicMap from "@/components/partials/map/basic-map";
-import BasicArea from "@/components/partials/chart/appex-chart/BasicArea";
 
 const BasicMap = dynamic(
   () => import("@/components/partials/map/basic-map"),
@@ -24,10 +23,9 @@ const BasicMap = dynamic(
 );
 // const BasicMap = dynamic(() => import('./components/partials/map/basic-map'), { ssr: false });
 
-const Dashboard = () => {
+const SuiviConducteurs = () => {
   const [filterMap, setFilterMap] = useState("usa");
   const [MissionStats, setMissionStats] = useState();
-  const [MissionStats2, setMissionStats2] = useState();
   const [Ammount, setAmmount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
 const getAmmount = ()=> {
@@ -48,20 +46,7 @@ const getMissionStats = ()=> {
   return missionService.findDemandsstatisticsadmin()
   .then((res)=>{
     console.log(res)
-    const demandsStats = res.demands.map((demand, index) => ({
-      label: `Mission ${index + 1}`,
-      price: parseFloat(demand.price || 0),
-      count: 1,
-    }));
-
-    const aggregatedStats = [
-      { label: "Completed", price: 0, count: res.statistics.completed },
-      { label: "In Progress", price: demandsStats.reduce((sum, d) => sum + d.price, 0), count: res.statistics.inProgress },
-      { label: "Total", price: demandsStats.reduce((sum, d) => sum + d.price, 0), count: res.statistics.total },
-    ];
-
-    setMissionStats(aggregatedStats);
-    setMissionStats2(res.statistics)
+    setMissionStats(res.statistics)
 
 
   })
@@ -95,33 +80,18 @@ groupAsyncFunctions();
 
   return (
     <div>
-      <HomeBredCurbs title="Accueil"
+      <HomeBredCurbs title="Suivi conducteurs"
 
 
        />
-      <div className="grid grid-cols-12 gap-5 mb-5">
-        {/* <div className="2xl:col-span-3 lg:col-span-4 col-span-12">
-          <ImageBlock1 />
-        </div> */}
-        <div className="2xl:col-span-12 lg:col-span-12 col-span-12">
-          <Card bodyClass="p-4">
-            <div className="grid md:grid-cols-4 col-span-1 gap-3">
-              <GroupChart1  missionStats={MissionStats2}
-              Ammount={Ammount}
 
-              />
-            </div>
-          </Card>
-        </div>
-
-      </div>
       <div className="grid grid-cols-12 gap-5">
         <div className="lg:col-span-12 col-span-12">
-        <Card
-        headerslot={false}
-        title="Évolution Comparée : Chiffre d'Affaires (€) et Nombre de Missions">
-       <BasicArea height={350} missionStats={MissionStats} />
-      </Card>
+          <Card>
+            <div className="legend-ring">
+              <BasicMap />
+            </div>
+          </Card>
         </div>
 
 
@@ -133,4 +103,4 @@ groupAsyncFunctions();
   );
 };
 
-export default Dashboard;
+export default SuiviConducteurs;

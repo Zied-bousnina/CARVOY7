@@ -1,14 +1,57 @@
 import dynamic from "next/dynamic";
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 import useDarkMode from "@/hooks/useDarkMode";
+import { useEffect, useState } from "react";
+import { missionService } from "@/_services/mission.service";
+// import missionService from "@/services/missionService"; // Replace with your actual service path
 
 const BasicArea = ({ height = 350 }) => {
   const [isDark] = useDarkMode();
+  const [missionStats, setMissionStats] = useState([]);
+
+  useEffect(() => {
+    const getMissionStats = () => {
+      missionService
+        .findDemandsstatisticsadmin()
+        .then((res) => {
+          console.log(res);
+          const demandsStats = res.demands.map((demand, index) => ({
+            label: `Mission ${index + 1}`,
+            price: parseFloat(demand.price || 0),
+            count: 1,
+          }));
+
+          // Prepare data for the chart
+          const priceData = demandsStats.map((d) => d.price);
+          const cumulativeCount = demandsStats.map((_, i) => i + 1);
+
+          setMissionStats({
+            priceData,
+            cumulativeCount,
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+        .finally(() => {
+          console.log("done");
+        });
+    };
+
+    getMissionStats();
+  }, []);
+
   const series = [
     {
-      data: [90, 70, 85, 60, 80, 70, 90, 75, 60, 80],
+      name: "Chiffre d'affaire (€)",
+      data: missionStats.priceData || [],
+    },
+    {
+      name: "Nombre de missions cumulées",
+      data: missionStats.cumulativeCount || [],
     },
   ];
+
   const options = {
     chart: {
       toolbar: {
@@ -22,9 +65,9 @@ const BasicArea = ({ height = 350 }) => {
       curve: "smooth",
       width: 4,
     },
-    colors: ["#4669FA"],
+    colors: ["#4669FA", "#FA6946"],
     tooltip: {
-      theme: "dark",
+      theme: isDark ? "dark" : "light",
     },
     grid: {
       show: true,
@@ -32,39 +75,35 @@ const BasicArea = ({ height = 350 }) => {
       strokeDashArray: 10,
       position: "back",
     },
-    fill: {
-      type: "gradient",
-      colors: "#4669FA",
-      gradient: {
-        shadeIntensity: 1,
-        opacityFrom: 0.4,
-        opacityTo: 0.5,
-        stops: [50, 100, 0],
-      },
-    },
-    yaxis: {
-      labels: {
-        style: {
-          colors: isDark ? "#CBD5E1" : "#475569",
-          fontFamily: "Inter",
+    yaxis: [
+      {
+        title: {
+          text: "Chiffre d'affaire (€)",
+        },
+        labels: {
+          style: {
+            colors: isDark ? "#CBD5E1" : "#475569",
+            fontFamily: "Inter",
+          },
         },
       },
-    },
+      {
+        opposite: true,
+        title: {
+          text: "Nombre de missions cumulées",
+        },
+        labels: {
+          style: {
+            colors: isDark ? "#CBD5E1" : "#475569",
+            fontFamily: "Inter",
+          },
+        },
+      },
+    ],
     xaxis: {
-      categories: [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec",
-      ],
+      categories: missionStats.cumulativeCount
+        ? missionStats.cumulativeCount.map((_, i) => `Mission ${i + 1}`)
+        : [],
       labels: {
         style: {
           colors: isDark ? "#CBD5E1" : "#475569",
@@ -78,16 +117,14 @@ const BasicArea = ({ height = 350 }) => {
         show: false,
       },
     },
-    padding: {
-      top: 0,
-      right: 0,
-      bottom: 0,
-      left: 0,
+    legend: {
+      position: "top",
     },
   };
+
   return (
     <div>
-      <Chart options={options} series={series} type="area" height={height} />
+      <Chart options={options} series={series} type="line" height={height} />
     </div>
   );
 };

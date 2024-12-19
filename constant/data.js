@@ -25,11 +25,28 @@ export const menuItems = [
   icon: "heroicons-outline:user-group", // Group icon for "Partenaires"
   link: "admin/Partenaires",
 },
+// {
+//   title: "Conducteurs",
+//   icon: "heroicons-outline:truck", // Truck icon for "Conducteurs"
+//   link: "admin/conducteurs",
+//   isOpen: true,
+// },
 {
   title: "Conducteurs",
-  icon: "heroicons-outline:truck", // Truck icon for "Conducteurs"
-  link: "admin/conducteurs",
+  icon: "heroicons-outline:document-text", // Document icon for "Facturation"
   isOpen: true,
+  isHide: true,
+  child: [
+    {
+      childtitle: "conducteurs",
+      childlink: "admin/conducteurs",
+    },
+    {
+      childtitle: "suivi conducteurs",
+      childlink: "admin/SuiviConducteurs",
+    },
+
+  ],
 },
 {
   title: "Facturation",
