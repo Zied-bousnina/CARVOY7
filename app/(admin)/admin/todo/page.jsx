@@ -43,23 +43,23 @@ const CalenderPage = () => {
     setEditModal(false);
   };
 
-  //   const calendarOptions = {
-  //     plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin],
-  //     headerToolbar: {
-  //       left: "prev,next today",
-  //       center: "title",
-  //       right: "dayGridMonth,timeGridWeek,timeGridDay,listWeek",
-  //     },
-  //     events: calendarEvents,
-  //     editable: true,
-  //     selectable: true,
-  //     selectMirror: true,
-  //     dayMaxEvents: true,
-  //     weekends: true,
-  //     dateClick: {},
-  //     eventClick: {},
-  //     eventsSet: {},
-  //   };
+    const calendarOptions = {
+      plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin],
+      headerToolbar: {
+        left: "prev,next today",
+        center: "title",
+        right: "dayGridMonth,timeGridWeek,timeGridDay,listWeek",
+      },
+      events: calendarEvents,
+      editable: true,
+      selectable: true,
+      selectMirror: true,
+      dayMaxEvents: true,
+      weekends: true,
+      dateClick: {},
+      eventClick: {},
+      eventsSet: {},
+    };
 
   const handleDateClick = (arg) => {
     setActiveModal(true);
@@ -107,11 +107,11 @@ const CalenderPage = () => {
               setActiveModal(true);
             }}
           />
-          <div className="block py-4 text-slate-800 dark:text-slate-400 font-semibold text-xs uppercase mt-4">
+          {/* <div className="block py-4 text-slate-800 dark:text-slate-400 font-semibold text-xs uppercase mt-4">
             FILTER
-          </div>
+          </div> */}
           <ul className=" space-y-2 ">
-            <li>
+            {/* <li>
               <Checkbox
                 activeClass="ring-primary-500 bg-primary-500"
                 label="All"
@@ -124,8 +124,8 @@ const CalenderPage = () => {
                   }
                 }}
               />
-            </li>
-            {categories.map((category) => (
+            </li> */}
+            {/* {categories.map((category) => (
               <li key={category.value}>
                 <Checkbox
                   activeClass={category.activeClass}
@@ -134,7 +134,7 @@ const CalenderPage = () => {
                   onChange={() => handleCategorySelection(category.value)}
                 />
               </li>
-            ))}
+            ))} */}
           </ul>
         </Card>
         <Card className="lg:col-span-9 col-span-12 bg-white">

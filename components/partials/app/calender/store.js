@@ -15,38 +15,7 @@ export const appCalenderSlice = createSlice({
   name: "appcalender",
   initialState: {
     categories: [
-      {
-        label: "business",
-        value: "business",
-        activeClass: "ring-primary-500 bg-primary-500",
-      },
 
-      {
-        label: "personal",
-        value: "personal",
-        activeClass: "ring-success-500 bg-success-500",
-      },
-
-      {
-        label: "holiday",
-        value: "holiday",
-        activeClass: "ring-danger-500 bg-danger-500",
-      },
-      {
-        label: "family",
-        value: "family",
-        activeClass: "ring-info-500 bg-info-500",
-      },
-      {
-        label: "meeting",
-        value: "meeting",
-        activeClass: "ring-warning-500 bg-warning-500",
-      },
-      {
-        label: "etc",
-        value: "etc",
-        activeClass: "ring-info-500 bg-info-500",
-      },
     ],
     calendarEvents: [
       {
