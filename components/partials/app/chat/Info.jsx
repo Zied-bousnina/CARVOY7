@@ -50,24 +50,24 @@ const Info = () => {
             />
             <span>Location</span>
           </div>
-          <div className="font-medium">Bangladesh</div>
+          <div className="font-medium">menzel temime</div>
         </li>
         <li className="flex justify-between text-sm text-slate-600 dark:text-slate-300 leading-[1]">
           <div className="flex space-x-2 items-start rtl:space-x-reverse">
             <Icon icon="heroicons-outline:user" className="text-base" />
             <span>Members since</span>
           </div>
-          <div className="font-medium">Oct 2021</div>
+          <div className="font-medium">Oct 2024</div>
         </li>
         <li className="flex justify-between text-sm text-slate-600 dark:text-slate-300 leading-[1]">
           <div className="flex space-x-2 items-start rtl:space-x-reverse">
             <Icon icon="heroicons-outline:translate" className="text-base" />
             <span>Language</span>
           </div>
-          <div className="font-medium">English</div>
+          <div className="font-medium">arabic</div>
         </li>
       </ul>
-      <ul className="list-item space-y-3 border-b border-slate-100 dark:border-slate-700 pb-5 -mx-6 px-6 mt-5">
+      {/* <ul className="list-item space-y-3 border-b border-slate-100 dark:border-slate-700 pb-5 -mx-6 px-6 mt-5">
         {socials?.map((slink, sindex) => (
           <li
             key={sindex}
@@ -81,8 +81,8 @@ const Info = () => {
             </button>
           </li>
         ))}
-      </ul>
-      <h4 className="py-4 text-sm text-secondary-500 dark:text-slate-300 font-normal">
+      </ul> */}
+      {/* <h4 className="py-4 text-sm text-secondary-500 dark:text-slate-300 font-normal">
         Shared Files
       </h4>
       <ul className="grid grid-cols-3 gap-2">
@@ -128,7 +128,7 @@ const Info = () => {
             className="w-full h-full object-cover rounded-[3px]"
           />
         </li>
-      </ul>
+      </ul> */}
     </SimpleBar>
   );
 };

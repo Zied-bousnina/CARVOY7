@@ -54,7 +54,7 @@ const MyProfile = () => {
               </div>
               <div className="flex-1 text-start">
                 <span className="block text-slate-800 dark:text-slate-300 text-sm font-medium mb-[2px]">
-                  Jane Cooper
+                  zied bousnina
                   <span className="status bg-success-500 inline-block h-[10px] w-[10px] rounded-full ml-3"></span>
                 </span>
                 <span className="block text-slate-500 dark:text-slate-300 text-xs font-normal">
@@ -111,7 +111,7 @@ const MyProfile = () => {
                   ></span>
                 </div>
                 <span className="block text-slate-600 dark:text-slate-300 text-sm">
-                  Jane Cooper
+                  zied
                 </span>
                 <span className="block text-slate-500 dark:text-slate-300 text-xs">
                   Admin

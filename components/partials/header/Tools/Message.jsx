@@ -1,10 +1,10 @@
-import React from "react";
+import React, {useEffect,useState} from "react";
 import Dropdown from "@/components/ui/Dropdown";
 import Icon from "@/components/ui/Icon";
 import Link from "next/link";
 import { Menu } from "@headlessui/react";
 import { message } from "@/constant/data";
-
+import { useSelector } from "react-redux";
 const messagelabel = () => {
   return (
     <span className="relative lg:h-[32px] lg:w-[32px] lg:bg-slate-100 lg:dark:bg-slate-900 dark:text-white text-slate-900 cursor-pointer rounded-full text-[20px] flex flex-col items-center justify-center">
@@ -19,6 +19,15 @@ const messagelabel = () => {
 const newMessage = message.slice(0, 4);
 
 const Message = () => {
+  const userAuth = useSelector((state) => state.userAuth);
+    const [Role, setRole] = useState("admin");
+    useEffect(() => {
+        if (userAuth.role === "PARTNER") {
+          setRole("partner");
+        } else if (userAuth.role === "ADMIN") {
+          setRole("admin");
+        }
+      }, [userAuth.role]);
   return (
     <Dropdown
       classMenuItems="md:w-[335px] w-min top-[58px]"
@@ -29,7 +38,7 @@ const Message = () => {
           Messages
         </div>
         <div className="text-slate-800 dark:text-slate-200 text-xs md:text-right">
-          <Link href="/chat" className="underline">
+          <Link href={`/${Role}/chat`} className="underline">
             View all
           </Link>
         </div>

@@ -77,6 +77,18 @@ export const menuItems = [
   ],
 },
 {
+  title: "chat",
+  icon: "heroicons-outline:chat", // User profile icon for "Profil utilisateur"
+  link: "admin/chat",
+  isOpen: true,
+},
+{
+  title: "to-do",
+  icon: "heroicons-outline:clipboard-check", // User profile icon for "Profil utilisateur"
+  link: "admin/todo",
+  isOpen: true,
+},
+{
   title: "Profil utilisateur",
   icon: "heroicons-outline:user-circle", // User profile icon for "Profil utilisateur"
   link: "admin/profile",
@@ -283,65 +295,7 @@ export const notifications = [
 ];
 
 export const message = [
-  {
-    title: "Wade Warren",
-    desc: "Hi! How are you doing?.....",
-    active: true,
-    hasnotifaction: true,
-    notification_count: 1,
-    image: "/assets/images/all-img/user1.png",
-    link: "#",
-  },
-  {
-    title: "Savannah Nguyen",
-    desc: "Hi! How are you doing?.....",
-    active: false,
-    hasnotifaction: false,
-    image: "/assets/images/all-img/user2.png",
-    link: "#",
-  },
-  {
-    title: "Ralph Edwards",
-    desc: "Hi! How are you doing?.....",
-    active: false,
-    hasnotifaction: true,
-    notification_count: 8,
-    image: "/assets/images/all-img/user3.png",
-    link: "#",
-  },
-  {
-    title: "Cody Fisher",
-    desc: "Hi! How are you doing?.....",
-    active: true,
-    hasnotifaction: false,
-    image: "/assets/images/all-img/user4.png",
-    link: "#",
-  },
-  {
-    title: "Savannah Nguyen",
-    desc: "Hi! How are you doing?.....",
-    active: false,
-    hasnotifaction: false,
-    image: "/assets/images/all-img/user2.png",
-    link: "#",
-  },
-  {
-    title: "Ralph Edwards",
-    desc: "Hi! How are you doing?.....",
-    active: false,
-    hasnotifaction: true,
-    notification_count: 8,
-    image: "/assets/images/all-img/user3.png",
-    link: "#",
-  },
-  {
-    title: "Cody Fisher",
-    desc: "Hi! How are you doing?.....",
-    active: true,
-    hasnotifaction: false,
-    image: "/assets/images/all-img/user4.png",
-    link: "#",
-  },
+
 ];
 
 export const colors = {
