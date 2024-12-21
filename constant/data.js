@@ -204,6 +204,12 @@ export const menuItemsPartner = [
     ],
   },
   {
+  title: "chat",
+  icon: "heroicons-outline:chat", // User profile icon for "Profil utilisateur"
+  link: "partner/chat",
+  isOpen: true,
+},
+  {
     title: "Profil utilisateur",
     icon: "heroicons-outline:user-circle", // User profile icon for "Profil utilisateur"
     link: "partner/profile",
