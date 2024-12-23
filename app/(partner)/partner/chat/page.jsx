@@ -42,7 +42,6 @@ const ChatPage = () => {
     );
     setFilteredContacts(filtered);
   }, [searchQuery, contacts]);
-  const [messages, setMessages] = useState([]);
 
   // Fetch messages for the active chat
   useEffect(() => {
@@ -62,14 +61,16 @@ const ChatPage = () => {
 
   // Handle sending a new message
   const handleSendMessage = async (newMessage) => {
+    console.log("send message ", newMessage)
     try {
       // Send the message to the backend
       const sentMessage = await chatService.sendMessage(activeChat._id, newMessage);
 
       // Update the messages in the UI
-      setActiveChatMessages((prev) => [...prev, sentMessage]);
+      return sentMessage; // Return the saved message
     } catch (error) {
       console.error("Failed to send message", error);
+      throw error; // Throw error for rollback
     }
   };
 
@@ -106,8 +107,7 @@ const ChatPage = () => {
                 <Contacts
                   key={i}
                   contact={contact}
-                  onClick={(contact) => {
-                    console.log("Clicked on contact", contact);
+                  onClick={() => {
                     setActiveChat(contact); // Set active chat
                   }}
                 />
@@ -126,7 +126,7 @@ const ChatPage = () => {
             <Chat
               contact={activeChat}
               messages={activeChatMessages}
-              setMessages={setMessages}
+              setMessages={setActiveChatMessages}
               onSendMessage={handleSendMessage}
             />
           ) : (
