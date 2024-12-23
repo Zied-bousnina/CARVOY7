@@ -47,10 +47,6 @@ const Chat = ({ contact, messages, setMessages, onSendMessage }) => {
       try {
         // Send the message to the backend
         const savedMessage = await onSendMessage(newMessage);
-        socket.emit("sendMessage", {
-          chatId: contact._id,
-          message: savedMessage,
-        });
 
         // Validate backend response
         if (
@@ -66,6 +62,11 @@ const Chat = ({ contact, messages, setMessages, onSendMessage }) => {
               msg._id === newMessage._id ? savedMessage : msg
             )
           );
+          socket.emit("sendMessage", {
+          chatId: contact._id,
+          message: savedMessage,
+        });
+
         } else {
           // console.error("Invalid response from backend:", savedMessage);
           throw new Error("Invalid backend response");
