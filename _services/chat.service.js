@@ -3,7 +3,8 @@ import { guestHeader, ApiConfigs, authHeader } from "../_helpers";
 export const chatService =  {
     searchPartners,
     getMessages,
-    sendMessage
+    sendMessage,
+    getUnreadMessages
 
 
 }
@@ -27,6 +28,21 @@ async function getMessages(chatId) {
   };
   const response = await fetch(
     `${ApiConfigs.base_url}chats/${chatId}/messages`,
+    requestOptions
+  );
+  if (!response.ok) {
+    throw new Error("Failed to fetch messages");
+  }
+  return response.json();
+}
+// fetch unread messages
+async function getUnreadMessages(chatId) {
+  const requestOptions = {
+    method: "GET",
+    headers: authHeader(),
+  };
+  const response = await fetch(
+    `${ApiConfigs.base_url}chats/getChatsWithUnreadCount`,
     requestOptions
   );
   if (!response.ok) {

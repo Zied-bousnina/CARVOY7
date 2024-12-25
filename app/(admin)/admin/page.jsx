@@ -15,6 +15,8 @@ import MapPage from "@/app/(dashboard)/map/page";
 import { missionService } from "@/_services/mission.service";
 // import BasicMap from "@/components/partials/map/basic-map";
 import BasicArea from "@/components/partials/chart/appex-chart/BasicArea";
+import { useSelector } from "react-redux";
+import { socket } from "@/utils/socket";
 
 const BasicMap = dynamic(
   () => import("@/components/partials/map/basic-map"),
@@ -30,6 +32,34 @@ const Dashboard = () => {
   const [MissionStats2, setMissionStats2] = useState();
   const [Ammount, setAmmount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const { id: currentUserId } = useSelector((state) => state.userAuth);
+  // const notificationSound = new Audio("/assets/sounds/notification.mp3");
+  let notificationSound;
+  // if (typeof window !== "undefined") {
+    notificationSound = new Audio("/path/to/notification-sound.mp3");
+  // }
+   useEffect(() => {
+
+
+     socket.on("newMessage", (newMessage) => {
+       console.log("New message from socket", newMessage)
+       if (newMessage.sender !== currentUserId  && newMessage.recieverId===currentUserId) {
+        if (notificationSound) {
+          notificationSound.play().catch((error) => {
+            console.error("Error playing notification sound:", error);
+          });
+        }
+         // socket.emit("readMessages", { recieverId: contact._id, userId: currentUserId });
+
+       }
+
+
+     });
+
+     return () => {
+       socket.off("newMessage");
+     };
+   }, [socket]);
 const getAmmount = ()=> {
   return missionService.findAmmountStatis()
   .then((res)=>{

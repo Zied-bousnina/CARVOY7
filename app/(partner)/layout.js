@@ -27,6 +27,7 @@ import useNavbarType from "@/hooks/useNavbarType";
 import { motion, AnimatePresence } from "framer-motion";
 import { refreshAuthentication } from "@/utils/auth";
 import { useDispatch } from "react-redux";
+import { socket } from "@/utils/socket";
 export default function RootLayout({ children }) {
   const { width, breakpoints } = useWidth();
   const [collapsed] = useSidebar();
@@ -43,6 +44,7 @@ export default function RootLayout({ children }) {
   refreshAuthentication(dispatch, router);
   // userShouldChangePassword()
 }, []);
+
   useEffect(() => {
     if (userAuth.role !== "PARTNER" && userAuth.isLoggedIn) {
       router.push("/");
