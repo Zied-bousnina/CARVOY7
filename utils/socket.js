@@ -17,7 +17,7 @@ import { io } from 'socket.io-client';
 // Determine the URL dynamically based on the environment
 const URL = process.env.NODE_ENV === 'production'
     ? 'https://convoyage.onrender.com'  // Production URL
-    : 'http://localhost:3600';          // Development URL
+    : 'https://convoyage.onrender.com';          // Development URL
 
 export const socket = io(URL, {
     transports: ['websocket'], // Use WebSocket transport only
