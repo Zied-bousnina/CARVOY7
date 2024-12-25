@@ -12,17 +12,23 @@ const Chat = ({ contact, messages, setMessages, onSendMessage }) => {
   useEffect(() => {
     if (contact && contact._id) {
       socket.emit("joinChat", contact._id);
-      socket.emit("readMessages", { chatId: contact._id, userId: currentUserId });
+      socket.emit("readMessages", { recieverId: contact._id, userId: currentUserId });
     }
 
     socket.on("newMessage", (newMessage) => {
-      setMessages((prevMessages) => [...prevMessages, newMessage]);
+      console.log("New message from socket", newMessage)
+      if (newMessage.sender !== currentUserId) {
+        // socket.emit("readMessages", { recieverId: contact._id, userId: currentUserId });
+        setMessages((prevMessages) => [...prevMessages, newMessage]);
+      }
+
+
     });
 
     return () => {
       socket.off("newMessage");
     };
-  }, [contact]);
+  }, [socket]);
   useEffect(() => {
     if (chatHeightRef.current) {
       chatHeightRef.current.scrollTop = chatHeightRef.current.scrollHeight;
@@ -48,8 +54,14 @@ const Chat = ({ contact, messages, setMessages, onSendMessage }) => {
         // Send the message to the backend
         const savedMessage = await onSendMessage(newMessage);
 
+        socket.emit("sendMessage", {
+          recieverId: contact._id, userId: currentUserId,
+
+          content: savedMessage?.newMessage,
+        });
         // Validate backend response
         if (
+          // true
           savedMessage &&
           savedMessage._id &&
           savedMessage.content &&
@@ -62,8 +74,10 @@ const Chat = ({ contact, messages, setMessages, onSendMessage }) => {
               msg._id === newMessage._id ? savedMessage : msg
             )
           );
+
           socket.emit("sendMessage", {
-          chatId: contact._id,
+          recieverId: contact._id, userId: currentUserId,
+
           message: savedMessage,
         });
 

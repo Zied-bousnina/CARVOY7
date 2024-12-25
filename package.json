@@ -31,6 +31,7 @@
     "@tippyjs/react": "^4.2.6",
     "apexcharts": "^3.33.2",
     "axios": "^1.7.7",
+    "bufferutil": "^4.0.8",
     "chart.js": "^4.2.1",
     "cleave.js": "^1.6.0",
     "date-fns": "^4.1.0",
@@ -78,6 +79,7 @@
     "sort-by": "^1.2.0",
     "swiper": "^9.1.0",
     "text-mask-siret": "^1.0.0",
+    "utf-8-validate": "^6.0.5",
     "uuidv4": "^6.2.13",
     "yup": "^1.0.2"
   },
