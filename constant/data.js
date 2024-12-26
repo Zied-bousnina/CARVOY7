@@ -183,12 +183,29 @@ export const menuItemsPartner = [
     icon: "heroicons-outline:user-group", // Group icon for "Partenaires"
     link: "partner/createMission",
   },
-  {
-    title: "Liste des Missions",
-    icon: "heroicons-outline:clipboard-list", // List icon for "Liste des Missions"
-    link: "partner/mission",
-  },
+  // {
+  //   title: "Liste des Missions",
+  //   icon: "heroicons-outline:clipboard-list", // List icon for "Liste des Missions"
+  //   link: "partner/mission",
+  // },
 
+
+  {
+    title: "Mission",
+    icon:"heroicons-outline:clipboard-list",
+    isOpen:true,
+    isHide:true,
+    child: [
+      {
+        childtitle:"suivi-mission",
+        childlink:"partner/suiviMission"
+      },
+      {
+        childtitle:"Liste des missions",
+        childlink: "partner/mission"
+      }
+    ]
+  },
 
   {
     title: "Facturation",

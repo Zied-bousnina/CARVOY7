@@ -16,6 +16,7 @@ import { missionService } from "@/_services/mission.service";
 import { socket } from "@/utils/socket";
 // import BasicMap from "@/components/partials/map/basic-map";
 import { useSelector } from "react-redux";
+import BasicArea from "@/components/partials/chart/appex-chart/BasicArea";
 
 const BasicMap = dynamic(
   () => import("@/components/partials/map/basic-map"),
@@ -29,8 +30,10 @@ const Dashboard = () => {
   const [filterMap, setFilterMap] = useState("usa");
   const [MissionStats, setMissionStats] = useState();
   const [Ammount, setAmmount] = useState(0);
+  const [MissionStats2, setMissionStats2] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const { id: currentUserId } = useSelector((state) => state.userAuth);
+
   // const notificationSound = new Audio("/assets/sounds/notification.mp3");
   let notificationSound;
   // if (typeof window !== "undefined") {
@@ -72,11 +75,39 @@ const getAmmount = ()=> {
     console.log("done")
   })
 }
+// const getMissionStats = ()=> {
+//   return missionService.findDemandsstatisticsadmin()
+//   .then((res)=>{
+//     console.log(res)
+//     setMissionStats(res.statistics)
+
+
+//   })
+//   .catch((err)=>{
+//     console.log(err)
+//   })
+//   .finally(()=>{
+//     console.log("done")
+//   })
+// }
 const getMissionStats = ()=> {
   return missionService.findDemandsstatisticsadmin()
   .then((res)=>{
     console.log(res)
-    setMissionStats(res.statistics)
+    const demandsStats = res.demands.map((demand, index) => ({
+      label: `Mission ${index + 1}`,
+      price: parseFloat(demand.price || 0),
+      count: 1,
+    }));
+
+    const aggregatedStats = [
+      { label: "Completed", price: 0, count: res.statistics.completed },
+      { label: "In Progress", price: demandsStats.reduce((sum, d) => sum + d.price, 0), count: res.statistics.inProgress },
+      { label: "Total", price: demandsStats.reduce((sum, d) => sum + d.price, 0), count: res.statistics.total },
+    ];
+
+    setMissionStats(aggregatedStats);
+    setMissionStats2(res.statistics)
 
 
   })
@@ -121,7 +152,7 @@ groupAsyncFunctions();
         <div className="2xl:col-span-12 lg:col-span-12 col-span-12">
           <Card bodyClass="p-4">
             <div className="grid md:grid-cols-4 col-span-1 gap-3">
-              <GroupChart1  missionStats={MissionStats}
+              <GroupChart1  missionStats={MissionStats2}
               Ammount={Ammount}
 
               />
@@ -132,11 +163,11 @@ groupAsyncFunctions();
       </div>
       <div className="grid grid-cols-12 gap-5">
         <div className="lg:col-span-12 col-span-12">
-          <Card>
-            <div className="legend-ring">
-              <BasicMap />
-            </div>
-          </Card>
+        <Card
+        headerslot={false}
+        title="Évolution Comparée : Chiffre d'Affaires (€) et Nombre de Missions">
+       <BasicArea height={350} missionStats={MissionStats} />
+      </Card>
         </div>
 
 

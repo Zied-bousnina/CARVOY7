@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 
 import Navmenu from "./Navmenu";
-import { menuItems } from "@/constant/data";
+import { menuItems, menuItemsPartner } from "@/constant/data";
 import SimpleBar from "simplebar-react";
 import useSemiDark from "@/hooks/useSemiDark";
 import useSkin from "@/hooks/useSkin";
@@ -9,10 +9,22 @@ import useDarkMode from "@/hooks/useDarkMode";
 import Link from "next/link";
 import useMobileMenu from "@/hooks/useMobileMenu";
 import Icon from "@/components/ui/Icon";
+import { useSelector } from "react-redux";
 
 const MobileMenu = ({ className = "custom-class" }) => {
   const scrollableNodeRef = useRef();
   const [scroll, setScroll] = useState(false);
+  const userAuth = useSelector((state) => state.userAuth);
+
+   const [menuItemsToDisplay, setMenuItemsToDisplay] = useState(menuItems);
+    useEffect(() => {
+      if (userAuth.role === "PARTNER") {
+        setMenuItemsToDisplay(menuItemsPartner);
+      } else if (userAuth.role === "ADMIN") {
+        setMenuItemsToDisplay(menuItems);
+      }
+    }, [userAuth.role]);
+
   useEffect(() => {
     const handleScroll = () => {
       if (scrollableNodeRef.current.scrollTop > 0) {
@@ -68,7 +80,7 @@ const MobileMenu = ({ className = "custom-class" }) => {
         className="sidebar-menu px-4 h-[calc(100%-80px)]"
         scrollableNodeProps={{ ref: scrollableNodeRef }}
       >
-        <Navmenu menus={menuItems} />
+        <Navmenu menus={menuItemsToDisplay} />
 
       </SimpleBar>
     </div>
