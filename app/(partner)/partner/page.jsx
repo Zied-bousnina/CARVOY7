@@ -35,21 +35,21 @@ const Dashboard = () => {
   const { id: currentUserId } = useSelector((state) => state.userAuth);
 
   // const notificationSound = new Audio("/assets/sounds/notification.mp3");
-  let notificationSound;
-  // if (typeof window !== "undefined") {
-    notificationSound = new Audio("/path/to/notification-sound.mp3");
-  // }
+  // let notificationSound;
+  // // if (typeof window !== "undefined") {
+  //   notificationSound = new Audio("/path/to/notification-sound.mp3");
+  // // }
    useEffect(() => {
 
 
      socket.on("newMessage", (newMessage) => {
        console.log("New message from socket", newMessage)
        if (newMessage.sender !== currentUserId  && newMessage.recieverId===currentUserId) {
-        if (notificationSound) {
-          notificationSound.play().catch((error) => {
-            console.error("Error playing notification sound:", error);
-          });
-        }
+        // if (notificationSound) {
+        //   notificationSound.play().catch((error) => {
+        //     console.error("Error playing notification sound:", error);
+        //   });
+        // }
          // socket.emit("readMessages", { recieverId: contact._id, userId: currentUserId });
 
        }

@@ -8,7 +8,7 @@ const Chat = ({ contact, messages, setMessages, onSendMessage }) => {
   const [message, setMessage] = useState("");
   const chatHeightRef = useRef(null);
   const { id: currentUserId } = useSelector((state) => state.userAuth);
- const notificationSound = new Audio("/assets/sounds/notification.mp3");
+//  const notificationSound = new Audio("/assets/sounds/notification.mp3");
 
   useEffect(() => {
     if (contact && contact._id) {
@@ -19,9 +19,9 @@ const Chat = ({ contact, messages, setMessages, onSendMessage }) => {
     socket.on("newMessage", (newMessage) => {
 
       if (newMessage.sender !== currentUserId && newMessage.recieverId===currentUserId) {
-        notificationSound.play().catch((error) => {
-          console.error("Error playing notification sound:", error);
-        });
+        // notificationSound.play().catch((error) => {
+        //   console.error("Error playing notification sound:", error);
+        // });
         // socket.emit("readMessages", { recieverId: contact._id, userId: currentUserId });
         setMessages((prevMessages) => [...prevMessages, newMessage]);
       }
