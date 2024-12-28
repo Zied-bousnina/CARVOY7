@@ -101,6 +101,7 @@ function server() {
             findMissionStatisticsByPartner:"users/findDemandsstatisticsByPartner",
             UpdateMission:"users/mission/updateMission/{id}",
             getMissionsCount: 'users/getDemandeCounts',
+            findStatsPartner: 'users/findStatsPartner',
           },
           ammount: {
             findAmmountStatisticsByPartner:"users/getTotalAmountByPartner"

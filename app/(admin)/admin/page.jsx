@@ -11,7 +11,7 @@ import CompanyTable from "@/components/partials/table/company-table";
 import RecentActivity from "@/components/partials/widget/recent-activity";
 import RadarChart from "@/components/partials/widget/chart/radar-chart";
 import HomeBredCurbs from "@/components/partials/HomeBredCurbs";
-import MapPage from "@/app/(dashboard)/map/page";
+
 import { missionService } from "@/_services/mission.service";
 // import BasicMap from "@/components/partials/map/basic-map";
 import BasicArea from "@/components/partials/chart/appex-chart/BasicArea";

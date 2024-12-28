@@ -11,12 +11,14 @@ import CompanyTable from "@/components/partials/table/company-table";
 import RecentActivity from "@/components/partials/widget/recent-activity";
 import RadarChart from "@/components/partials/widget/chart/radar-chart";
 import HomeBredCurbs from "@/components/partials/HomeBredCurbs";
-import MapPage from "@/app/(dashboard)/map/page";
+
 import { missionService } from "@/_services/mission.service";
 import { socket } from "@/utils/socket";
 // import BasicMap from "@/components/partials/map/basic-map";
 import { useSelector } from "react-redux";
 import BasicArea from "@/components/partials/chart/appex-chart/BasicArea";
+import { StatistiqueService } from "@/_services/statistique.service";
+import GroupChartPartner from "@/components/partials/widget/chart/group-chartPartner";
 
 const BasicMap = dynamic(
   () => import("@/components/partials/map/basic-map"),
@@ -30,6 +32,7 @@ const Dashboard = () => {
   const [filterMap, setFilterMap] = useState("usa");
   const [MissionStats, setMissionStats] = useState();
   const [Ammount, setAmmount] = useState(0);
+  const [CardStats, setCardStats] = useState({});
   const [MissionStats2, setMissionStats2] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const { id: currentUserId } = useSelector((state) => state.userAuth);
@@ -61,6 +64,7 @@ const Dashboard = () => {
        socket.off("newMessage");
      };
    }, [socket]);
+
 const getAmmount = ()=> {
   return missionService.findAmmountStatis()
   .then((res)=>{
@@ -75,21 +79,20 @@ const getAmmount = ()=> {
     console.log("done")
   })
 }
-// const getMissionStats = ()=> {
-//   return missionService.findDemandsstatisticsadmin()
-//   .then((res)=>{
-//     console.log(res)
-//     setMissionStats(res.statistics)
+const findStatsPartners = ()=> {
+  return StatistiqueService.findStatsPartner()
+  .then((res)=>{
+    console.log(res)
+    setCardStats(res)
 
-
-//   })
-//   .catch((err)=>{
-//     console.log(err)
-//   })
-//   .finally(()=>{
-//     console.log("done")
-//   })
-// }
+  })
+  .catch((err)=>{
+    console.log(err)
+  })
+  .finally(()=>{
+    console.log("done")
+  })
+}
 const getMissionStats = ()=> {
   return missionService.findDemandsstatisticsadmin()
   .then((res)=>{
@@ -122,7 +125,8 @@ const groupAsyncFunctions = () => {
     setIsLoading(true);
     Promise.all([
       getMissionStats(),
-      getAmmount()
+      getAmmount(),
+      findStatsPartners()
 
     ])
       .then((_) => {})
@@ -152,7 +156,7 @@ groupAsyncFunctions();
         <div className="2xl:col-span-12 lg:col-span-12 col-span-12">
           <Card bodyClass="p-4">
             <div className="grid md:grid-cols-4 col-span-1 gap-3">
-              <GroupChart1  missionStats={MissionStats2}
+              <GroupChartPartner  missionStats={MissionStats2} CardStats={CardStats}
               Ammount={Ammount}
 
               />

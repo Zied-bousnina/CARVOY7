@@ -97,7 +97,7 @@ export default function RootLayout({ children }) {
           onClick={() => setMobileMenu(false)}
         ></div>
       )}
-      <Settings />
+      {/* <Settings /> */}
       <div
         className={`content-wrapper transition-all duration-150 ${
           width > 1280 ? switchHeaderClass() : ""

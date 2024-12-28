@@ -5,7 +5,8 @@ export const StatistiqueService =  {
   getUsersCounts,
   getPartnerCounts,
   getMissionByPartnerCounts,
-  getDemandesCount
+  getDemandesCount,
+  findStatsPartner
 
 
 
@@ -55,6 +56,17 @@ export async function getDemandesCount () {
 
   return handleResponse(response)
 }
+export async function findStatsPartner () {
+  const requestOptions = {
+    method:'GET',
+    headers: authHeader()
+  }
+
+  const response = await fetch(`${ApiConfigs.base_url+ ApiConfigs.apis.partner.mission.findStatsPartner}`,requestOptions)
+
+  return handleResponse(response)
+}
+
 
 
 function handleResponse(response) {

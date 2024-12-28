@@ -18,6 +18,7 @@ import { io } from 'socket.io-client';
 const URL = process.env.NODE_ENV === 'production'
     ? 'https://convoyage.onrender.com'  // Production URL
     : 'https://convoyage.onrender.com';          // Development URL
+    // ? 'https://convoyage.onrender.com'  // Production URL
 
 export const socket = io(URL, {
     transports: ['websocket'], // Use WebSocket transport only
