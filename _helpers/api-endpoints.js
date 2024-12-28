@@ -10,7 +10,12 @@ function server() {
     /* -------------------------------- */
 
     apis: {
-
+      calendar: {
+        getAllEvents: "todo",
+        createEvent: "todo",
+        updateEvent: "todo",
+        deleteEvent: "todo",
+      },
         auth: {
             // signup:"user/signup",
             login:"users/login",

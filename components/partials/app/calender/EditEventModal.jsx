@@ -1,155 +1,73 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import Modal from "@/components/ui/Modal";
 import Textinput from "@/components/ui/Textinput";
-import { useForm, Controller } from "react-hook-form";
-import Select from "@/components/ui/Select";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
-import { useSelector, useDispatch } from "react-redux";
-import { updateEvent, removeEvent } from "./store";
 import Flatpickr from "react-flatpickr";
-import FormGroup from "@/components/ui/FormGroup";
 
-const FormValidationSchema = yup
-  .object({
-    title: yup.string().required("Event Name is required"),
-    cata: yup
-      .string()
-      // .when("title", {
-      //   is: (title) => title.length > 0,
-      //   then: yup.string().required("Category is required"),
-
-      //   otherwise: yup.string().notRequired(),
-      // })
-      .required("Category is required"),
-  })
-  .required();
-const EditEventModal = ({ editModal, onCloseEditModal, editItem }) => {
-  const { categories } = useSelector((state) => state.calendar);
-  const dispatch = useDispatch();
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
+const EditEventModal = ({ editModal, onCloseEditModal, editItem, onUpdate, onDelete }) => {
+  const [title, setTitle] = useState(editItem?.title || "");
+  const [startDate, setStartDate] = useState(editItem?.start || new Date());
+  const [endDate, setEndDate] = useState(editItem?.end || new Date());
+  const [calendar, setCalendar] = useState(editItem?.calendar || "personal");
 
   useEffect(() => {
     if (editItem) {
-      setStartDate(editItem.event.start);
-      setEndDate(editItem.event.end);
+      setTitle(editItem.title || "");
+      setStartDate(editItem.start || new Date());
+      setEndDate(editItem.end || new Date());
+      setCalendar(editItem.calendar || "personal");
     }
-    reset(editItem);
-  }, [editModal]);
+  }, [editItem]);
 
-  const {
-    register,
-    control,
-    reset,
-    formState: { errors },
-    handleSubmit,
-  } = useForm({
-    resolver: yupResolver(FormValidationSchema),
-    mode: "all",
-  });
-
-  const onSubmit = (data) => {
-    dispatch(updateEvent({ data, editItem, startDate, endDate }));
-    // close modal
+  const handleUpdate = () => {
+    if (!title || new Date(startDate) > new Date(endDate)) {
+      alert("Veuillez fournir des entrées valides.");
+      return;
+    }
+    onUpdate(editItem.id, { title, start: startDate, end: endDate, calendar });
     onCloseEditModal();
-    reset();
   };
-  return (
-    <div>
-      <Modal
-        title="Edit event"
-        labelclassName="btn-outline-dark"
-        activeModal={editModal}
-        onClose={onCloseEditModal}
-      >
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 ">
-          <FormGroup error={errors.title}>
-            <input
-              label="Event Name"
-              type="text"
-              placeholder="Enter Event Name"
-              defaultValue={editItem?.event?.title}
-              className="form-control py-2"
-              {...register("title")}
-            />
-          </FormGroup>
-          <FormGroup
-            label="Start Date"
-            id="default-picker"
-            error={errors.startDate}
-          >
-            <Controller
-              name="startDate"
-              control={control}
-              render={({ field }) => (
-                <Flatpickr
-                  className="form-control py-2"
-                  id="default-picker"
-                  placeholder="yyyy, dd M"
-                  value={startDate}
-                  onChange={(date) => setStartDate(date[0])}
-                  options={{
-                    altInput: true,
-                    altFormat: "F j, Y",
-                    dateFormat: "Y-m-d",
-                  }}
-                />
-              )}
-            />
-          </FormGroup>
-          <FormGroup
-            label="End Date"
-            id="default-picker2"
-            error={errors.endDate}
-          >
-            <Controller
-              name="endDate"
-              control={control}
-              render={({ field }) => (
-                <Flatpickr
-                  className="form-control py-2"
-                  id="default-picker2"
-                  placeholder="yyyy, dd M"
-                  value={endDate}
-                  onChange={(date) => setEndDate(date[0])}
-                  options={{
-                    altInput: true,
-                    altFormat: "F j, Y",
-                    dateFormat: "Y-m-d",
-                  }}
-                />
-              )}
-            />
-          </FormGroup>
 
-          <Select
-            label="Basic Select"
-            options={categories}
-            register={register}
-            defaultValue={editItem?.event?.classNames[0]}
-            error={errors.cata}
-            name="cata"
+  return (
+    <Modal title="Modifier l'événement" activeModal={editModal} onClose={onCloseEditModal}>
+      <div className="space-y-4">
+        <Textinput
+          label="Nom de l'événement"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
+        <div className="grid grid-cols-2 gap-4">
+          <Flatpickr
+            label="Date de début"
+            value={startDate}
+            onChange={(date) => setStartDate(date[0])}
+            options={{ dateFormat: "Y-m-d" }}
           />
-          <div className=" flex justify-between">
-            <button
-              className="btn btn-danger  text-center"
-              onClick={() => {
-                dispatch(
-                  removeEvent({
-                    editItem,
-                  })
-                );
-                onCloseEditModal();
-              }}
-            >
-              Delete
-            </button>
-            <button className="btn btn-dark  text-center">Submit</button>
-          </div>
-        </form>
-      </Modal>
-    </div>
+          <Flatpickr
+            label="Date de fin"
+            value={endDate}
+            onChange={(date) => setEndDate(date[0])}
+            options={{ dateFormat: "Y-m-d" }}
+          />
+        </div>
+        <select
+          className="form-select w-full"
+          value={calendar}
+          onChange={(e) => setCalendar(e.target.value)}
+        >
+          <option value="personal">Personnel</option>
+          <option value="business">Professionnel</option>
+          <option value="holiday">Vacances</option>
+        </select>
+        <div className="flex justify-between">
+          <button className="btn btn-danger" onClick={() => onDelete(editItem.id)}>
+            Supprimer l'événement
+          </button>
+          <button className="btn btn-dark" onClick={handleUpdate}>
+            Enregistrer les modifications
+          </button>
+        </div>
+      </div>
+    </Modal>
   );
 };
 
