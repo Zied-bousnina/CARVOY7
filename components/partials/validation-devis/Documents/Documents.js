@@ -59,7 +59,7 @@ const Documents = ({ onDocumentUpload, validerCommande }) => {
           </label>
         </div>
       </div>
-      <Button
+      {/* <Button
         onClick={validerCommande}
        color="primary" className="submit-button">
 
@@ -70,7 +70,7 @@ const Documents = ({ onDocumentUpload, validerCommande }) => {
       ) : (
         ' Valider ma commande'
       )}
-      </Button>
+      </Button> */}
     </div>
   );
 };

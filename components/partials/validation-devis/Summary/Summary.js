@@ -4,8 +4,8 @@ import './Summary.css';
 const Summary = ({ vehicle, transport, journey, distance, totalCost }) => {
   const extractCities = (journey) => {
     const parts = journey.split(' > ');
-    const departureCity = parts[0].split(',')[0].trim();
-    const arrivalCity = parts[1].split(',')[0].trim();
+    const departureCity = parts[0]?.split(',')[0].trim();
+    const arrivalCity = parts[1]?.split(',')[0].trim();
     return { departureCity, arrivalCity };
   };
   const { departureCity, arrivalCity } = extractCities(journey);
@@ -18,7 +18,7 @@ const Summary = ({ vehicle, transport, journey, distance, totalCost }) => {
 </p>
         <p><strong className="blue-petrol" >Transport :</strong> {transport}</p>
         <p> <strong className="blue-petrol">Trajet :</strong> {departureCity} {'>'} {arrivalCity}</p>
-        <p><strong className="blue-petrol">Distance :</strong> {distance.toFixed(2)} km</p>
+        <p><strong className="blue-petrol">Distance :</strong> {distance?.toFixed(2)} km</p>
       </div>
       <div className="summary-total">
         <p><strong>Total :</strong>
