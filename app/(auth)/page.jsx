@@ -55,7 +55,7 @@ const Login = () => {
                 </div>
               </div>
               <div className="auth-footer text-center">
-                Copyright 2024, Carvoy7 All Rights Reserved.
+                Copyright {new Date().getFullYear()}, Carvoy7 All Rights Reserved.
               </div>
             </div>
           </div>
