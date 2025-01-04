@@ -183,10 +183,9 @@ const [immatriculation, setImmatriculation] = useState("");
   const distance = correctDistance ? correctDistance : getDistanceFromLatLonInKm();
   const calculateAndSetPrice = () => {
     try {
-      console.log("distance",distance)
-      console.log("transType",transType)
+   
       const calculatedPrice = calculatePrice(distance, transType);
-      console.log("calculatedPrice",calculatedPrice)
+    
       setPrice(calculatedPrice);
       setcost(calculatedPrice)
       setcostdriver(calculatePriceConvo(distance))
@@ -228,7 +227,7 @@ const [immatriculation, setImmatriculation] = useState("");
 
 
     }
-    console.log("data",data)
+    
     setVehicleDetails({
       ...vehicleDetails, // Keep existing vehicleDetails properties
       vehicle: vehicleData.modele, // Update with actual vehicle name if you have it in state
@@ -244,7 +243,7 @@ const [immatriculation, setImmatriculation] = useState("");
     }else{
       setscreen("plateau")
     }
-    console.log("dataaaaaaaaaaa", data)
+   
     if (currentStep < 3) {
       setCurrentStep(currentStep + 1);
     }
@@ -264,7 +263,7 @@ const [immatriculation, setImmatriculation] = useState("");
     //   form.siret === undefined ||
     //   form.kbis === undefined
     // ) {
-    //   console.log("Please fill all required fields");
+    //  
     //   return;
     // }
 
@@ -288,8 +287,7 @@ const [immatriculation, setImmatriculation] = useState("");
       }
 
     );
-    console.log("services",services);
-    console.log(selectedServices);
+
   }
 
   const fetchSuggestions = async (query, isStartingPoint) => {
@@ -351,7 +349,7 @@ const [immatriculation, setImmatriculation] = useState("");
     });
     setStartingPointSuggestions([]);
     setSearchQuery(formattedAddress);
-    // console.log("startingPoint", startingPoint)
+   
   };
   const handleSuggestionDestinationClick = (suggestion) => {
     const formattedAddress = formatAddress(suggestion.display_name);
@@ -386,13 +384,6 @@ const [immatriculation, setImmatriculation] = useState("");
       remunerationAmount: costdriver
     })
 
-    console.log("oihmoiugùo", {
-    ...data,
-    price:cost*1.2,
-    selectedServices:selectedServices,
-    uploadedDocuments,
-    remunerationAmount: costdriver
-    },cost )
 
     CreateMission(
       {
@@ -411,7 +402,7 @@ const [immatriculation, setImmatriculation] = useState("");
       setIsSubmitting(true);
       missionService.AdMissionNewVersion(data)
         .then((res) => {
-          console.log(res);
+      
           setIsSubmitting(false);
           // You can show a success message here
           toast.success("         created successfully!          ", {
@@ -426,12 +417,12 @@ const [immatriculation, setImmatriculation] = useState("");
           });
           setError( {});
           setForm({});
-          console.log("++++++++++++++++",res)
+        
           router.push(`/partner/devis/${res?.demande?._id}`);
 
         })
         .catch((error) => {
-          console.log(error);
+        
           setIsSubmitting(false);
           if (error) {
             setError(error); // Assuming the backend returns an error object like { email: 'Email already exists', ... }

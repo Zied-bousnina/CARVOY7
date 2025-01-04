@@ -63,7 +63,7 @@ export async function GetProfile () {
     }
 
     const response = await fetch(`${ApiConfigs.base_url+ ApiConfigs.apis.profile.GetProfile}`,requestOptions)
-    console.log("response", response)
+    
 
     return handleResponse(response)
   }

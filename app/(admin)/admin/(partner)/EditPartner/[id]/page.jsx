@@ -31,15 +31,15 @@ const EditPartner = ({ params }) => {
   const FetchPartnerDetail = (id) => {
     return missionService.GetPartnerDetailsById(id)
       .then((res) => {
-        console.log("FindPartner detail",res);
+
         setPartnerDetails(res.partner
         ); // Update the state with the correct value
       })
       .catch((err) => {
-        console.log(err);
+
       })
       .finally(() => {
-        console.log("done");
+
       });
   };
 
@@ -48,7 +48,7 @@ const EditPartner = ({ params }) => {
     Promise.all([FetchPartnerDetail(id)])
       .then(() => {})
       .catch((err) => {
-        console.log(err);
+
       })
       .finally(() => {
         setIsLoading(false);
@@ -67,7 +67,7 @@ const EditPartner = ({ params }) => {
 
   const onChangeHandler = (e) => {
     const { name, value } = e.target;
-    console.log(name, value);
+
     setForm({
       ...form,
       [name]: value,
@@ -76,9 +76,7 @@ const EditPartner = ({ params }) => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-  console.log(
-    form
-  )
+
 
 
 
@@ -90,7 +88,7 @@ const EditPartner = ({ params }) => {
     setIsSubmitting(true);
    missionService.UpdatePartnerShip(data,id)
       .then((res) => {
-        console.log(res);
+    
         setIsSubmitting(false);
         // You can show a success message here
         toast.success("        Partner created successfully!          ", {
@@ -109,7 +107,7 @@ const EditPartner = ({ params }) => {
 
       })
       .catch((error) => {
-        console.log(error);
+        
         setIsSubmitting(false);
         if (error) {
           setError(error); // Assuming the backend returns an error object like { email: 'Email already exists', ... }

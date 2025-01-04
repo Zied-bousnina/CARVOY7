@@ -12,7 +12,7 @@ const BasicArea = ({ height = 350 }) => {
     missionService
       .findDemandsstatisticsadmin()
       .then((res) => {
-        console.log(res);
+       
         const demandsStats = res.demands.map((demand, index) => ({
           label: `Mission ${index + 1}`,
           price: parseFloat(demand.price || 0),
@@ -29,10 +29,10 @@ const BasicArea = ({ height = 350 }) => {
         });
       })
       .catch((err) => {
-        console.log(err);
+        
       })
       .finally(() => {
-        console.log("done");
+       
       });
   };
 

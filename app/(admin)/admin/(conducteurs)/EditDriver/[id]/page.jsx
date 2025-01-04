@@ -46,15 +46,15 @@ const EditDriver = ({ params }) => {
   const FetchdriverDetail = (id) => {
     return missionService.GetPartnerDetailsById(id)
       .then((res) => {
-        console.log("FindPartner detail",res);
+
         setDriverDetails(res.partner); // Update the state with the correct value
         setDriverDetailsDocuments(res.documents)
       })
       .catch((err) => {
-        console.log(err);
+
       })
       .finally(() => {
-        console.log("done");
+       
       });
   };
 
@@ -63,7 +63,7 @@ const EditDriver = ({ params }) => {
     Promise.all([FetchdriverDetail(id)])
       .then(() => {})
       .catch((err) => {
-        console.log(err);
+        
       })
       .finally(() => {
         setIsLoading(false);
@@ -82,7 +82,7 @@ const EditDriver = ({ params }) => {
 
   const onChangeHandler = (e) => {
     const { name, value } = e.target;
-    console.log(name, value);
+    
     setForm({
       ...form,
       [name]: value,
@@ -103,7 +103,7 @@ const EditDriver = ({ params }) => {
     setIsSubmitting(true);
    DriverService.UpdateDriver(data,id)
       .then((res) => {
-        console.log(res);
+       
         setIsSubmitting(false);
         // You can show a success message here
         toast.success("        Partner created successfully!          ", {
@@ -122,7 +122,7 @@ const EditDriver = ({ params }) => {
 
       })
       .catch((error) => {
-        console.log(error);
+       
         setIsSubmitting(false);
         if (error) {
           setError(error); // Assuming the backend returns an error object like { email: 'Email already exists', ... }

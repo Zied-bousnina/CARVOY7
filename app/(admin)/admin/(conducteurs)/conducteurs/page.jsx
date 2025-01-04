@@ -191,15 +191,15 @@ const Conducteurs = () => {
   const FetchAllPartnership = () => {
     return DriverService.FetchAllDrivers()
       .then((res) => {
-        console.log("FindPartner list",res);
+      
         setDriveLists(res.driver
         ); // Update the state with the correct value
       })
       .catch((err) => {
-        console.log(err);
+      
       })
       .finally(() => {
-        console.log("done");
+      
       });
   };
 
@@ -210,7 +210,7 @@ const Conducteurs = () => {
     Promise.all([FetchAllPartnership()])
       .then(() => {})
       .catch((err) => {
-        console.log(err);
+        
       })
       .finally(() => {
         setIsLoading(false);
@@ -224,7 +224,7 @@ const Conducteurs = () => {
     setIsLoading(true);
     UserService.DeleteUserByAdmin(id)
       .then((res) => {
-        console.log("Deleted partner:", res);
+        
         FetchAllPartnership(); // Refresh the table
         setActiveModal(false); // Close the modal
       })

@@ -30,14 +30,14 @@ const BasicMap = () => {
   const FindAllDrivers = () => {
     return UserService.GetAllUsers()
       .then((res) => {
-        console.log("FindAllDrivers",res);
+   
         setAllDriver(res.users);
       })
       .catch((err) => {
-        console.log(err);
+      
       })
       .finally(() => {
-        console.log("done");
+      
       });
   };
 
@@ -48,7 +48,7 @@ const BasicMap = () => {
     Promise.all([ FindAllDrivers()])
       .then(() => {})
       .catch((err) => {
-        console.log(err);
+        
       })
       .finally(() => {
         setIsLoading(false);

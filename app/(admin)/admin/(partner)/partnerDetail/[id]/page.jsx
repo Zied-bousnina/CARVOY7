@@ -40,15 +40,15 @@ const PartnerDetail = ({ params }) => {
   const FetchPartnerDetail = (id) => {
     return missionService.GetPartnerDetailsById(id)
       .then((res) => {
-        console.log("FindPartner detail",res);
+       
         setPartnerDetails(res.partner
         ); // Update the state with the correct value
       })
       .catch((err) => {
-        console.log(err);
+       
       })
       .finally(() => {
-        console.log("done");
+        
       });
   };
 
@@ -57,7 +57,7 @@ const PartnerDetail = ({ params }) => {
     Promise.all([FetchPartnerDetail(id)])
       .then(() => {})
       .catch((err) => {
-        console.log(err);
+       
       })
       .finally(() => {
         setIsLoading(false);
@@ -67,7 +67,7 @@ const PartnerDetail = ({ params }) => {
   useEffect(() => {
     groupAsyncFunctions(id);
   }, []);
-  console.log("id",PartnerDetail)
+  
 
   return (
     <div>

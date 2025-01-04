@@ -48,7 +48,7 @@ const AddPartner = () => {
       form.siret === undefined ||
       form.kbis === undefined
     ) {
-      console.log("Please fill all required fields");
+      
       return;
     }
 
@@ -70,7 +70,7 @@ const AddPartner = () => {
     setIsSubmitting(true);
     AuthService.CreatePartner(data)
       .then((res) => {
-        console.log(res);
+        
         setIsSubmitting(false);
         // You can show a success message here
         toast.success("        Partner created successfully!          ", {
@@ -89,7 +89,7 @@ const AddPartner = () => {
 
       })
       .catch((error) => {
-        console.log(error);
+        
         setIsSubmitting(false);
         if (error) {
           setError(error); // Assuming the backend returns an error object like { email: 'Email already exists', ... }

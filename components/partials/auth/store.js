@@ -52,12 +52,12 @@ export const handlelogin2 = createAsyncThunk(
   "auth/handlelogin",
   async (data, router, thunkAPI) => {
     // const router = useRouter();
-    // console.log(router)
+
     const response = await axios.post(
       "https://my-krew-t2j4.onrender.com/api/users/login",
       data
     );
-    console.log(response.data);
+
     if (response.data.preRegistration?.status == "NOTEXIST") {
       toast.info("Merci de completer votre dossier", {
         position: "top-right",
@@ -78,12 +78,12 @@ export const handlelogin2 = createAsyncThunk(
 export const handleRegister2 = createAsyncThunk(
   "auth/handleRegister",
   async (data, thunkAPI) => {
-    console.log(data);
+  
     const response = await axios.post(
       `https://my-krew-t2j4.onrender.com/api/users`,
       data
     );
-    console.log(response.data);
+ 
     return response.data;
   }
 );
@@ -92,7 +92,7 @@ export const handleRegistretionStep1 = createAsyncThunk(
   "auth/handleRegistretionStep1",
   async (data, thunkAPI) => {
     const token = localStorage.getItem("jwtToken");
-    console.log(data);
+    
     const response = await axios.post(
       `https://my-krew-t2j4.onrender.com/api/users/preRegistration/createPreRegistration1`,
       data,
@@ -100,7 +100,7 @@ export const handleRegistretionStep1 = createAsyncThunk(
         headers: { Authorization: `${token}` },
       }
     );
-    console.log(response.data);
+    
     return response.data;
   }
 );
@@ -108,7 +108,7 @@ export const handleRegistretionStep2 = createAsyncThunk(
   "auth/handleRegistretionStep2",
   async (data, thunkAPI) => {
     const token = localStorage.getItem("jwtToken");
-    console.log(data);
+    
     const response = await axios.post(
       ApiConfigs.base_url +
         ApiConfigs.apis.preregistration.createPreRegistration2,
@@ -120,7 +120,7 @@ export const handleRegistretionStep2 = createAsyncThunk(
         },
       }
     );
-    console.log(response.data);
+    
     return response.data;
   }
 );
@@ -129,7 +129,8 @@ export const handleRegistretionStep4 = createAsyncThunk(
   "auth/handleRegistretionStep4",
   async (data, thunkAPI) => {
     const token = localStorage.getItem("jwtToken");
-    console.log(data);
+    
+    
     // const response = await axios.post(`https://my-krew-t2j4.onrender.com/api/users/preRegistration/createPreRegistration4`, data,
     // {
     //   headers: { "Content-Type": "multipart/form-data",
@@ -138,7 +139,7 @@ export const handleRegistretionStep4 = createAsyncThunk(
     //  }
     // }
     // );
-    console.log(token)
+    
     const response = await axios.post(
       ApiConfigs.base_url +
         ApiConfigs.apis.preregistration.createPreRegistration4,
@@ -150,7 +151,7 @@ export const handleRegistretionStep4 = createAsyncThunk(
         },
       }
     );
-    console.log(response.data);
+    
     return response.data;
   }
 );
@@ -159,7 +160,7 @@ export const handleGetRegistrationByUserId = createAsyncThunk(
   "auth/handleGetRegistrationByUserId",
   async (data, thunkAPI) => {
     const token = localStorage.getItem("jwtToken");
-    console.log(data);
+   
     const response = await axios.get(
       `https://my-krew-t2j4.onrender.com/api/users/preRegistration/getPreregistration`,
       {
@@ -167,7 +168,7 @@ export const handleGetRegistrationByUserId = createAsyncThunk(
       }
     );
 
-    console.log(response.data);
+   
     return response.data;
   }
 );
@@ -223,7 +224,7 @@ export const authSlice = createSlice({
 
     //     handleLogin: async (state, action) => {
     //       // state.isAuth = action.payload;
-    //       console.log(action.payload)
+    //    
     //       // state.isLoading=true
     //       // save isAuth in local storage
     //       // if (typeof window !== "undefined") {
@@ -239,9 +240,7 @@ export const authSlice = createSlice({
     //       //   progress: undefined,
     //       //   theme: "light",
     //       // });
-    //       console.log(
-    //         "🚀 ~ file: store.js ~ line 130 ~ handleLogin: ~ state.isAuth",
-    //         state.isAuth,
+    //      
     //         {
     //           email: action.payload.email,
     //           password: action.payload.password,
@@ -252,7 +251,7 @@ export const authSlice = createSlice({
     //           .post(`https://convoyage.onrender.com/api/users/login`, { email: action.payload.email, password: action.payload.password });
     //         const { token } = res.data;
 
-    //         console.log(res.data);
+    //        
 
     //         // AsyncStorage.setItem('jwtToken', token)
     //         localStorage.setItem('jwtToken', token);
@@ -273,7 +272,7 @@ export const authSlice = createSlice({
     //         // dispatch(GetCurrentUser())
     //         // Decode token to get user data
     //         const decoded = parseJwt(token);
-    //         console.log(decoded);
+    //       
     //         localStorage.setItem('role', decoded?.role);
     //         // Set current user
     //         // dispatch(setCurrentUser(decoded))
@@ -281,7 +280,7 @@ export const authSlice = createSlice({
     //         // state.user = decoded;
     //         // state.role = decoded?.role;
     //       } catch (err) {
-    //         console.log(err);
+    //        
     //         // state.isLoading=false
     //         toast.error("Invalid credentials", {
     //           position: "top-right",
@@ -345,7 +344,7 @@ export const authSlice = createSlice({
       state.error = false;
       const token = action.payload.token;
 
-      // console.log(res.data);
+     
 
       // AsyncStorage.setItem('jwtToken', token)
       localStorage.setItem("jwtToken", token);
@@ -366,7 +365,7 @@ export const authSlice = createSlice({
       // dispatch(GetCurrentUser())
       // Decode token to get user data
       const decoded = parseJwt(token);
-      console.log(decoded);
+      
       state.role = decoded?.role;
       localStorage.setItem("role", decoded?.role);
     },
@@ -377,7 +376,7 @@ export const authSlice = createSlice({
     [handleRegister2.pending]: (state, action) => {
       state.isLoading = true;
       state.error = false;
-      console.log(action.payload);
+      
     },
     [handleRegister2.fulfilled]: (state, action) => {
       state.isLoading = false;
@@ -385,9 +384,9 @@ export const authSlice = createSlice({
       state.user = action.payload;
       state.error = false;
       const token = action.payload.token;
-      console.log(action.payload);
+     
 
-      // console.log(res.data);
+   
 
       // AsyncStorage.setItem('jwtToken', token)
       localStorage.setItem("jwtToken", token);
@@ -408,7 +407,7 @@ export const authSlice = createSlice({
       // dispatch(GetCurrentUser())
       // Decode token to get user data
       const decoded = parseJwt(token);
-      console.log(decoded);
+    
       state.role = decoded?.role;
       localStorage.setItem("role", decoded?.role);
     },
@@ -426,10 +425,9 @@ export const authSlice = createSlice({
       state.user = action.payload;
       state.error = false;
       // const token  = action.payload.token;
-      // console.log(action.payload)
+     
 
-      // console.log(res.data);
-
+    
       // AsyncStorage.setItem('jwtToken', token)
       // localStorage.setItem('jwtToken', token);
       toast.success("User registered successfully", {
@@ -449,7 +447,7 @@ export const authSlice = createSlice({
       // // dispatch(GetCurrentUser())
       // // Decode token to get user data
       // const decoded = parseJwt(token);
-      // console.log(decoded);
+     
       // state.role = decoded?.role;
       // localStorage.setItem('role', decoded?.role);
     },
@@ -467,9 +465,9 @@ export const authSlice = createSlice({
       state.user = action.payload;
       state.error = false;
       // const token  = action.payload.token;
-      // console.log(action.payload)
+      
 
-      // console.log(res.data);
+     
 
       // AsyncStorage.setItem('jwtToken', token)
       // localStorage.setItem('jwtToken', token);
@@ -490,7 +488,7 @@ export const authSlice = createSlice({
       // // dispatch(GetCurrentUser())
       // // Decode token to get user data
       // const decoded = parseJwt(token);
-      // console.log(decoded);
+     
       // state.role = decoded?.role;
       // localStorage.setItem('role', decoded?.role);
     },
@@ -508,9 +506,9 @@ export const authSlice = createSlice({
       state.user = action.payload;
       state.error = false;
       // const token  = action.payload.token;
-      // console.log(action.payload)
+      
 
-      // console.log(res.data);
+     
 
       // AsyncStorage.setItem('jwtToken', token)
       // localStorage.setItem('jwtToken', token);
@@ -531,7 +529,7 @@ export const authSlice = createSlice({
       // // dispatch(GetCurrentUser())
       // // Decode token to get user data
       // const decoded = parseJwt(token);
-      // console.log(decoded);
+      
       // state.role = decoded?.role;
       // localStorage.setItem('role', decoded?.role);
     },

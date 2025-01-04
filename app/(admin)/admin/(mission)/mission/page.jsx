@@ -254,30 +254,30 @@ const Mission = () => {
   const FindRequestDemandeByPartnerV2 = () => {
     return missionService.FindRequestDemandeByPartnerV2()
       .then((res) => {
-        console.log("FindRequestDemandeByPartnerV2",res);
+
         setMissionsPartner(res); // Update the state with the correct value
       })
       .catch((err) => {
-        console.log(err);
+
       })
       .finally(() => {
-        console.log("done");
+
       });
   };
 
   const FindRequestDemande = () => {
     return missionService.FindRequestDemande()
       .then((res) => {
-        console.log(res);
+
         setMissions(res.demands)
 
 
       })
       .catch((err) => {
-        console.log(err);
+
       })
       .finally(() => {
-        console.log("done");
+
       });
   };
 
@@ -287,7 +287,7 @@ const Mission = () => {
     Promise.all([FindRequestDemande(), FindRequestDemandeByPartnerV2()])
       .then(() => {})
       .catch((err) => {
-        console.log(err);
+        
       })
       .finally(() => {
         setIsLoading(false);

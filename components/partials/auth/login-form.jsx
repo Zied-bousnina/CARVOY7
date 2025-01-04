@@ -36,11 +36,11 @@ const LoginForm = () => {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      console.log(values);
+
       setIsLoading(true);
       AuthService.login(values)
         .then((res) => {
-          console.log(res);
+
 
           dispatch(authActions.login({token: res.token, router:router}))
           toast.success("Bienvenue", {
@@ -190,7 +190,7 @@ export default LoginForm;
         progress: undefined,
         theme: "light",
       });
-      console.log("error", res.error)
+
     }else if(
       res.type =="auth/handlelogin/fulfilled"
     ) {
@@ -209,11 +209,11 @@ export default LoginForm;
       // setTimeout(() => {
       //   router.push("/analytics");
       // }, 1500);
-      console.log(res)
+
     }
-    console.log(res.payload?.token)
+
     const user  = parseJwt(res.payload?.token)
-    console.log(user)
+
     // if(user?.role=="ADMIN") {
     //   router.push("/admin")
     // } else if(user?.role=="RH") {
@@ -241,7 +241,7 @@ export default LoginForm;
   )
   .catch((err) => {
 
-    // console.log(err);
+    
   });
 
   }else {

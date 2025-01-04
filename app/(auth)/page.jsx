@@ -47,7 +47,7 @@ const Login = () => {
                 <div className="md:max-w-[345px] mx-auto font-normal text-slate-500 dark:text-slate-400 mt-12 uppercase text-sm">
                 Vous n'avez pas de compte?{" "}
                   <Link
-                    href="/"
+                    href="/register"
                     className="text-slate-900 dark:text-white font-medium hover:underline"
                   >
                     Inscrivez-vous

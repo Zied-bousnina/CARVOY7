@@ -43,7 +43,7 @@ const ServiceOptions = ({ onUpdateTotal,onUpdateSelectedService, screen }) => {
 
       // Call the function passed through props to update the total cost
       onUpdateTotal(newTotalPrice);
-      console.log(newSelectedServices)
+
       onUpdateSelectedService(newSelectedServices);
 
       return newSelectedServices;

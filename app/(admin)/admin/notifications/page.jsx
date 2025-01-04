@@ -16,15 +16,15 @@ const NotificationPage = () => {
   const FindCurrentUserNotification = () => {
     return UserService.GetCurrentUser()
       .then((res) => {
-        console.log("setUserNotification list",res);
+
         setUserNotification(res?.user?.Newsocket
         ); // Update the state with the correct value
       })
       .catch((err) => {
-        console.log(err);
+
       })
       .finally(() => {
-        console.log("done");
+
       });
   };
 
@@ -35,7 +35,7 @@ const NotificationPage = () => {
     Promise.all([FindCurrentUserNotification()])
       .then(() => {})
       .catch((err) => {
-        console.log(err);
+
       })
       .finally(() => {
         setIsLoading(false);
@@ -43,7 +43,7 @@ const NotificationPage = () => {
   };
 
   useEffect(() => {
-    console.log('profile')
+    
     groupAsyncFunctions();
   }, []); // Empty array to only run on mount
   const sortedNotifications = UserNotification?.slice().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));

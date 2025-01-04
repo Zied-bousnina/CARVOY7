@@ -19,7 +19,7 @@ const CalenderPage = () => {
   useEffect(() => {
     CalendarService.getAllEvents()
       .then((data) => {
-        console.log("data", data)
+       
         const mappedData = data.map((event) => ({
           ...event,
           id: event.id || event._id, // Ensure `id` exists
@@ -29,7 +29,7 @@ const CalenderPage = () => {
       .catch((err) => console.error("Error fetching events:", err));
   }, []);
   const handleEventClick = (arg) => {
-    console.log("abscdj ;", arg.event)
+    
     setEditItem({
       id: arg.event.id || arg.event._id,
       title: arg.event.title,
@@ -53,7 +53,7 @@ const CalenderPage = () => {
   };
 
   const handleDeleteEvent = (id) => {
-    console.log("id", event)
+    
     CalendarService.deleteEvent(id)
       .then(() => {
         setEvents((prev) => prev.filter((event) => event.id !== id));

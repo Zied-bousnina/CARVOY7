@@ -61,7 +61,7 @@ const ChatPage = () => {
 
   // Handle sending a new message
   const handleSendMessage = async (newMessage) => {
-    console.log("send message ", newMessage)
+
     try {
       // Send the message to the backend
       const sentMessage = await chatService.sendMessage(activeChat._id, newMessage);

@@ -31,30 +31,30 @@ const SuiviMission = () => {
 const getAmmount = ()=> {
   return missionService.findAmmountStatis()
   .then((res)=>{
-    console.log(res)
+
     setAmmount(res.totalAmount)
 
   })
   .catch((err)=>{
-    console.log(err)
+
   })
   .finally(()=>{
-    console.log("done")
+
   })
 }
 const getMissionStats = ()=> {
   return missionService.findDemandsstatisticsadmin()
   .then((res)=>{
-    console.log(res)
+
     setMissionStats(res.statistics)
 
 
   })
   .catch((err)=>{
-    console.log(err)
+    
   })
   .finally(()=>{
-    console.log("done")
+    
   })
 }
 const groupAsyncFunctions = () => {
@@ -66,7 +66,7 @@ const groupAsyncFunctions = () => {
     ])
       .then((_) => {})
       .catch((err) => {
-        console.log(err);
+        
       })
       .finally(() => {
         setIsLoading(false);

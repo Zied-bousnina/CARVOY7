@@ -15,7 +15,7 @@ const BillingForm = ({ id }) => {
     return missionService
       .getUserInformationById(id)
       .then((res) => {
-        console.log('FindPartner detail', res.user.name);
+
         setisloadBillingInformation(false);
         setuserInformation({
           name: res.user.name,
@@ -26,10 +26,10 @@ const BillingForm = ({ id }) => {
         });
       })
       .catch((err) => {
-        console.log(err);
+        
       })
       .finally(() => {
-        console.log('done');
+       
         setisloadBillingInformation(false);
       });
   };
@@ -39,7 +39,7 @@ const BillingForm = ({ id }) => {
     Promise.all([FetchPartnerDetail(id)])
       .then(() => {})
       .catch((err) => {
-        console.log(err);
+       
       })
       .finally(() => {
         setIsLoading(false);
@@ -78,7 +78,7 @@ const BillingForm = ({ id }) => {
         });
       })
       .catch((error) => {
-        console.log(error);
+       
       })
       .finally(() => {
         setIsLoading(false);

@@ -14,7 +14,7 @@ const [tab, setTab] = useState("admin");
 
 const handleDelete = (id) => {
   // Simulate delete action
-  console.log(`Deleting item with id: ${id}`);
+ 
   setNotificationModal(false);
 };
 

@@ -83,29 +83,29 @@ const AddCategorie = () => {
   ];
 
   const handleDelete = (row) => {
-    console.log("delete", row);
+
   };
 
   const handleEdit = (row) => {
-    console.log("edit", row);
+
   };
 
   const handleDownload = (row) => {
-    console.log("download", row);
+
   };
 
   const FindAllCategories = () => {
     return missionService.FindAllCategories()
       .then((res) => {
-        console.log("setCategorieLists list",res);
+    
         setCategorieLists(res.categorie
         ); // Update the state with the correct value
       })
       .catch((err) => {
-        console.log(err);
+        
       })
       .finally(() => {
-        console.log("done");
+        
       });
   };
 
@@ -116,7 +116,7 @@ const AddCategorie = () => {
     Promise.all([FindAllCategories()])
       .then(() => {})
       .catch((err) => {
-        console.log(err);
+        
       })
       .finally(() => {
         setIsLoading(false);

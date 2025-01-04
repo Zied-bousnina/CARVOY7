@@ -19,6 +19,7 @@ function server() {
         auth: {
             // signup:"user/signup",
             login:"users/login",
+            Register:"users/Register",
             getUserByEmail:"users/getUserByEmail/{email}",
 
             forgotPassword:"users/forgot-password",

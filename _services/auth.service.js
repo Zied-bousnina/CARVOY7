@@ -3,6 +3,7 @@ import { guestHeader, ApiConfigs, authHeader } from "../_helpers";
 export const AuthService = {
 
   login,
+  Register,
   getUserByEmail,
   CreatePartner,
   forgotPassword,
@@ -16,7 +17,7 @@ async function login(userData) {
     headers: { ...guestHeader(), "Content-Type": "application/json" },
     body: JSON.stringify(userData),
   };
-  console.log("requestOptions", requestOptions);
+  
   return await fetch(
     `${ApiConfigs.base_url + ApiConfigs.apis.auth.login}`,
     requestOptions
@@ -46,12 +47,27 @@ export async function CreatePartner(userData){
   return handleResponse(response);
 
  }
+ export async function Register(userData){
+  const requestOptions =  {
+     method: "POST",
+     headers: {
+         ...guestHeader(),
+        //  'Content-Type': 'multipart/form-data'
+     },
+       body: userData
+     };
+
+  const response = await fetch(`${ApiConfigs.base_url + ApiConfigs.apis.auth.Register}`, requestOptions)
+
+  return handleResponse(response);
+
+ }
  export async function forgotPassword(email){
   const requestOptions =  {
      method: "POST",
      headers: {
-         ...authHeader(),
-         'Content-Type': 'multipart/form-data'
+         ...guestHeader(),
+         'Content-Type': 'application/json'
      },
        body: JSON.stringify(email)
      };

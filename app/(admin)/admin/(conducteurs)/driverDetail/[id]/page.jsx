@@ -41,15 +41,15 @@ const DriverDetail = ({ params }) => {
   const FetchdriverDetail = (id) => {
     return missionService.GetPartnerDetailsById(id)
       .then((res) => {
-        console.log("FindPartner detail",res);
+
         setDriverDetails(res.partner); // Update the state with the correct value
         setDriverDetailsDocuments(res.documents)
       })
       .catch((err) => {
-        console.log(err);
+
       })
       .finally(() => {
-        console.log("done");
+
       });
   };
 
@@ -58,7 +58,7 @@ const DriverDetail = ({ params }) => {
     Promise.all([FetchdriverDetail(id)])
       .then(() => {})
       .catch((err) => {
-        console.log(err);
+
       })
       .finally(() => {
         setIsLoading(false);
@@ -68,7 +68,7 @@ const DriverDetail = ({ params }) => {
   useEffect(() => {
     groupAsyncFunctions(id);
   }, []);
-  console.log("id",DriverDetails)
+
 
   return (
     <div>

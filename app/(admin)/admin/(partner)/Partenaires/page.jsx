@@ -139,7 +139,7 @@ const Partenaires = () => {
         key={i}
         onClick={() => {
           // deletePartner(row.row.values._id)
-          console.log(row.row)
+
           item.doit(    row.row.values._id    )
           }}
         className={`
@@ -171,22 +171,22 @@ const Partenaires = () => {
   const FetchAllPartnership = () => {
     return missionService.FetchAllPartnership()
       .then((res) => {
-        console.log("FindPartner list",res);
+
         setPartnerList(res.partner
         ); // Update the state with the correct value
       })
       .catch((err) => {
-        console.log(err);
+
       })
       .finally(() => {
-        console.log("done");
+
       });
   };
   const deletePartner = (id) => {
     setIsLoading(true);
     UserService.DeleteUserByAdmin(id)
       .then((res) => {
-        console.log("Deleted partner:", res);
+
         FetchAllPartnership(); // Refresh the table
         setActiveModal(false); // Close the modal
       })
@@ -208,7 +208,7 @@ const Partenaires = () => {
     Promise.all([FetchAllPartnership()])
       .then(() => {})
       .catch((err) => {
-        console.log(err);
+
       })
       .finally(() => {
         setIsLoading(false);

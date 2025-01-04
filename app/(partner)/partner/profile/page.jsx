@@ -20,7 +20,7 @@ const profile = () => {
         setUserProfile(res       ); // Update the state with the correct value
       })
       .catch((err) => {
-        console.log(err);
+
       })
       .finally(() => {
 
@@ -34,7 +34,7 @@ const profile = () => {
     Promise.all([FindProfile()])
       .then(() => {})
       .catch((err) => {
-        console.log(err);
+
       })
       .finally(() => {
         setIsLoading(false);
@@ -42,7 +42,7 @@ const profile = () => {
   };
 
   useEffect(() => {
-    console.log('profile')
+
     groupAsyncFunctions();
   }, []); // Empty array to only run on mount
 

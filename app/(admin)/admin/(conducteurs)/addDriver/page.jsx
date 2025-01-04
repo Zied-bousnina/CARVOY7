@@ -33,7 +33,7 @@ const AddDriver = () => {
         [name]: files[0],
         // kbis: e.target.files[0]
       });
-      console.log(form)
+   
     if (files.length === 1) {
       setSelectedFile({
         ...selectedFile,
@@ -71,7 +71,7 @@ const AddDriver = () => {
     //   form.siret === undefined ||
     //   form.kbis === undefined
     // ) {
-    //   console.log("Please fill all required fields");
+    //  
     //   return;
     // }
 
@@ -93,7 +93,7 @@ console.log(formData)
     setIsSubmitting(true);
     DriverService.CreateDriver(data)
       .then((res) => {
-        console.log(res);
+        
         setIsSubmitting(false);
         // You can show a success message here
         toast.success("        driver created successfully!          ", {
@@ -112,7 +112,7 @@ console.log(formData)
 
       })
       .catch((error) => {
-        console.log(error);
+        
         setIsSubmitting(false);
         if (error) {
           setError(error); // Assuming the backend returns an error object like { email: 'Email already exists', ... }

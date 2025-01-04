@@ -46,7 +46,7 @@ const Dashboard = () => {
 
 
      socket.on("newMessage", (newMessage) => {
-       console.log("New message from socket", newMessage)
+
        if (newMessage.sender !== currentUserId  && newMessage.recieverId===currentUserId) {
         // if (notificationSound) {
         //   notificationSound.play().catch((error) => {
@@ -68,35 +68,35 @@ const Dashboard = () => {
 const getAmmount = ()=> {
   return missionService.findAmmountStatis()
   .then((res)=>{
-    console.log(res)
+
     setAmmount(res.totalAmount)
 
   })
   .catch((err)=>{
-    console.log(err)
+
   })
   .finally(()=>{
-    console.log("done")
+
   })
 }
 const findStatsPartners = ()=> {
   return StatistiqueService.findStatsPartner()
   .then((res)=>{
-    console.log(res)
+
     setCardStats(res)
 
   })
   .catch((err)=>{
-    console.log(err)
+
   })
   .finally(()=>{
-    console.log("done")
+
   })
 }
 const getMissionStats = ()=> {
   return missionService.findDemandsstatisticsadmin()
   .then((res)=>{
-    console.log(res)
+
     const demandsStats = res.demands.map((demand, index) => ({
       label: `Mission ${index + 1}`,
       price: parseFloat(demand.price || 0),
@@ -115,10 +115,10 @@ const getMissionStats = ()=> {
 
   })
   .catch((err)=>{
-    console.log(err)
+   
   })
   .finally(()=>{
-    console.log("done")
+   
   })
 }
 const groupAsyncFunctions = () => {
@@ -131,7 +131,7 @@ const groupAsyncFunctions = () => {
     ])
       .then((_) => {})
       .catch((err) => {
-        console.log(err);
+       
       })
       .finally(() => {
         setIsLoading(false);

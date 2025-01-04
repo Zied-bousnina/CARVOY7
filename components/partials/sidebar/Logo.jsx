@@ -22,14 +22,14 @@ const SidebarLogo = ({ menuHover }) => {
   const FindProfile = () => {
     return ProfileService.GetProfile()
       .then((res) => {
-        console.log("setUserProfile list",res);
+       
         setUserProfile(res       ); // Update the state with the correct value
       })
       .catch((err) => {
-        console.log(err);
+        
       })
       .finally(() => {
-        console.log("done");
+       
       });
   };
 
@@ -40,7 +40,7 @@ const SidebarLogo = ({ menuHover }) => {
     Promise.all([FindProfile()])
       .then(() => {})
       .catch((err) => {
-        console.log(err);
+        
       })
       .finally(() => {
         setIsLoading(false);
@@ -48,7 +48,7 @@ const SidebarLogo = ({ menuHover }) => {
   };
 
   useEffect(() => {
-    console.log('profile')
+    
     groupAsyncFunctions();
   }, []); // Empty array to only run on mount
 
