@@ -1,8 +1,8 @@
 
 
 function server() {
-    return `https://convoyage.onrender.com/api/`;
-    // return `http://localhost:3600/api/`;
+    // return `https://convoyage.onrender.com/api/`;
+    return process.env.NEXT_PUBLIC_API_URL_API ;
   }
   // http://api.nasa.gov/neo/rest/v1/neo/browse?page=1&size=20&api_key=DEMO_KEY
   export const ApiConfigs = {
@@ -20,6 +20,8 @@ function server() {
             // signup:"user/signup",
             login:"users/login",
             Register:"users/Register",
+            refreshAuthToken:"users/refreshAuthToken",
+            CompletePartnerProfile:"users/CompletePartnerProfile",
             getUserByEmail:"users/getUserByEmail/{email}",
 
             forgotPassword:"users/forgot-password",

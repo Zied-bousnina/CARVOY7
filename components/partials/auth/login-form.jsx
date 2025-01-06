@@ -14,7 +14,7 @@ import { useFormik } from "formik";
 // import AuthService from "@/_services/auth.service";
 import { authActions } from "@/store/auth/authSlice";
 import { AuthService } from "@/_services/auth.service";
-
+import { useSearchParams } from 'next/navigation'
 const validationSchema = yup
   .object({
     email: yup.string().email("Invalid email").required("Email is Required"),
@@ -28,7 +28,16 @@ const LoginForm = () => {
   const [checked, setChecked] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, seterrors] = useState("")
+  const searchParams = useSearchParams()
+  useEffect(() => {
+    const token = searchParams?.get('token');
+    console.log("token", token);
 
+    if (token) {
+      const bearerToken = `Bearer ${token}`; // Add the "Bearer" prefix
+      dispatch(authActions.login({ token: bearerToken, router }));
+    }
+  }, []);
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -241,7 +250,7 @@ export default LoginForm;
   )
   .catch((err) => {
 
-    
+
   });
 
   }else {

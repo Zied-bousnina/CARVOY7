@@ -15,6 +15,7 @@ const initialState = {
   name: "",
   onligne: false,
   verified: false,
+  firstLoginByThirdParty: false,
 };
 
 const authSlice = createSlice({
@@ -29,6 +30,7 @@ const authSlice = createSlice({
        // Update the state
 state.id = decodedToken.id;
 state.email = decodedToken.email;
+state.firstLoginByThirdParty = decodedToken.firstLoginByThirdParty;
 state.role = decodedToken.role;
 state.token = action.payload.token;
 state.isLoggedIn = true;
@@ -42,10 +44,18 @@ state.driverIsVerified = decodedToken.driverIsVerified || false;
 state.firstLogin = decodedToken.firstLogin || false;
 state.isBlocked = decodedToken.isBlocked || false;
 state.onligne = decodedToken.onligne || false;
-        console.log("connected++++++++++++++",decodedToken.role)
+        console.log("connected++++++++++++++",decodedToken)
         switch (decodedToken.role) {
           case "PARTNER":
-            action.payload.router.push("/partner");
+            switch (decodedToken.firstLoginByThirdParty) {
+              case true:
+                action.payload.router.push("/firstLoginByThirdParty");
+                break;
+              default:
+                action.payload.router.push("/partner");
+                break;
+            }
+
             break;
           case "ADMIN":
             action.payload.router.push("/admin");
@@ -68,6 +78,11 @@ state.onligne = decodedToken.onligne || false;
       state.exp = null;
       state.iat = null;
       action.payload.router.push("/");
+    },
+    completeProfile(state, action) {
+state.firstLoginByThirdParty = false;
+
+      action.payload.router.push("/partner");
     },
   },
 });

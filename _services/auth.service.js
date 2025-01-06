@@ -7,7 +7,9 @@ export const AuthService = {
   getUserByEmail,
   CreatePartner,
   forgotPassword,
-  updatePassword
+  updatePassword,
+  CompletePartnerProfile,
+  refreshAuthToken
 
 };
 
@@ -17,7 +19,7 @@ async function login(userData) {
     headers: { ...guestHeader(), "Content-Type": "application/json" },
     body: JSON.stringify(userData),
   };
-  
+
   return await fetch(
     `${ApiConfigs.base_url + ApiConfigs.apis.auth.login}`,
     requestOptions
@@ -62,6 +64,36 @@ export async function CreatePartner(userData){
   return handleResponse(response);
 
  }
+ export async function refreshAuthToken(){
+  const requestOptions =  {
+     method: "GET",
+     headers: {
+         ...authHeader(),
+        //  'Content-Type': 'multipart/form-data'
+     },
+
+     };
+
+  const response = await fetch(`${ApiConfigs.base_url + ApiConfigs.apis.auth.refreshAuthToken}`,requestOptions)
+
+  return handleResponse(response);
+
+ }
+ export async function CompletePartnerProfile(userData){
+  const requestOptions =  {
+     method: "POST",
+     headers: {
+         ...authHeader(),
+        //  'Content-Type': 'multipart/form-data'
+     },
+       body: userData
+     };
+
+  const response = await fetch(`${ApiConfigs.base_url + ApiConfigs.apis.auth.CompletePartnerProfile}`, requestOptions)
+console.log(response)
+  return handleResponse(response);
+
+ }
  export async function forgotPassword(email){
   const requestOptions =  {
      method: "POST",
@@ -95,11 +127,16 @@ export async function CreatePartner(userData){
 
 
 function handleResponse(response) {
+  console.log("response",response)
+  if (response.status === 401) {
+    window.location.href = "/";
+    localStorage.removeItem("user")}
   return response.text().then((text) => {
     const data = text && JSON.parse(text);
+    console.log("data",response)
     if (!response.ok) {
       if (response.status === 401) {
-        window.location.href = "/login";
+        window.location.href = "/";
         localStorage.removeItem("user")
       } else if (response.status === 403) {
         window.location.href = "/";
