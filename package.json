@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-      "export": "next build && next export"
+    "export": "next build && next export"
   },
   "dependencies": {
     "@chakra-ui/react": "^3.2.1",
@@ -30,6 +30,7 @@
     "@stripe/stripe-js": "^5.2.0",
     "@svg-maps/world": "^1.0.1",
     "@tippyjs/react": "^4.2.6",
+    "antd": "^5.23.0",
     "apexcharts": "^3.33.2",
     "axios": "^1.7.7",
     "bufferutil": "^4.0.8",

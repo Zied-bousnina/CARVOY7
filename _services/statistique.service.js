@@ -56,13 +56,13 @@ export async function getDemandesCount () {
 
   return handleResponse(response)
 }
-export async function findStatsPartner () {
+export async function findStatsPartner (filters = {}) {
   const requestOptions = {
     method:'GET',
     headers: authHeader()
   }
-
-  const response = await fetch(`${ApiConfigs.base_url+ ApiConfigs.apis.partner.mission.findStatsPartner}`,requestOptions)
+  const queryParams = new URLSearchParams(filters).toString();
+  const response = await fetch(`${ApiConfigs.base_url+ ApiConfigs.apis.partner.mission.findStatsPartner}?${queryParams}`,requestOptions)
 
   return handleResponse(response)
 }

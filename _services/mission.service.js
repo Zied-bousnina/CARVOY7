@@ -138,28 +138,34 @@ export async function findDemandsstatisticsByPartner() {
   return handleResponse(response)
 }
 
-export async function findDemandsstatisticsadmin() {
+export async function findDemandsstatisticsadmin(filters = {}) {
   const requestOptions = {
-    method:'GET',
-    headers: authHeader()
-  }
+    method: 'GET',
+    headers: authHeader(),
+  };
 
-  const response = await fetch(`${ApiConfigs.base_url+ ApiConfigs.apis.admin.mission.findMissionStatisticsByAdmin}`,requestOptions)
+  // Build the query string from the filters
+  const queryParams = new URLSearchParams(filters).toString();
+  const url = `${ApiConfigs.base_url + ApiConfigs.apis.admin.mission.findMissionStatisticsByAdmin}?${queryParams}`;
 
-  return handleResponse(response)
+  const response = await fetch(url, requestOptions);
+  return handleResponse(response);
 }
 
-export async function findAmmountStatis() {
+export async function findAmmountStatis(filters = {}) {
   const requestOptions = {
-    method:'GET',
-    headers: authHeader()
-  }
+    method: "GET",
+    headers: authHeader(),
+  };
 
-  const response = await fetch(`${ApiConfigs.base_url+ ApiConfigs.apis.partner.ammount.findAmmountStatisticsByPartner}`,requestOptions)
+  // Build query string from filters
+  const queryParams = new URLSearchParams(filters).toString();
+  const url = `${ApiConfigs.base_url + ApiConfigs.apis.partner.ammount.findAmmountStatisticsByPartner}?${queryParams}`;
 
-  return handleResponse(response)
-
+  const response = await fetch(url, requestOptions);
+  return handleResponse(response);
 }
+
 
 export async function FindRequestDemandeByPartnerV2 () {
   const requestOptions = {

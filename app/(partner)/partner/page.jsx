@@ -36,12 +36,16 @@ const Dashboard = () => {
   const [MissionStats2, setMissionStats2] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const { id: currentUserId } = useSelector((state) => state.userAuth);
+  const [dateRange, setDateRange] = useState({ startDate: null, endDate: null });
 
   // const notificationSound = new Audio("/assets/sounds/notification.mp3");
   // let notificationSound;
   // // if (typeof window !== "undefined") {
   //   notificationSound = new Audio("/path/to/notification-sound.mp3");
   // // }
+  const handleFilterChange = (newValue) => {
+    setDateRange(newValue);
+  };
    useEffect(() => {
 
 
@@ -65,8 +69,8 @@ const Dashboard = () => {
      };
    }, [socket]);
 
-const getAmmount = ()=> {
-  return missionService.findAmmountStatis()
+const getAmmount = (filters= {})=> {
+  return missionService.findAmmountStatis(filters)
   .then((res)=>{
 
     setAmmount(res.totalAmount)
@@ -79,8 +83,8 @@ const getAmmount = ()=> {
 
   })
 }
-const findStatsPartners = ()=> {
-  return StatistiqueService.findStatsPartner()
+const findStatsPartners = (filters = {})=> {
+  return StatistiqueService.findStatsPartner(filters)
   .then((res)=>{
 
     setCardStats(res)
@@ -93,8 +97,8 @@ const findStatsPartners = ()=> {
 
   })
 }
-const getMissionStats = ()=> {
-  return missionService.findDemandsstatisticsadmin()
+const getMissionStats = (filters = {})=> {
+  return missionService.findDemandsstatisticsadmin(filters)
   .then((res)=>{
 
     const demandsStats = res.demands.map((demand, index) => ({
@@ -124,9 +128,18 @@ const getMissionStats = ()=> {
 const groupAsyncFunctions = () => {
     setIsLoading(true);
     Promise.all([
-      getMissionStats(),
-      getAmmount(),
-      findStatsPartners()
+      getMissionStats({
+        startDate: dateRange.startDate,
+        endDate: dateRange.endDate,
+      }),
+      getAmmount({
+        startDate: dateRange.startDate,
+        endDate: dateRange.endDate,
+      }),
+      findStatsPartners({
+        startDate: dateRange.startDate,
+        endDate: dateRange.endDate,
+      })
 
     ])
       .then((_) => {})
@@ -140,13 +153,13 @@ const groupAsyncFunctions = () => {
   useEffect(() => {
 
 groupAsyncFunctions();
-}, []);
+}, [dateRange]);
 
 
   return (
     <div>
       <HomeBredCurbs title="Accueil"
-
+onFilterChange={handleFilterChange} 
 
        />
       <div className="grid grid-cols-12 gap-5 mb-5">

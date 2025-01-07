@@ -273,7 +273,7 @@ const shapeLine4 = {
 
 
 const GroupChart1 = ({missionStats,Ammount}) => {
-
+console.log("missionStats",missionStats)
   const statistics = [
   {
     name: shapeLine1,
