@@ -21,7 +21,7 @@ const Dashboard = () => {
   const [dateRange, setDateRange] = useState({ startDate: null, endDate: null });
   const { id: currentUserId } = useSelector((state) => state.userAuth);
 
-  // Handle filter change
+
   const handleFilterChange = (newValue) => {
     setDateRange(newValue);
   };

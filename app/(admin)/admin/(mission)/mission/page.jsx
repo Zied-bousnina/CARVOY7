@@ -55,55 +55,47 @@ const Mission = () => {
   const router = useRouter();
 
   const actions = [
-    // {
-    //   name: "send",
-    //   icon: "ph:paper-plane-right",
-    //   doit: () => {
-    //     router.push("/invoice-add");
-    //   },
-    // },
     {
-      name: "view",
+      name: "voir",
       icon: "heroicons-outline:eye",
       doit: () => {
         router.push("/admin/missionDetails");
       },
     },
     {
-      name: "edit",
+      name: "modifier",
       icon: "heroicons:pencil-square",
       doit: (id) => {
         router.push("/admin/editMission");
       },
     },
     {
-      name: "delete",
+      name: "supprimer",
       icon: "heroicons-outline:trash",
       doit: (id) => {
-        handleDeleteClick(id)
-        // return null;
+        handleDeleteClick(id);
       },
     },
   ];
+
   const actions2 = [
     {
       name: "Mission",
       icon: "ph:paper-plane-right",
       doit: () => {
-        setMissionByPartner(false)
+        setMissionByPartner(false);
       },
     },
     {
-      name: "mission partner",
+      name: "Mission partenaire",
       icon: "heroicons-outline:eye",
       doit: () => {
-        setMissionByPartner(true)
+        setMissionByPartner(true);
       },
     },
-
   ];
-  const COLUMNS = [
 
+  const COLUMNS = [
     {
       Header: "ID",
       accessor: "_id",
@@ -127,168 +119,152 @@ const Mission = () => {
       Cell: ({ value }) => `~${Math.floor(value)}km`,
     },
     {
-      Header: "Created At",
+      Header: "Créée le",
       accessor: "createdAt",
       Cell: ({ value }) =>
-        new Intl.DateTimeFormat('en-US', {
-          day: '2-digit',
-          month: '2-digit',
-          year: '2-digit',
-        }).format(new Date("2021-07-16T10:00:00Z")),
+        new Intl.DateTimeFormat("fr-FR", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "2-digit",
+        }).format(new Date(value)),
     },
-    // {
-    //   Header: "Statuss",
-    //   accessor: "status",
-    // },
     {
-      Header: "status",
+      Header: "Statut",
       accessor: "status",
       Cell: (row) => {
+        const statusMapping = {
+          "in progress": "En cours",
+          "canceled": "Annulée",
+          "confirmed driver": "Confirmée conducteur",
+        };
+
+        const statusValue = row?.cell?.value;
+        const displayValue = statusMapping[statusValue] || statusValue;
+
         return (
           <span className="block w-full">
             <span
-              className={` inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-[999px] bg-opacity-25 ${
-                row?.cell?.value === "Confirmée driver"
+              className={`inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-[999px] bg-opacity-25 ${
+                statusValue === "confirmed driver"
                   ? "text-success-500 bg-success-500"
                   : ""
               }
-            ${
-              row?.cell?.value === "in progress"
-                ? "text-warning-500 bg-warning-500"
-                : ""
-            }
-            ${
-              row?.cell?.value === "cancled"
-                ? "text-danger-500 bg-danger-500"
-                : ""
-            }
-
-             `}
+              ${
+                statusValue === "in progress"
+                  ? "text-warning-500 bg-warning-500"
+                  : ""
+              }
+              ${
+                statusValue === "canceled"
+                  ? "text-danger-500 bg-danger-500"
+                  : ""
+              }
+            `}
             >
-              {row?.cell?.value}
+              {displayValue}
             </span>
           </span>
         );
       },
     },
+
     {
-      Header: "action",
+      Header: "Action",
       accessor: "action",
       Cell: (row) => {
         return (
           <div>
             <Dropdown
-  classMenuItems="right-0 w-auto top-[110%] z-50" // Adjust width for horizontal layout
-  label={
-    <span className="text-xl text-center block w-full">
-      <Icon icon="heroicons-outline:dots-vertical" />
-    </span>
-  }
->
-  <div className="flex space-x-2 divide-x divide-slate-100 dark:divide-slate-800 max-w-full overflow-x-auto">
-    {actions.map((item, i) => (
-      <div
-        key={i}
-        onClick={() => item.doit( row.row.values._id)}
-        className={`
-          ${
-            item.name === "delete"
-              ? "bg-danger-500 text-danger-500 bg-opacity-30 hover:bg-opacity-100 hover:text-white"
-              : "hover:bg-slate-900 hover:text-white dark:hover:bg-slate-600 dark:hover:bg-opacity-50"
-          }
-          px-4 py-2 text-sm cursor-pointer flex items-center space-x-2 rtl:space-x-reverse
-        `}
-      >
-        <span className="text-base">
-          <Icon icon={item.icon} />
-        </span>
-        <span>{item.name}</span>
-      </div>
-    ))}
-  </div>
-</Dropdown>
-
+              classMenuItems="right-0 w-auto top-[110%] z-50"
+              label={
+                <span className="text-xl text-center block w-full">
+                  <Icon icon="heroicons-outline:dots-vertical" />
+                </span>
+              }
+            >
+              <div className="flex space-x-2 divide-x divide-slate-100 dark:divide-slate-800 max-w-full overflow-x-auto">
+                {actions.map((item, i) => (
+                  <div
+                    key={i}
+                    onClick={() => item.doit(row.row.values._id)}
+                    className={`${
+                      item.name === "supprimer"
+                        ? "bg-danger-500 text-danger-500 bg-opacity-30 hover:bg-opacity-100 hover:text-white"
+                        : "hover:bg-slate-900 hover:text-white dark:hover:bg-slate-600 dark:hover:bg-opacity-50"
+                    } px-4 py-2 text-sm cursor-pointer flex items-center space-x-2 rtl:space-x-reverse`}
+                  >
+                    <span className="text-base">
+                      <Icon icon={item.icon} />
+                    </span>
+                    <span>{item.name}</span>
+                  </div>
+                ))}
+              </div>
+            </Dropdown>
           </div>
         );
       },
-    }
-
+    },
   ];
+
   const COLUMNSPartner = [
     {
-      Header: "Name",
+      Header: "Nom",
       accessor: "partner.contactName",
-
     },
     {
       Header: "E-mail",
       accessor: "partner.email",
     },
     {
-      Header: "Tel",
+      Header: "Téléphone",
       accessor: "partner.phoneNumber",
     },
-
-
   ];
+
   const deletePartner = (id) => {
     setIsLoading(true);
-    missionService.DeleteMission(id)
-      .then((res) => {
-
-        FindRequestDemandeByPartnerV2(); // Refresh the table
-        FindRequestDemande(); // Refresh the table
-        setActiveModal(false); // Close the modal
+    missionService
+      .DeleteMission(id)
+      .then(() => {
+        FindRequestDemandeByPartnerV2();
+        FindRequestDemande();
+        setActiveModal(false);
       })
       .catch((err) => {
-        console.error("Error deleting partner:", err);
+        console.error("Erreur lors de la suppression du partenaire :", err);
       })
       .finally(() => {
         setIsLoading(false);
       });
   };
+
   const handleDeleteClick = (partnerId) => {
-    setSelectedPartnerId(partnerId); // Set the ID of the partner to delete
-    setActiveModal(true); // Open the modal
+    setSelectedPartnerId(partnerId);
+    setActiveModal(true);
   };
+
   const FindRequestDemandeByPartnerV2 = () => {
-    return missionService.FindRequestDemandeByPartnerV2()
+    return missionService
+      .FindRequestDemandeByPartnerV2()
       .then((res) => {
-
-        setMissionsPartner(res); // Update the state with the correct value
+        setMissionsPartner(res);
       })
-      .catch((err) => {
-
-      })
-      .finally(() => {
-
-      });
+      .catch(() => {});
   };
 
   const FindRequestDemande = () => {
-    return missionService.FindRequestDemande()
+    return missionService
+      .FindRequestDemande()
       .then((res) => {
-
-        setMissions(res.demands)
-
-
+        setMissions(res.demands);
       })
-      .catch((err) => {
-
-      })
-      .finally(() => {
-
-      });
+      .catch(() => {});
   };
-
 
   const groupAsyncFunctions = () => {
     setIsLoading(true);
     Promise.all([FindRequestDemande(), FindRequestDemandeByPartnerV2()])
-      .then(() => {})
-      .catch((err) => {
-        
-      })
       .finally(() => {
         setIsLoading(false);
       });
@@ -296,9 +272,13 @@ const Mission = () => {
 
   useEffect(() => {
     groupAsyncFunctions();
-  }, []); // Empty array to only run on mount
-const mission = MissionByPartner ?  MissionsPartner: Missions
-  const columns = useMemo(() => (MissionByPartner ? COLUMNSPartner : COLUMNS), [MissionByPartner]);
+  }, []);
+
+  const mission = MissionByPartner ? MissionsPartner : Missions;
+  const columns = useMemo(
+    () => (MissionByPartner ? COLUMNSPartner : COLUMNS),
+    [MissionByPartner]
+  );
   const data = useMemo(() => mission || [], [mission]);
 
   const tableInstance = useTable(
@@ -306,37 +286,17 @@ const mission = MissionByPartner ?  MissionsPartner: Missions
       columns,
       data,
     },
-
     useGlobalFilter,
     useSortBy,
     useExpanded,
     usePagination,
-    useRowSelect,
-
-    // (hooks) => {
-    //   hooks.visibleColumns.push((columns) => [
-    //     {
-    //       id: "selection",
-    //       Header: ({ getToggleAllRowsSelectedProps }) => (
-    //         <div>
-    //           <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
-    //         </div>
-    //       ),
-    //       Cell: ({ row }) => (
-    //         <div>
-    //           <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
-    //         </div>
-    //       ),
-    //     },
-    //     ...columns,
-    //   ]);
-    // }
+    useRowSelect
   );
+
   const {
     getTableProps,
     getTableBodyProps,
     headerGroups,
-    footerGroups,
     page,
     nextPage,
     previousPage,
@@ -359,7 +319,7 @@ const mission = MissionByPartner ?  MissionsPartner: Missions
         <Modal
           activeModal={activeModal}
           onClose={() => setActiveModal(false)}
-          title="Confirm Delete"
+          title="Confirmer la suppression"
           footerContent={
             <>
               <button
@@ -367,26 +327,27 @@ const mission = MissionByPartner ?  MissionsPartner: Missions
                 onClick={() => setActiveModal(false)}
                 disabled={isLoading}
               >
-                Cancel
+                Annuler
               </button>
               <button
                 className="btn btn-danger"
                 onClick={() => deletePartner(selectedPartnerId)}
                 disabled={isLoading}
               >
-                {isLoading ? "Deleting..." : "Delete"}
+                {isLoading ? "Suppression en cours..." : "Supprimer"}
               </button>
             </>
           }
         >
-          <p>Are you sure you want to delete this mission?</p>
+          <p>Êtes-vous sûr de vouloir supprimer cette mission ?</p>
         </Modal>
       )}
       <Card noborder>
         <div className="md:flex pb-6 items-center">
-          <h6 className="flex-1 md:mb-0 mb-3">Missions</h6>
+          <h6 className="flex-1 md:mb-0 mb-3">
+          Missions</h6>
           <div className="md:flex md:space-x-3 items-center flex-none rtl:space-x-reverse">
-          <Dropdown
+            <Dropdown
               classMenuItems="right-0 w-[140px] top-[110%] z-50"
               label={
                 <span className="text-xl text-center block w-full">
@@ -399,37 +360,19 @@ const mission = MissionByPartner ?  MissionsPartner: Missions
                   <div
                     key={i}
                     onClick={() => item.doit()}
-                    className={`
-                      ${
-                        item.name === "delete"
-                          ? "bg-danger-500 text-danger-500 bg-opacity-30 hover:bg-opacity-100 hover:text-white"
-                          : "hover:bg-slate-900 hover:text-white dark:hover:bg-slate-600 dark:hover:bg-opacity-50"
-                      }
-                      w-full border-b border-b-gray-500 border-opacity-10 px-4 py-2 text-sm last:mb-0 cursor-pointer
-                      first:rounded-t last:rounded-b flex space-x-2 items-center rtl:space-x-reverse
-                    `}
+                    className={`${
+                      item.name === "supprimer"
+                        ? "bg-danger-500 text-danger-500 bg-opacity-30 hover:bg-opacity-100 hover:text-white"
+                        : "hover:bg-slate-900 hover:text-white dark:hover:bg-slate-600 dark:hover:bg-opacity-50"
+                    } w-full border-b border-b-gray-500 border-opacity-10 px-4 py-2 text-sm last:mb-0 cursor-pointer first:rounded-t last:rounded-b flex space-x-2 items-center rtl:space-x-reverse`}
                   >
-                    <span className="text-base">
-                      {/* <Icon icon={item.icon} /> */}
-                    </span>
+                    <span className="text-base"></span>
                     <span>{item.name}</span>
                   </div>
                 ))}
               </div>
             </Dropdown>
             <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
-            {/* <Button
-              icon="heroicons-outline:calendar"
-              text="Select date"
-              className=" btn-outline-secondary dark:border-slate-700  text-slate-600 btn-sm font-normal dark:text-slate-300 "
-              iconClass="text-lg"
-            /> */}
-            {/* <Button
-              icon="heroicons-outline:filter"
-              text="Filter"
-              className=" btn-outline-secondary text-slate-600 dark:border-slate-700 dark:text-slate-300 font-normal btn-sm "
-              iconClass="text-lg"
-            /> */}
             <Button
               icon="heroicons-outline:plus-sm"
               text="Créer une mission"
@@ -443,9 +386,9 @@ const mission = MissionByPartner ?  MissionsPartner: Missions
         </div>
         <div className="overflow-x-auto -mx-6">
           <div className="inline-block min-w-full align-middle">
-            <div className="overflow-hidden ">
+            <div className="overflow-hidden">
               <table
-                className="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700 mb-16 "
+                className="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700 mb-16"
                 {...getTableProps}
               >
                 <thead className=" border-t border-slate-100 dark:border-slate-800">
@@ -453,22 +396,19 @@ const mission = MissionByPartner ?  MissionsPartner: Missions
                     <tr
                       {...headerGroup.getHeaderGroupProps()}
                       key={`ex-tr-${headerGroup.id}`}
-
                     >
-                     {MissionByPartner &&
-                  <th
-                   scope="col"
-                   className="table-th">
-                   expand
-                  </th>
-                  }
+                      {MissionByPartner && (
+                        <th scope="col" className="table-th">
+                          Développer
+                        </th>
+                      )}
                       {headerGroup.headers.map((column) => (
                         <th
                           {...column.getHeaderProps(
                             column.getSortByToggleProps()
                           )}
                           scope="col"
-                          className=" table-th "
+                          className="table-th"
                           key={`ex-th-${column.id}`}
                         >
                           {column.render("Header")}
@@ -485,25 +425,22 @@ const mission = MissionByPartner ?  MissionsPartner: Missions
                   ))}
                 </thead>
                 <tbody
-                  className="bg-white divide-y  divide-slate-100 dark:bg-slate-800 dark:divide-slate-700 "
+                  className="bg-white divide-y  divide-slate-100 dark:bg-slate-800 dark:divide-slate-700"
                   {...getTableBodyProps}
                 >
                   {page.map((row) => {
                     prepareRow(row);
                     return (
                       <React.Fragment key={row.id}>
-
-                      <tr {...row.getRowProps()} key={`ex-tr2-${row.id}`} >
-                      {
-                        MissionByPartner&&
-                        <td>
-                          <span {...row.getToggleRowExpandedProps()}>
-                            {row.isExpanded ? '▼' : '▶'}
-                          </span>
-                        </td>
-                      }
-                        {row.cells.map((cell) => {
-                          return (
+                        <tr {...row.getRowProps()} key={`ex-tr2-${row.id}`}>
+                          {MissionByPartner && (
+                            <td>
+                              <span {...row.getToggleRowExpandedProps()}>
+                                {row.isExpanded ? "▼" : "▶"}
+                              </span>
+                            </td>
+                          )}
+                          {row.cells.map((cell) => (
                             <td
                               {...cell.getCellProps()}
                               className="table-td"
@@ -511,31 +448,25 @@ const mission = MissionByPartner ?  MissionsPartner: Missions
                             >
                               {cell.render("Cell")}
                             </td>
-                          );
-                        })}
-                      </tr>
-                      {row.isExpanded ? (
-                        <tr>
-                          <td colSpan={columns.length + 1}>
-                            <div className="p-4">
-                              <h4 className="font-bold">Missions for {row?.original?.partner?.contactName}</h4>
-                              <ul>
-
-
-
-                                <CompanyTable
-            Missions={row?.original?.demands
-
-            }
-
-             />
-
-
-                              </ul>
-                            </div>
-                          </td>
+                          ))}
                         </tr>
-                      ) : null}
+                        {row.isExpanded && (
+                          <tr>
+                            <td colSpan={columns.length + 1}>
+                              <div className="p-4">
+                                <h4 className="font-bold">
+                                  Missions pour{" "}
+                                  {row?.original?.partner?.contactName}
+                                </h4>
+                                <ul>
+                                  <CompanyTable
+                                    Missions={row?.original?.demands}
+                                  />
+                                </ul>
+                              </div>
+                            </td>
+                          </tr>
+                        )}
                       </React.Fragment>
                     );
                   })}
@@ -545,15 +476,15 @@ const mission = MissionByPartner ?  MissionsPartner: Missions
           </div>
         </div>
         <div className="md:flex md:space-y-0 space-y-5 justify-between mt-6 items-center">
-          <div className=" flex items-center space-x-3 rtl:space-x-reverse">
-            <span className=" flex space-x-2  rtl:space-x-reverse items-center">
-              <span className=" text-sm font-medium text-slate-600 dark:text-slate-300">
-                Go
+          <div className="flex items-center space-x-3 rtl:space-x-reverse">
+            <span className="flex space-x-2 rtl:space-x-reverse items-center">
+              <span className="text-sm font-medium text-slate-600 dark:text-slate-300">
+                Aller à
               </span>
               <span>
                 <input
                   type="number"
-                  className=" form-control py-2"
+                  className="form-control py-2"
                   defaultValue={pageIndex + 1}
                   onChange={(e) => {
                     const pageNumber = e.target.value
@@ -568,14 +499,14 @@ const mission = MissionByPartner ?  MissionsPartner: Missions
             <span className="text-sm font-medium text-slate-600 dark:text-slate-300">
               Page{" "}
               <span>
-                {pageIndex + 1} of {pageOptions.length}
+                {pageIndex + 1} sur {pageOptions.length}
               </span>
             </span>
           </div>
-          <ul className="flex items-center  space-x-3  rtl:space-x-reverse">
+          <ul className="flex items-center space-x-3 rtl:space-x-reverse">
             <li className="text-xl leading-4 text-slate-900 dark:text-white rtl:rotate-180">
               <button
-                className={` ${
+                className={`${
                   !canPreviousPage ? "opacity-50 cursor-not-allowed" : ""
                 }`}
                 onClick={() => previousPage()}
@@ -589,11 +520,11 @@ const mission = MissionByPartner ?  MissionsPartner: Missions
                 <button
                   href="#"
                   aria-current="page"
-                  className={` ${
+                  className={`${
                     pageIdx === pageIndex
-                      ? "bg-slate-900 dark:bg-slate-600  dark:text-slate-200 text-white font-medium "
-                      : "bg-slate-100 dark:bg-slate-700 dark:text-slate-400 text-slate-900  font-normal  "
-                  }    text-sm rounded leading-[16px] flex h-6 w-6 items-center justify-center transition-all duration-150`}
+                      ? "bg-slate-900 dark:bg-slate-600  dark:text-slate-200 text-white font-medium"
+                      : "bg-slate-100 dark:bg-slate-700 dark:text-slate-400 text-slate-900  font-normal"
+                  } text-sm rounded leading-[16px] flex h-6 w-6 items-center justify-center transition-all duration-150`}
                   onClick={() => gotoPage(pageIdx)}
                 >
                   {page + 1}
@@ -602,7 +533,7 @@ const mission = MissionByPartner ?  MissionsPartner: Missions
             ))}
             <li className="text-xl leading-4 text-slate-900 dark:text-white rtl:rotate-180">
               <button
-                className={` ${
+                className={`${
                   !canNextPage ? "opacity-50 cursor-not-allowed" : ""
                 }`}
                 onClick={() => nextPage()}
