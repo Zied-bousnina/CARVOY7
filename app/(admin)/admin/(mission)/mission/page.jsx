@@ -50,6 +50,7 @@ const Mission = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [MissionByPartner, setMissionByPartner] = useState(false);
   const [activeModal, setActiveModal] = useState(false);
+const [statusFilter, setStatusFilter] = useState(""); // Initialize the filter with an empty string
 
   const [selectedPartnerId, setSelectedPartnerId] = useState(null);
   const router = useRouter();
@@ -129,7 +130,22 @@ const Mission = () => {
         }).format(new Date(value)),
     },
     {
-      Header: "Statut",
+      Header: () => (
+        <div className="flex flex-col">
+          <span>Statut</span>
+          <select
+            className="form-control mt-1"
+            value={statusFilter} // Bind the value to statusFilter
+            onChange={(e) => { setStatusFilter(e.target.value);}} // Update statusFilter on change
+              name="statusFilter"
+          >
+            <option value="">Tous</option>
+            <option value="in progress">En cours</option>
+            <option value="canceled">Annulée</option>
+            <option value="confirmed driver">Confirmée conducteur</option>
+          </select>
+        </div>
+      ),
       accessor: "status",
       Cell: (row) => {
         const statusMapping = {
@@ -166,7 +182,9 @@ const Mission = () => {
           </span>
         );
       },
-    },
+    }
+    ,
+
 
     {
       Header: "Action",
@@ -232,7 +250,7 @@ const Mission = () => {
         setActiveModal(false);
       })
       .catch((err) => {
-        console.error("Erreur lors de la suppression du partenaire :", err);
+
       })
       .finally(() => {
         setIsLoading(false);
@@ -243,7 +261,10 @@ const Mission = () => {
     setSelectedPartnerId(partnerId);
     setActiveModal(true);
   };
-
+  const filteredMissions = useMemo(() => {
+    if (!statusFilter) return Missions;
+    return Missions.filter((mission) => mission.status === statusFilter);
+  }, [Missions, statusFilter]);
   const FindRequestDemandeByPartnerV2 = () => {
     return missionService
       .FindRequestDemandeByPartnerV2()
@@ -274,12 +295,14 @@ const Mission = () => {
     groupAsyncFunctions();
   }, []);
 
-  const mission = MissionByPartner ? MissionsPartner : Missions;
+  const mission = MissionByPartner ? MissionsPartner : filteredMissions;
   const columns = useMemo(
     () => (MissionByPartner ? COLUMNSPartner : COLUMNS),
-    [MissionByPartner]
+    [MissionByPartner,statusFilter]
   );
   const data = useMemo(() => mission || [], [mission]);
+  // const data = useMemo(() => filteredMissions, [filteredMissions]);
+
 
   const tableInstance = useTable(
     {

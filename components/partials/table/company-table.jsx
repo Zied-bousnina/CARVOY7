@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo,useState } from "react";
 import {
   useTable,
   useRowSelect,
@@ -13,7 +13,7 @@ import { useRouter } from "next/navigation";
 
 const CompanyTable = ({ Missions, expandedRows = false }) => {
   const router = useRouter();
-
+  const [statusFilter, setStatusFilter] = useState("");
   // Actions
   const actions = [
     {
@@ -74,7 +74,21 @@ const CompanyTable = ({ Missions, expandedRows = false }) => {
         }).format(new Date(value)),
     },
     {
-      Header: "Statut",
+      Header: () => (
+        <div className="flex flex-col">
+          <span>Statut</span>
+          <select
+            className="form-control mt-1"
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+          >
+            <option value="">Tous</option>
+            <option value="in progress">En cours</option>
+            <option value="canceled">Annulée</option>
+            <option value="Confirmée driver">Confirmée conducteur</option>
+          </select>
+        </div>
+      ),
       accessor: "status",
       Cell: (row) => {
         const statusMapping = {
@@ -83,8 +97,8 @@ const CompanyTable = ({ Missions, expandedRows = false }) => {
           "Confirmée driver": "Confirmée conducteur",
         };
 
-        const statusValue = row?.cell?.value; // Backend value in English
-        const displayValue = statusMapping[statusValue] || statusValue; // Map to French
+        const statusValue = row?.cell?.value;
+        const displayValue = statusMapping[statusValue] || statusValue;
 
         return (
           <span className="block w-full">
@@ -149,9 +163,13 @@ const CompanyTable = ({ Missions, expandedRows = false }) => {
       },
     },
   ];
+  const filteredMissions = useMemo(() => {
+    if (!statusFilter) return Missions;
+    return Missions.filter((mission) => mission.status === statusFilter);
+  }, [Missions, statusFilter]);
 
   const columns = useMemo(() => COLUMNS, [expandedRows]);
-  const data = useMemo(() => Missions || [], [Missions]);
+  const data = useMemo(() => filteredMissions || [], [filteredMissions]);
 
   const tableInstance = useTable(
     {
