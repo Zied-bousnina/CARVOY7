@@ -59,15 +59,15 @@ const [statusFilter, setStatusFilter] = useState(""); // Initialize the filter w
     {
       name: "voir",
       icon: "heroicons-outline:eye",
-      doit: () => {
-        router.push("/admin/missionDetails");
+      doit: (id) => {
+        router.push(`/admin/missionDetails/${id}`);
       },
     },
     {
       name: "modifier",
       icon: "heroicons:pencil-square",
       doit: (id) => {
-        router.push("/admin/editMission");
+        router.push(`/admin/editMission/${id}`);
       },
     },
     {

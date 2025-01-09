@@ -104,7 +104,7 @@ const PartnerDetail = ({ params }) => {
       </div>
       <Card title="Partner Details" headerslot={false}>
         <h4 className="text-slate-900 dark:text-white text-xl mb-4">
-          Partner ID: {PartnerDetails._id}
+          Partner ID: {PartnerDetails?._id}
         </h4>
         <form
           style={{
@@ -118,31 +118,31 @@ const PartnerDetail = ({ params }) => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Company Name */}
             <div>
-              <Textinput label="Company Name" type="text" disabled defaultValue={PartnerDetails.name} readOnly   />
+              <Textinput label="Company Name" type="text" disabled defaultValue={PartnerDetails?.name} readOnly   />
             </div>
 
             {/* Contact Person */}
             <div>
-              <Textinput label="Contact Person" type="text" disabled defaultValue={PartnerDetails.contactName} readOnly />
+              <Textinput label="Contact Person" type="text" disabled defaultValue={PartnerDetails?.contactName} readOnly />
             </div>
           </div>
 
           <div className="grid grid-cols-1 gap-4 mt-4">
             {/* Address */}
             <div>
-              <Textinput label="Address" type="text" disabled defaultValue={PartnerDetails.addressPartner} readOnly />
+              <Textinput label="Address" type="text" disabled defaultValue={PartnerDetails?.addressPartner} readOnly />
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
             {/* Email */}
             <div>
-              <Textinput label="Email" type="email" disabled defaultValue={PartnerDetails.email} readOnly />
+              <Textinput label="Email" type="email" disabled defaultValue={PartnerDetails?.email} readOnly />
             </div>
 
             {/* Phone Number */}
             <div>
-              <Textinput label="Phone Number" type="tel" disabled defaultValue={PartnerDetails.phoneNumber} readOnly />
+              <Textinput label="Phone Number" type="tel" disabled defaultValue={PartnerDetails?.phoneNumber} readOnly />
             </div>
           </div>
 
@@ -151,12 +151,12 @@ const PartnerDetail = ({ params }) => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Siret */}
             <div>
-              <Textinput label="Siret" type="text" disabled defaultValue={PartnerDetails.siret} readOnly />
+              <Textinput label="Siret" type="text" disabled defaultValue={PartnerDetails?.siret} readOnly />
             </div>
 
             {/* K-Bis */}
             <div
-            onClick={() => handleImageClick(PartnerDetails.kbis)}
+            onClick={() => handleImageClick(PartnerDetails?.kbis)}
             className="cursor-pointer"
             >
             <label
@@ -166,7 +166,7 @@ const PartnerDetail = ({ params }) => {
         >
 K-BIS
         </label>
-              <Image src={PartnerDetails.kbis}  />
+              <Image src={PartnerDetails?.kbis}  />
             </div>
             {isModalOpen && (
               <Modal
