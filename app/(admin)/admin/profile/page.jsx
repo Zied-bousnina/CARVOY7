@@ -34,7 +34,7 @@ const profile = () => {
     Promise.all([FindProfile()])
       .then(() => {})
       .catch((err) => {
-       
+
       })
       .finally(() => {
         setIsLoading(false);
@@ -42,10 +42,10 @@ const profile = () => {
   };
 
   useEffect(() => {
-    
+
     groupAsyncFunctions();
   }, []); // Empty array to only run on mount
-
+console.log(UserProfile?.avatar)
 
   return (
     <div>
