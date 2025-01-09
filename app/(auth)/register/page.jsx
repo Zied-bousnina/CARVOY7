@@ -32,7 +32,7 @@ const Register = () => {
                 <div className="text-center 2xl:mb-10 mb-5">
                   <h4 className="font-medium">S'inscrire</h4>
                   <div className="text-slate-500 dark:text-slate-400 text-base">
-                    Créez un compte pour commencer à utiliser Dashcode
+                    Créez un compte pour commencer à utiliser CarVoy7
                   </div>
                 </div>
                 <RegForm />
