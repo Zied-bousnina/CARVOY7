@@ -113,7 +113,7 @@ const MapMission = ({ startingPoint, setStartingPoint, destination, setDestinati
   };
 
   return (
-    <div className="w-full h-[300px]">
+    <div className="w-full h-[500px]">
       <MapContainer
         center={currentLocation}
         zoom={13}

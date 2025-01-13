@@ -227,7 +227,7 @@ const [immatriculation, setImmatriculation] = useState("");
 
 
     }
-   
+
     setVehicleDetails({
       ...vehicleDetails, // Keep existing vehicleDetails properties
       vehicle: vehicleData.modele, // Update with actual vehicle name if you have it in state
@@ -243,7 +243,7 @@ const [immatriculation, setImmatriculation] = useState("");
     }else{
       setscreen("plateau")
     }
-    
+
     if (currentStep < 3) {
       setCurrentStep(currentStep + 1);
     }
@@ -263,7 +263,7 @@ const [immatriculation, setImmatriculation] = useState("");
     //   form.siret === undefined ||
     //   form.kbis === undefined
     // ) {
-    //   
+    //
     //   return;
     // }
 
@@ -287,7 +287,7 @@ const [immatriculation, setImmatriculation] = useState("");
       }
 
     );
-   
+
   }
 
   const fetchSuggestions = async (query, isStartingPoint) => {
@@ -303,7 +303,8 @@ const [immatriculation, setImmatriculation] = useState("");
     setIsLoading(true); // Start loading
 
     try {
-      const response = await axios.get(`https://nominatim.openstreetmap.org/search?format=json&q=${query}&countrycodes=fr`);
+      const response = await axios.get(`https://nominatim.openstreetmap.org/reverse?lat=30.2558585&lon=10.255&format=json`);
+      console.log("response",response)
 
       if (isStartingPoint) {
         setStartingPointSuggestions(response.data);
@@ -384,7 +385,7 @@ const [immatriculation, setImmatriculation] = useState("");
       remunerationAmount: costdriver
     })
 
-   
+
 
     CreateMission(
       {
@@ -403,7 +404,7 @@ const [immatriculation, setImmatriculation] = useState("");
       setIsSubmitting(true);
       missionService.AdMissionNewVersion(data)
         .then((res) => {
-        
+
           setIsSubmitting(false);
           // You can show a success message here
           toast.success("         created successfully!          ", {
@@ -418,12 +419,12 @@ const [immatriculation, setImmatriculation] = useState("");
           });
           setError( {});
           setForm({});
-          
+
           router.push(`/admin/devis/${res?.demande?._id}`);
 
         })
         .catch((error) => {
-         
+
           setIsSubmitting(false);
           if (error) {
             setError(error); // Assuming the backend returns an error object like { email: 'Email already exists', ... }
@@ -449,7 +450,9 @@ const [immatriculation, setImmatriculation] = useState("");
    }}
  >
       <ToastContainer />
-      <Card title="Créer une mission">
+      <Card title="Créer une mission"
+      headerslot={false}
+      >
         {currentStep === 1 && (
           <div>
 

@@ -20,6 +20,7 @@ import GlobalFilter from "@/components/partials/table/GlobalFilter";
 import { missionService } from "@/_services/mission.service";
 import CompanyTable from "@/components/partials/table/company-table";
 import Modal from "@/components/ui/Modal";
+import { toast } from 'react-toastify';
 
 const IndeterminateCheckbox = React.forwardRef(
   ({ indeterminate, ...rest }, ref) => {
@@ -136,13 +137,14 @@ const [statusFilter, setStatusFilter] = useState(""); // Initialize the filter w
           <select
             className="form-control mt-1"
             value={statusFilter} // Bind the value to statusFilter
-            onChange={(e) => { setStatusFilter(e.target.value);}} // Update statusFilter on change
-              name="statusFilter"
+            onChange={(e) => setStatusFilter(e.target.value)} // Update statusFilter on change
+            name="statusFilter"
           >
             <option value="">Tous</option>
             <option value="in progress">En cours</option>
             <option value="canceled">Annulée</option>
-            <option value="confirmed driver">Confirmée conducteur</option>
+            <option value="Confirmée driver">Confirmée conducteur</option>
+            <option value="En attente">En attente</option>
           </select>
         </div>
       ),
@@ -151,7 +153,8 @@ const [statusFilter, setStatusFilter] = useState(""); // Initialize the filter w
         const statusMapping = {
           "in progress": "En cours",
           "canceled": "Annulée",
-          "confirmed driver": "Confirmée conducteur",
+          "Confirmée driver": "Confirmée conducteur",
+          "En attente": "En attente", // Add the mapping for "En attente"
         };
 
         const statusValue = row?.cell?.value;
@@ -161,7 +164,7 @@ const [statusFilter, setStatusFilter] = useState(""); // Initialize the filter w
           <span className="block w-full">
             <span
               className={`inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-[999px] bg-opacity-25 ${
-                statusValue === "confirmed driver"
+                statusValue === "Confirmée driver"
                   ? "text-success-500 bg-success-500"
                   : ""
               }
@@ -175,6 +178,11 @@ const [statusFilter, setStatusFilter] = useState(""); // Initialize the filter w
                   ? "text-danger-500 bg-danger-500"
                   : ""
               }
+              ${
+                statusValue === "En attente"
+                  ? "text-info-500 bg-info-500" // Add styles for "En attente"
+                  : ""
+              }
             `}
             >
               {displayValue}
@@ -183,6 +191,7 @@ const [statusFilter, setStatusFilter] = useState(""); // Initialize the filter w
         );
       },
     }
+
     ,
 
 
@@ -257,8 +266,15 @@ const [statusFilter, setStatusFilter] = useState(""); // Initialize the filter w
       });
   };
 
-  const handleDeleteClick = (partnerId) => {
-    setSelectedPartnerId(partnerId);
+  const handleDeleteClick = (missionId) => {
+    const selectedMission = Missions.find((mission) => mission._id === missionId);
+console.log(selectedMission);
+    if (selectedMission?.status !== "En attente") {
+      toast.error("Seules les missions avec le statut 'En Attente' peuvent être supprimées.");
+      return;
+    }
+
+    setSelectedPartnerId(missionId);
     setActiveModal(true);
   };
   const filteredMissions = useMemo(() => {

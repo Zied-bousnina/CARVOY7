@@ -10,31 +10,37 @@ import {
 import Icon from "@/components/ui/Icon";
 import Dropdown from "@/components/ui/Dropdown";
 import { useRouter } from "next/navigation";
+import { toast } from 'react-toastify';
 
 const CompanyTable = ({ Missions, expandedRows = false }) => {
   const router = useRouter();
   const [statusFilter, setStatusFilter] = useState("");
+    const [activeModal, setActiveModal] = useState(false);
+    const [selectedPartnerId, setSelectedPartnerId] = useState(null);
+
   // Actions
   const actions = [
     {
       name: "Voir",
       icon: "heroicons-outline:eye",
-      doit: () => {
-        router.push("/invoice-preview");
+      doit: (id) => {
+        router.push(`/admin/missionDetails/${id}`);
+
       },
     },
     {
       name: "Modifier",
       icon: "heroicons:pencil-square",
       doit: (id) => {
-        router.push("/invoice-edit");
+        router.push(`/admin/editMission/${id}`);
+
       },
     },
     {
       name: "Supprimer",
       icon: "heroicons-outline:trash",
       doit: (id) => {
-        return null;
+        handleDeleteClick(id);
       },
     },
   ];
@@ -93,8 +99,9 @@ const CompanyTable = ({ Missions, expandedRows = false }) => {
       Cell: (row) => {
         const statusMapping = {
           "in progress": "En cours",
-          canceled: "Annulée",
+          "canceled": "Annulée",
           "Confirmée driver": "Confirmée conducteur",
+          "En attente": "En attente", // Add the mapping for "En attente"
         };
 
         const statusValue = row?.cell?.value;
@@ -117,7 +124,13 @@ const CompanyTable = ({ Missions, expandedRows = false }) => {
                 statusValue === "canceled"
                   ? "text-danger-500 bg-danger-500"
                   : ""
-              }`}
+              }
+              ${
+                statusValue === "En attente"
+                  ? "text-info-500 bg-info-500" // Add styles for "En attente"
+                  : ""
+              }
+            `}
             >
               {displayValue}
             </span>
@@ -143,7 +156,7 @@ const CompanyTable = ({ Missions, expandedRows = false }) => {
                 {actions.map((item, i) => (
                   <div
                     key={i}
-                    onClick={() => item.doit()}
+                    onClick={() => item.doit(row.row.values._id)}
                     className={`${
                       item.name === "Supprimer"
                         ? "bg-danger-500 text-danger-500 bg-opacity-30 hover:bg-opacity-100 hover:text-white"
@@ -163,6 +176,17 @@ const CompanyTable = ({ Missions, expandedRows = false }) => {
       },
     },
   ];
+   const handleDeleteClick = (missionId) => {
+      const selectedMission = Missions.find((mission) => mission._id === missionId);
+  console.log(selectedMission);
+      if (selectedMission?.status !== "En attente") {
+        toast.error("Seules les missions avec le statut 'En Attente' peuvent être supprimées.");
+        return;
+      }
+
+      setSelectedPartnerId(missionId);
+      setActiveModal(true);
+    };
   const filteredMissions = useMemo(() => {
     if (!statusFilter) return Missions;
     return Missions.filter((mission) => mission.status === statusFilter);
@@ -206,6 +230,33 @@ const CompanyTable = ({ Missions, expandedRows = false }) => {
 
   return (
     <>
+    {activeModal && (
+        <Modal
+          activeModal={activeModal}
+          onClose={() => setActiveModal(false)}
+          title="Confirmer la suppression"
+          footerContent={
+            <>
+              <button
+                className="btn btn-secondary"
+                onClick={() => setActiveModal(false)}
+                disabled={isLoading}
+              >
+                Annuler
+              </button>
+              <button
+                className="btn btn-danger"
+                onClick={() => deletePartner(selectedPartnerId)}
+                disabled={isLoading}
+              >
+                {isLoading ? "Suppression en cours..." : "Supprimer"}
+              </button>
+            </>
+          }
+        >
+          <p>Êtes-vous sûr de vouloir supprimer cette mission ?</p>
+        </Modal>
+      )}
       <div>
         <div className="overflow-x-auto -mx-6">
           <div className="inline-block min-w-full align-middle">
