@@ -275,10 +275,12 @@ export async function createCategorie(userData){
      method: "POST",
      headers: {
          ...authHeader(),
-         'Content-Type': 'multipart/form-data'
+           "Content-Type": "application/json"
+
      },
-       body: JSON.stringify(userData)
+     body: JSON.stringify(userData)
      };
+     console.log(requestOptions)
   const response = await fetch(`${ApiConfigs.base_url + ApiConfigs.apis.admin.categorie.createCategorie}`, requestOptions)
 
   return handleResponse(response);
@@ -431,7 +433,7 @@ export async function AddDevis(userData){
     method:'GET',
     headers: authHeader()
   }
-
+console.log(id)
   const response = await fetch(`${ApiConfigs.base_url+ ApiConfigs.apis.admin.categorie.FindCategorieById.replace('{id}',id)}`,requestOptions)
 
   return handleResponse(response)

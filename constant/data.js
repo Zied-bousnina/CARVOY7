@@ -58,10 +58,10 @@ export const menuItems = [
       childtitle: "Gérer les paramètres",
       childlink: "admin/addCategorie",
     },
-    {
-      childtitle: "Liste Categorie",
-      childlink: "admin/categorieList",
-    },
+    // {
+    //   childtitle: "Liste Categorie",
+    //   childlink: "admin/categorieList",
+    // },
     {
       childtitle: "Générer Facture",
       childlink: "admin/generateFacture",

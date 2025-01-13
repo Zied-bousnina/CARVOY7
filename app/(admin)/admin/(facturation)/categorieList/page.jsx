@@ -165,15 +165,15 @@ const CategorieList = () => {
  const FindAllCategories = () => {
     return missionService.FindAllCategories()
       .then((res) => {
-        
+
         setCategorieLists(res.categorie
         ); // Update the state with the correct value
       })
       .catch((err) => {
-      
+
       })
       .finally(() => {
-        
+
       });
   };
 
@@ -184,7 +184,7 @@ const CategorieList = () => {
     Promise.all([FindAllCategories()])
       .then(() => {})
       .catch((err) => {
-      
+
       })
       .finally(() => {
         setIsLoading(false);

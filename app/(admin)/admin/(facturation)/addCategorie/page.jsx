@@ -52,7 +52,7 @@ const AddCategorie = () => {
   const router = useRouter();
   const [statuses] = useState(['Online', 'Hors-ligne']);
   const [activeModal, setActiveModal] = useState(false);
-  const [selectedPartnerId, setSelectedPartnerId] = useState(null);
+  const [selectedCategorieId, setselectedCategorieId] = useState(null);
   const [CategorieLists, setCategorieLists] = useState([]);
   const actions = [
     // {
@@ -197,12 +197,12 @@ const AddCategorie = () => {
     groupAsyncFunctions();
   }, []); // Empty array to only run on mount
 
-  const deletePartner = (id) => {
+  const deleteCategorie = (id) => {
     setIsLoading(true);
-    UserService.DeleteUserByAdmin(id)
+    missionService.DeleteCategorie(id)
       .then((res) => {
 
-        FetchAllPartnership(); // Refresh the table
+        FindAllCategories(); // Refresh the table
         setActiveModal(false); // Close the modal
       })
       .catch((err) => {
@@ -213,7 +213,7 @@ const AddCategorie = () => {
       });
   };
   const handleDeleteClick = (partnerId) => {
-    setSelectedPartnerId(partnerId); // Set the ID of the partner to delete
+    setselectedCategorieId(partnerId); // Set the ID of the partner to delete
     setActiveModal(true); // Open the modal
   };
 
@@ -275,31 +275,32 @@ const AddCategorie = () => {
   return (
     <>
      {activeModal && (
-        <Modal
-          activeModal={activeModal}
-          onClose={() => setActiveModal(false)}
-          title="Confirm Delete"
-          footerContent={
-            <>
-              <button
-                className="btn btn-secondary"
-                onClick={() => setActiveModal(false)}
-                disabled={isLoading}
-              >
-                Cancel
-              </button>
-              <button
-                className="btn btn-danger"
-                onClick={() => deletePartner(selectedPartnerId)}
-                disabled={isLoading}
-              >
-                {isLoading ? "Deleting..." : "Delete"}
-              </button>
-            </>
-          }
-        >
-          <p>Are you sure you want to delete this partner?</p>
-        </Modal>
+       <Modal
+       activeModal={activeModal}
+       onClose={() => setActiveModal(false)}
+       title="Confirmer la suppression"
+       footerContent={
+         <>
+           <button
+             className="btn btn-secondary"
+             onClick={() => setActiveModal(false)}
+             disabled={isLoading}
+           >
+             Annuler
+           </button>
+           <button
+             className="btn btn-danger"
+             onClick={() => deleteCategorie(selectedCategorieId)}
+             disabled={isLoading}
+           >
+             {isLoading ? "Suppression en cours..." : "Supprimer"}
+           </button>
+         </>
+       }
+     >
+       <p>Êtes-vous sûr de vouloir supprimer cette catégorie ?</p>
+     </Modal>
+
       )}
       <Card noborder>
         <div className="md:flex pb-6 items-center">

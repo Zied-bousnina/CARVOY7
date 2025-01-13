@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import Textinput from "@/components/ui/Textinput";
@@ -15,41 +15,38 @@ import { toast, ToastContainer } from "react-toastify";
 import { useRouter } from "next/navigation";
 import Fileinput from "@/components/ui/Fileinput";
 import { DriverService } from "@/_services/driver.service";
+import Select from "@/components/ui/Select";
+import { missionService } from "@/_services/mission.service";
+import Alert from "@/components/ui/Alert";
+import Icon from "@/components/ui/Icon";
 
-
-const EditCategorie = () => {
+const EditCategorie = ({params}) => {
   const [form, setForm] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState({});
+  const [error, setError] = useState();
   const router = useRouter();
+    const [isLoading, setIsLoading] = useState(false);
+
+ const {id} = params
   const [selectedFile, setSelectedFile] = useState({});
   const [selectedFiles, setSelectedFiles] = useState([]);
+  const DistanceTypeOptions = [
+    { value: '10', label: '10 km' },
+    { value: '20', label: '20 km' },
+    { value: '30', label: '30 km' },
+    { value: '40', label: '40 km' },
+    { value: '50', label: '50 km' },
 
-  const handleFileChange = (event) => {
-    // const files = event.target.files;
-    const { name, files } = event.target;
-    setForm({
-        ...form,
-        [name]: files[0],
-        // kbis: e.target.files[0]
-      });
 
-    if (files.length === 1) {
-      setSelectedFile({
-        ...selectedFile,
-        [name]: files[0],
-        // kbis: e.target.files[0]
-      }); // Single file
-    } else if (files.length > 1) {
-      setSelectedFiles([...files]); // Multiple files
-    }
+  ];
+  const [value, setValue] = useState("");
+
+
+  const handleChange = (e) => {
+    setValue(e.target.value);
   };
-  const onChangeHandlerFile = (e) => {
-    setForm({
-      ...form,
-      kbis: e.target.files[0],
-    });
-  };
+
+
 
   const onChangeHandler = (e) => {
     const { name, value } = e.target;
@@ -62,41 +59,42 @@ const EditCategorie = () => {
   const onSubmit = (e) => {
     e.preventDefault();
 
-    // if (
-    //   form.name === undefined ||
-    //   form.contactName === undefined ||
-    //   form.addressdriver === undefined ||
-    //   form.email === undefined ||
-    //   form.phoneNumber === undefined ||
-    //   form.siret === undefined ||
-    //   form.kbis === undefined
-    // ) {
-    //
-    //   return;
-    // }
+if(!value){
+  toast.error("Veuillez choisir une distance", {
+    position: "top-right",
+    autoClose: 1500,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+  }
+  );
+  return;
+}
 
-    const formData = new FormData();
-    Object.keys(form).forEach((key) => {
-      if (Array.isArray(form[key])) {
-        form[key].forEach((value) => {
-          formData.append(key, value);
-        });
-      } else {
-        formData.append(key, form[key]);
+      const data= {
+        description:form?.description,
+        unitPrice:form?.unitPrice,
+        distance:value
       }
-    });
-console.log(formData)
-    CreateDriver(formData);
-  };
 
-  const CreateDriver = (data) => {
+
+
+console.log({...form ,value})
+    CreateCat(data);
+  };
+  const CreateCat = (data) => {
+    console.log(data)
+    setError()
     setIsSubmitting(true);
-    DriverService.CreateDriver(data)
+    missionService.UpdateCategorie1(data,id)
       .then((res) => {
 
         setIsSubmitting(false);
         // You can show a success message here
-        toast.success("        driver created successfully!          ", {
+        toast.success("        categorie created successfully!          ", {
           position: "top-right",
           autoClose: 1500,
           hideProgressBar: false,
@@ -108,25 +106,82 @@ console.log(formData)
         });
         setError( {});
         setForm({});
-        router.push("/admin/conducteurs");
+        router.push("/admin/addCategorie");
 
       })
       .catch((error) => {
 
+
         setIsSubmitting(false);
         if (error) {
+
           setError(error); // Assuming the backend returns an error object like { email: 'Email already exists', ... }
         }
       });
   };
+  const FindCategorieById = (idd) => {
 
+    setError()
+    setIsSubmitting(true);
+    missionService.FindCategorieById(idd)
+      .then((res) => {
+
+        setIsSubmitting(false);
+       console.log(res.categorie)
+       setValue(res.categorie.distance)
+
+
+        setForm(res.categorie);
+
+
+      })
+      .catch((error) => {
+
+      });
+
+
+
+
+  };
+  const groupAsyncFunctions = () => {
+    setIsLoading(true);
+    Promise.all([FindCategorieById(id)])
+      .then(() => {})
+      .catch((err) => {
+
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
+
+useEffect(() => {
+    groupAsyncFunctions();
+
+  }, []);
   return (
     <div>
     <ToastContainer />
-      <Card title="Créer un conducteur"
+    <div className="lg:flex justify-between flex-wrap items-center mb-6">
+        <h4></h4>
+        <div className="flex lg:justify-end items-center flex-wrap space-xy-5">
+          <button
+          onClick={()=> {
+            router.push(`/admin/addCategorie`)
+          }}
+          className="invocie-btn inline-flex btn btn-sm whitespace-nowrap space-x-1 cursor-pointer bg-white dark:bg-slate-800 dark:text-slate-300 btn-md h-min text-sm font-normal text-slate-900 rtl:space-x-reverse">
+            <span className="text-lg">
+              <Icon icon="heroicons:pencil-square" />
+            </span>
+            <span>Liste categorie</span>
+          </button>
+
+        </div>
+      </div>
+      <Card title="Modifier Catégorie"
       headerslot={false}
       >
-        <h4 className="text-slate-900 dark:text-white text-xl mb-4">#89572935Kh</h4>
+        {/* <h4 className="text-slate-900 dark:text-white text-xl mb-4">#89572935Kh</h4> */}
         <form
           onSubmit={onSubmit}
           style={{
@@ -137,181 +192,64 @@ console.log(formData)
             margin: 20,
           }}
         >
-            <h4 className="text-slate-900 dark:text-white text-xl mb-4">Informations sur le conducteur</h4>
+
+
+          <div className="grid grid-cols-1 gap-4 mt-4">
+            {/* Address */}
+            <div>
+              <Textinput
+                label="Description"
+                type="text"
+                placeholder="Entrez la Description"
+                required
+                name="description"
+                onChange={onChangeHandler}
+                value={form.description}
+              />
+              {error?.name && <div className="text-red-500">{error.name}</div>}
+            </div>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Company Name */}
             <div>
-              <Textinput
-                label="Nom"
-                type="text"
-                placeholder="Entrez le nom de la personne de contact"
-                required
-                name="name"
-                onChange={onChangeHandler}
-              />
+
+    <Select
+              label="Distance (km)"
+              options={DistanceTypeOptions}
+              onChange={handleChange}
+              value={value}
+              required
+            />
               {error?.name && <div className="text-red-500">{error.name}</div>}
             </div>
 
             {/* Contact Person */}
             <div>
               <Textinput
-                label="E-mail"
+                label="Prix unitaire"
                 type="text"
-                placeholder="Entrez l'adresse e-mail de la personne de contact"
+                placeholder="Entrez prix unitaire"
                 required
-                name="email"
+                name="unitPrice"
                 onChange={onChangeHandler}
+                value={form.unitPrice
+                }
               />
-              {error?.email && <div className="text-red-500">{error.email}</div>}
+              {error?.unitPrice && <div className="text-red-500">{error.unitPrice}</div>}
             </div>
           </div>
+{
+  error&&
+          <Alert
+          label={error+' !'}
+          className="alert-outline-danger"
+          />
+        }
 
-          <div className="grid grid-cols-1 gap-4 mt-4">
-            {/* Address */}
-            <div>
-            <Fileinput
-            required={true}
 
-            preview={false}
-                label="K-Bis"
-                type="file"
-                name="kbis"
- placeholder="Select driver documents..."
-                selectedFile={selectedFile?.kbis}
-        // selectedFiles={selectedFiles}
-                onChange={handleFileChange}
-              />
-              {/* {error?.addressdriver && <div className="text-red-500">{error.addressdriver}</div>} */}
-            </div>
-          </div>
-          <h4 className="text-slate-900 dark:text-white text-xl mb-4">Driving Documents</h4>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-            {/* Email */}
-            <div>
-            <Fileinput
-            required={true}
-             placeholder="Select driver documents..."
-                selectedFile={selectedFile?.permisConduirefrontCard}
-        // selectedFiles={selectedFiles}
-                onChange={handleFileChange}
 
-            preview={false}
-                label="Driver's license (Front card)"
-                type="file"
 
-                name="permisConduirefrontCard"
-
-              />
-            </div>
-
-            {/* Phone Number */}
-            <div>
-            <Fileinput
-            required={true}
-             placeholder="Select driver documents..."
-                selectedFile={selectedFile?.permisConduirebackCard}
-        // selectedFiles={selectedFiles}
-                onChange={handleFileChange}
-
-            preview={false}
-                label="Driver's license (Back card)"
-                type="file"
-
-                name="permisConduirebackCard"
-
-              />
-            </div>
-
-          </div>
-
-          <hr className="my-4" />
-
-          <div className="grid grid-cols-1 gap-4 mt-4">
-            {/* Siret */}
-
-            <div>
-            <Fileinput
-            required={true}
-             placeholder="Select driver documents..."
-                selectedFile={selectedFile?.assurance}
-        // selectedFiles={selectedFiles}
-                onChange={handleFileChange}
-
-            preview={false}
-                label="Insurance certificate"
-                type="file"
-
-                name="assurance"
-
-              />
-            </div>
-
-          </div>
-          <hr className="my-4" />
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-            {/* Email */}
-            <div>
-            <Fileinput
-            required={true}
-             placeholder="Select driver documents..."
-                selectedFile={selectedFile?.CinfrontCard}
-        // selectedFiles={selectedFiles}
-                onChange={handleFileChange}
-
-            preview={false}
-
-                label="Identity document (Front card)"
-                type="file"
-
-                name="CinfrontCard"
-
-              />
-            </div>
-
-            {/* Phone Number */}
-            <div>
-            <Fileinput
-            required={true}
-             placeholder="Select driver documents..."
-                selectedFile={selectedFile?.CinbackCard}
-        // selectedFiles={selectedFiles}
-                onChange={handleFileChange}
-
-            preview={false}
-
-                label="Identity document (Back card)"
-                type="file"
-
-                name="CinbackCard"
-
-              />
-            </div>
-          </div>
-
-          <hr className="my-4" />
-          <div className="grid grid-cols-1 gap-4 mt-4">
-            {/* Siret */}
-
-            <div>
-            <Fileinput
-            required={true}
-             placeholder="Select driver documents..."
-                selectedFile={selectedFile?.proofOfAddress}
-        // selectedFiles={selectedFiles}
-                onChange={handleFileChange}
-
-            preview={false}
-
-                label="Proof of address"
-                type="file"
-
-                name="proofOfAddress"
-
-              />
-            </div>
-          </div>
 
           {/* Submit Button */}
           <div className="ltr:text-right rtl:text-left space-x-3 rtl:space-x-reverse">

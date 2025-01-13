@@ -16,12 +16,14 @@ import { useRouter } from "next/navigation";
 import Fileinput from "@/components/ui/Fileinput";
 import { DriverService } from "@/_services/driver.service";
 import Select from "@/components/ui/Select";
-
+import { missionService } from "@/_services/mission.service";
+import Alert from "@/components/ui/Alert";
+import Icon from "@/components/ui/Icon";
 
 const CreateCategorie = () => {
   const [form, setForm] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState({});
+  const [error, setError] = useState();
   const router = useRouter();
   const [selectedFile, setSelectedFile] = useState({});
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -35,36 +37,13 @@ const CreateCategorie = () => {
 
   ];
   const [value, setValue] = useState("");
-  const [value2, setValue2] = useState("");
+
 
   const handleChange = (e) => {
     setValue(e.target.value);
   };
-  const handleFileChange = (event) => {
-    // const files = event.target.files;
-    const { name, files } = event.target;
-    setForm({
-        ...form,
-        [name]: files[0],
-        // kbis: e.target.files[0]
-      });
 
-    if (files.length === 1) {
-      setSelectedFile({
-        ...selectedFile,
-        [name]: files[0],
-        // kbis: e.target.files[0]
-      }); // Single file
-    } else if (files.length > 1) {
-      setSelectedFiles([...files]); // Multiple files
-    }
-  };
-  const onChangeHandlerFile = (e) => {
-    setForm({
-      ...form,
-      kbis: e.target.files[0],
-    });
-  };
+
 
   const onChangeHandler = (e) => {
     const { name, value } = e.target;
@@ -77,41 +56,43 @@ const CreateCategorie = () => {
   const onSubmit = (e) => {
     e.preventDefault();
 
-    // if (
-    //   form.name === undefined ||
-    //   form.contactName === undefined ||
-    //   form.addressdriver === undefined ||
-    //   form.email === undefined ||
-    //   form.phoneNumber === undefined ||
-    //   form.siret === undefined ||
-    //   form.kbis === undefined
-    // ) {
-    //
-    //   return;
-    // }
+if(!value){
+  toast.error("Veuillez choisir une distance", {
+    position: "top-right",
+    autoClose: 1500,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+  }
+  );
+  return;
+}
 
-    const formData = new FormData();
-    Object.keys(form).forEach((key) => {
-      if (Array.isArray(form[key])) {
-        form[key].forEach((value) => {
-          formData.append(key, value);
-        });
-      } else {
-        formData.append(key, form[key]);
+      const data= {
+        description:form?.description,
+        unitPrice:form?.unitPrice,
+        distance:value
       }
-    });
-console.log(formData)
-    CreateDriver(formData);
+
+
+
+console.log({...form ,value})
+    CreateCat(data);
   };
 
-  const CreateDriver = (data) => {
+  const CreateCat = (data) => {
+    console.log(data)
+    setError()
     setIsSubmitting(true);
-    DriverService.CreateDriver(data)
+    missionService.createCategorie(data)
       .then((res) => {
 
         setIsSubmitting(false);
         // You can show a success message here
-        toast.success("        driver created successfully!          ", {
+        toast.success("   Categorie Updated successfully!          ", {
           position: "top-right",
           autoClose: 1500,
           hideProgressBar: false,
@@ -123,13 +104,17 @@ console.log(formData)
         });
         setError( {});
         setForm({});
-        router.push("/admin/conducteurs");
+        // router.push("/admin/conducteurs");
+        router.push("/admin/addCategorie");
+
 
       })
       .catch((error) => {
 
+
         setIsSubmitting(false);
         if (error) {
+
           setError(error); // Assuming the backend returns an error object like { email: 'Email already exists', ... }
         }
       });
@@ -138,10 +123,26 @@ console.log(formData)
   return (
     <div>
     <ToastContainer />
+    <div className="lg:flex justify-between flex-wrap items-center mb-6">
+        <h4></h4>
+        <div className="flex lg:justify-end items-center flex-wrap space-xy-5">
+          <button
+          onClick={()=> {
+            router.push(`/admin/addCategorie`)
+          }}
+          className="invocie-btn inline-flex btn btn-sm whitespace-nowrap space-x-1 cursor-pointer bg-white dark:bg-slate-800 dark:text-slate-300 btn-md h-min text-sm font-normal text-slate-900 rtl:space-x-reverse">
+            <span className="text-lg">
+              <Icon icon="heroicons:pencil-square" />
+            </span>
+            <span>Liste categorie</span>
+          </button>
+
+        </div>
+      </div>
       <Card title="Ajouter Catégorie"
       headerslot={false}
       >
-        <h4 className="text-slate-900 dark:text-white text-xl mb-4">#89572935Kh</h4>
+        {/* <h4 className="text-slate-900 dark:text-white text-xl mb-4">#89572935Kh</h4> */}
         <form
           onSubmit={onSubmit}
           style={{
@@ -162,7 +163,7 @@ console.log(formData)
                 type="text"
                 placeholder="Entrez la Description"
                 required
-                name="Description"
+                name="description"
                 onChange={onChangeHandler}
               />
               {error?.name && <div className="text-red-500">{error.name}</div>}
@@ -177,6 +178,7 @@ console.log(formData)
               options={DistanceTypeOptions}
               onChange={handleChange}
               value={value}
+              required
             />
               {error?.name && <div className="text-red-500">{error.name}</div>}
             </div>
@@ -184,18 +186,23 @@ console.log(formData)
             {/* Contact Person */}
             <div>
               <Textinput
-                label="E-mail"
+                label="Prix unitaire"
                 type="text"
-                placeholder="Entrez l'adresse e-mail de la personne de contact"
+                placeholder="Entrez prix unitaire"
                 required
-                name="email"
+                name="unitPrice"
                 onChange={onChangeHandler}
               />
-              {error?.email && <div className="text-red-500">{error.email}</div>}
+              {error?.unitPrice && <div className="text-red-500">{error.unitPrice}</div>}
             </div>
           </div>
-
-
+{
+  error&&
+          <Alert
+          label={error+' !'}
+          className="alert-outline-danger"
+          />
+        }
 
 
 
