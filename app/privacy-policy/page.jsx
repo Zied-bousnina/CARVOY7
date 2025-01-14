@@ -102,10 +102,10 @@ const PrivacyPolicy = () => {
               </p>
               <p className="text-slate-600 dark:text-slate-400 mt-4">
                 <a
-                  href="mailto:support@carvoy7.com"
+                  href="mailto:contact@carvoy7.com"
                   className="text-slate-900 dark:text-white font-medium underline"
                 >
-                  support@carvoy7.com
+                  contact@carvoy7.com
                 </a>
               </p>
             </section>
