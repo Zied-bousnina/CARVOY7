@@ -87,9 +87,9 @@ const Dashboard = () => {
 
   // React to date range changes
   useEffect(() => {
-    
+
       groupAsyncFunctions();
-  
+
   }, [dateRange]);
 
   // Socket listener
@@ -111,7 +111,9 @@ const Dashboard = () => {
 
   return (
     <div>
-      <HomeBredCurbs title="Accueil" onFilterChange={handleFilterChange} />
+      <HomeBredCurbs title="Accueil" onFilterChange={handleFilterChange}
+      headerslot={true}
+       />
 
       <div className="grid grid-cols-12 gap-5 mb-5">
         <div className="2xl:col-span-12 lg:col-span-12 col-span-12">

@@ -119,10 +119,10 @@ const getMissionStats = (filters = {})=> {
 
   })
   .catch((err)=>{
-   
+
   })
   .finally(()=>{
-   
+
   })
 }
 const groupAsyncFunctions = () => {
@@ -144,7 +144,7 @@ const groupAsyncFunctions = () => {
     ])
       .then((_) => {})
       .catch((err) => {
-       
+
       })
       .finally(() => {
         setIsLoading(false);
@@ -159,7 +159,8 @@ groupAsyncFunctions();
   return (
     <div>
       <HomeBredCurbs title="Accueil"
-onFilterChange={handleFilterChange} 
+onFilterChange={handleFilterChange}
+headerslot={true}
 
        />
       <div className="grid grid-cols-12 gap-5 mb-5">
