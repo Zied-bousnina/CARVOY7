@@ -20,6 +20,7 @@ import GlobalFilter from "@/components/partials/table/GlobalFilter";
 import { missionService } from "@/_services/mission.service";
 import CompanyTable from "@/components/partials/table/company-table";
 import Modal from "@/components/ui/Modal";
+import { toast } from 'react-toastify';
 
 const IndeterminateCheckbox = React.forwardRef(
   ({ indeterminate, ...rest }, ref) => {
@@ -65,15 +66,16 @@ const Mission = () => {
     {
       name: "view",
       icon: "heroicons-outline:eye",
-      doit: () => {
-        router.push("/partner/missionDetails");
+      doit: (id) => {
+        router.push(`/partner/missionDetails/${id}`);
+
       },
     },
     {
       name: "edit",
       icon: "heroicons:pencil-square",
       doit: (id) => {
-        router.push("/partner/editMission");
+        router.push(`/partner/editMission/${id}`);
       },
     },
     {
@@ -247,8 +249,13 @@ const Mission = () => {
         setIsLoading(false);
       });
   };
-  const handleDeleteClick = (partnerId) => {
-    setSelectedPartnerId(partnerId); // Set the ID of the partner to delete
+  const handleDeleteClick = (missionId) => {
+    const selectedMission = Missions.find((mission) => mission._id === missionId);
+    if (selectedMission?.status !== "En attente") {
+      toast.error("Seules les missions avec le statut 'En Attente' peuvent être supprimées.");
+      return;
+    }
+    setSelectedPartnerId(missionId); // Set the ID of the partner to delete
     setActiveModal(true); // Open the modal
   };
   const FindRequestDemandeByPartnerV2 = () => {
@@ -287,7 +294,7 @@ const Mission = () => {
     Promise.all([FindRequestDemande(), FindRequestDemandeByPartnerV2()])
       .then(() => {})
       .catch((err) => {
-     
+
       })
       .finally(() => {
         setIsLoading(false);

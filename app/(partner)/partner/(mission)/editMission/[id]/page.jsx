@@ -62,7 +62,7 @@ const localData = {
   db_c: 1,
   nbr_req_restants: 49,
 };
-const CreateMission = () => {
+const EditMission = ({ params }) => {
   const [currentStep, setCurrentStep] = useState(1); // State to track the current step
   const [form, setForm] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -96,6 +96,8 @@ const [vehicleDetails, setVehicleDetails] = useState({
   journey: '',
   distance: ''
 });
+const [MissionDetails, setMissionDetails] = useState({});
+const { id } = params;
 const [immatriculation, setImmatriculation] = useState("");
   const [vehicleData, setVehicleData] = useState(null);
   const fetchVehicleData = async () => {
@@ -123,6 +125,18 @@ const [immatriculation, setImmatriculation] = useState("");
       setVehicleData(localData);
       setError("Using local data due to API failure.");
     }
+  };
+  const FetchMissionDetail = (id) => {
+    return missionService
+      .FindRequestDemandeById(id)
+      .then((res) => {
+        setMissionDetails(res?.demande|| {}); // Update the state with the correct value
+        prepopulateForm(res?.demande || {});
+      })
+      .catch((err) => {
+        console.error(err);
+      })
+      .finally(() => {});
   };
   // const [error, setError] = useState("");
   const [formData, setFormData] = useState({
@@ -159,6 +173,22 @@ const [immatriculation, setImmatriculation] = useState("");
       fetchVehicleData();
     }
   }, [form.immatriculation]);
+  const groupAsyncFunctions = (id) => {
+    setIsLoading(true);
+    Promise.all([FetchMissionDetail(id)])
+      .then(() => {})
+      .catch((err) => {
+        console.error(err);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    groupAsyncFunctions(id);
+  }, []);
+  console.log("MissionDetails", MissionDetails)
   const getDistanceFromLatLonInKm=()=>{
     const lat1 = startingPoint?.latitude;
   const lon1 = startingPoint?.longitude;
@@ -290,32 +320,34 @@ const [immatriculation, setImmatriculation] = useState("");
 
   }
 
-  const fetchSuggestions = async (query, isStartingPoint) => {
-    if (!query) {
-      if (isStartingPoint) {
-        setStartingPointSuggestions([]);
-      } else {
-        setDestinationSuggestions([]);
-      }
-      return;
+const fetchSuggestions = async (query, isStartingPoint) => {
+  if (!query) {
+    if (isStartingPoint) {
+      setStartingPointSuggestions([]);
+    } else {
+      setDestinationSuggestions([]);
     }
+    return;
+  }
 
-    setIsLoading(true); // Start loading
+  setIsLoading(true);
 
-    try {
-      const response = await axios.get(`https://nominatim.openstreetmap.org/search?format=json&q=${query}&countrycodes=fr`);
-
-      if (isStartingPoint) {
-        setStartingPointSuggestions(response.data);
-      } else {
-        setDestinationSuggestions(response.data);
-      }
-    } catch (error) {
-      console.error("Error fetching location suggestions:", error);
-    } finally {
-      setIsLoading(false); // End loading
+  try {
+    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${query}&countrycodes=fr`;
+    const response = await fetchWithRetry(url, 3, 1000);
+    if (isStartingPoint) {
+      setStartingPointSuggestions(response.data);
+    } else {
+      setDestinationSuggestions(response.data);
     }
-  };
+  } catch (error) {
+    console.error("Error fetching location suggestions:", error);
+    // Optional fallback
+  } finally {
+    setIsLoading(false);
+  }
+};
+
     const formatAddress = (displayName) => {
       const parts = displayName.split(',').map(part => part.trim());
       let streetNumber = '';
@@ -385,6 +417,13 @@ const [immatriculation, setImmatriculation] = useState("");
     })
 
 
+console.log("new new: ", {
+  ...data,
+  price:cost,
+  selectedServices:selectedServices,
+  uploadedDocuments,
+  remunerationAmount: costdriver
+ })
     CreateMission(
       {
          ...data,
@@ -400,7 +439,7 @@ const [immatriculation, setImmatriculation] = useState("");
     const CreateMission = (data) => {
       setIsLoad(true)
       setIsSubmitting(true);
-      missionService.AdMissionNewVersion(data)
+      missionService.UpdateMission(data,id)
         .then((res) => {
 
           setIsSubmitting(false);
@@ -418,7 +457,7 @@ const [immatriculation, setImmatriculation] = useState("");
           setError( {});
           setForm({});
 
-          router.push(`/partner/devis/${res?.demande?._id}`);
+          router.push(`/partner/mission`);
 
         })
         .catch((error) => {
@@ -435,6 +474,22 @@ const [immatriculation, setImmatriculation] = useState("");
 
         ;
     };
+    const prepopulateForm = (details) => {
+      console.log("Details", details)
+      setForm({
+        address: details?.address || "",
+        destination: details?.destination || "",
+        transport: details?.transport || "",
+        immatriculation: details?.immatriculation || "",
+        phone: details?.phone || "",
+        ...details,
+      });
+      setTransType(details?.transport || "");
+      setstartingPoint(details?.address || null);
+      setdestination(details?.destination || null);
+      setphone(details?.phone || "");
+    };
+    console.log(startingPoint)
   return (
     <div>
       <form
@@ -448,9 +503,7 @@ const [immatriculation, setImmatriculation] = useState("");
    }}
  >
       <ToastContainer />
-      <Card title="Créer une mission"
-      headerslot={false}
-      >
+      <Card title="modifier la mission" className="bg-white">
         {currentStep === 1 && (
           <div>
 
@@ -464,7 +517,7 @@ label="Point de départ"
 type="text"
 placeholder="Choisissez le point de départ"
 name="address"
-value={searchQuery} // Controlled by searchQuery
+value={searchQuery|| startingPoint?.display_name} // Controlled by searchQuery
 onChange={(e) => {
 setSearchQuery(e.target.value); // Update search query
 fetchSuggestions(e.target.value, true); // Fetch suggestions
@@ -651,6 +704,9 @@ clipRule="evenodd"
     required
     name="dateDepart"
     onChange={onChangeHandler}
+    value={form.dateDepart}
+    format-value="yyyy-MM-ddTHH:mm"
+
   />
   {error?.addressPartner && <div className="text-red-500">{error.addressPartner}</div>}
 </div>
@@ -708,6 +764,7 @@ clipRule="evenodd"
         placeholder="Plaque d'immatriculation :"
         required
         name="immatriculation"
+        value={form.immatriculation}
         onChange={(e) => {
           const { value, name } = e.target;
           if (value.trim() === "") {
@@ -733,7 +790,7 @@ clipRule="evenodd"
     <PhoneInput
 country={'fr'}
 value={
-phone
+phone || form.phone
 }
 onChange={
 (e)=>{
@@ -756,6 +813,7 @@ enableSearch
         required
         name="mail"
         onChange={onChangeHandler}
+        value={form.mail}
       />
       {error?.siret && <div className="text-red-500">{error.siret}</div>}
     </div>
@@ -869,4 +927,4 @@ enableSearch
   );
 };
 
-export default CreateMission;
+export default EditMission;

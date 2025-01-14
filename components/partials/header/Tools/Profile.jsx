@@ -85,44 +85,42 @@ const Profile = () => {
       label: "Chat",
       icon: "heroicons-outline:chat",
       action: () => {
-        router.push(`/${UserProfile?.user?.role.toLowerCase()}/profile`);
+        router.push(`/${UserProfile?.user?.role.toLowerCase()}/chat`);
       },
     },
-    {
-      label: "Email",
-      icon: "heroicons-outline:mail",
-      action: () => {
-        router.push(`/${UserProfile?.user?.role.toLowerCase()}/profile`);
-      },
-    },
-    {
-      label: "Todo",
-      icon: "heroicons-outline:clipboard-check",
-      action: () => {
-        router.push(`/${UserProfile?.user?.role.toLowerCase()}/profile`);
-      },
-    },
-    {
-      label: "Settings",
-      icon: "heroicons-outline:cog",
-      action: () => {
-        router.push(`/${UserProfile?.user?.role.toLowerCase()}/profile`);
-      },
-    },
-    {
-      label: "Price",
-      icon: "heroicons-outline:credit-card",
-      action: () => {
-        router.push(`/${UserProfile?.user?.role.toLowerCase()}/profile`);
-      },
-    },
-    {
-      label: "Faq",
-      icon: "heroicons-outline:information-circle",
-      action: () => {
-        router.push(`/${UserProfile?.user?.role.toLowerCase()}/profile`);
-      },
-    },
+
+    ...(UserProfile?.user?.role.toLowerCase() === "admin"
+    ? [
+        {
+          label: "Todo",
+          icon: "heroicons-outline:clipboard-check",
+          action: () => {
+            router.push(`/${UserProfile?.user?.role.toLowerCase()}/todo`);
+          },
+        },
+      ]
+    : []),
+    // {
+    //   label: "Settings",
+    //   icon: "heroicons-outline:cog",
+    //   action: () => {
+    //     router.push(`/${UserProfile?.user?.role.toLowerCase()}/profile`);
+    //   },
+    // },
+    // {
+    //   label: "Price",
+    //   icon: "heroicons-outline:credit-card",
+    //   action: () => {
+    //     router.push(`/${UserProfile?.user?.role.toLowerCase()}/profile`);
+    //   },
+    // },
+    // {
+    //   label: "Faq",
+    //   icon: "heroicons-outline:information-circle",
+    //   action: () => {
+    //     router.push(`/${UserProfile?.user?.role.toLowerCase()}/profile`);
+    //   },
+    // },
     {
       label: "Logout",
       icon: "heroicons-outline:login",
