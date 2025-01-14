@@ -14,17 +14,17 @@ const actions = [
   }
 
 ];
-const Card = ({
+const  Card = ({
   children,
   title,
   subtitle,
-  headerslot=true,
+  headerslot=false,
   className = "custom-class  bg-white ",
   bodyClass = "p-6",
   noborder,
   titleClass = "custom-class ",
   setMissionByPartner,
- 
+
 }) => {
   const [skin] = useSkin();
 
@@ -55,7 +55,7 @@ const Card = ({
           </span>
         }
       >
-      
+
         <div>
           {actions.map((item, i) => (
             <Menu.Item key={i}

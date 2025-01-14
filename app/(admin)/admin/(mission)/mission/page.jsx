@@ -381,7 +381,9 @@ console.log(selectedMission);
           <p>Êtes-vous sûr de vouloir supprimer cette mission ?</p>
         </Modal>
       )}
-      <Card noborder>
+      <Card noborder
+  headerslot={false}
+      >
         <div className="md:flex pb-6 items-center">
           <h6 className="flex-1 md:mb-0 mb-3">
           Missions</h6>
