@@ -18,7 +18,7 @@ import {
 } from "react-table";
 import GlobalFilter from "@/components/partials/table/GlobalFilter";
 import { missionService } from "@/_services/mission.service";
-import CompanyTable3 from "@/components/partials/table/company-table3";
+import CompanyTable2 from "@/components/partials/table/company-table2";
 import Modal from "@/components/ui/Modal";
 import { toast } from 'react-toastify';
 
@@ -44,7 +44,7 @@ const IndeterminateCheckbox = React.forwardRef(
   }
 );
 
-const ListFactureDrivers = () => {
+const ListFacturePartner = () => {
   const [filterMap, setFilterMap] = useState("usa");
   const [Missions, setMissions] = useState([]);
   const [FactureDrivers, setFactureDrivers] = useState([]);
@@ -239,7 +239,7 @@ const [statusFilter, setStatusFilter] = useState(""); // Initialize the filter w
     missionService
       .DeleteMission(id)
       .then(() => {
-        FindFacturesByDriver();
+        FindFacturesByPartners();
         FindRequestDemande();
         setActiveModal(false);
       })
@@ -266,11 +266,12 @@ console.log(selectedMission);
     if (!statusFilter) return Missions;
     return Missions.filter((mission) => mission.status === statusFilter);
   }, [Missions, statusFilter]);
-  const FindFacturesByDriver = () => {
+  const FindFacturesByPartners = () => {
     return missionService
-      .FindFacturesDriver()
+      .FindFacturesByPartners()
       .then((res) => {
 
+        console.log(res);
         setFactureDrivers(res);
       })
       .catch(() => {});
@@ -279,7 +280,7 @@ console.log(selectedMission);
 
   const groupAsyncFunctions = () => {
     setIsLoading(true);
-    Promise.all([ FindFacturesByDriver()])
+    Promise.all([ FindFacturesByPartners()])
       .finally(() => {
         setIsLoading(false);
       });
@@ -465,7 +466,7 @@ console.log(selectedMission);
                                   {row?.original?.partner?.contactName}
                                 </h4>
                                 <ul>
-                                  <CompanyTable3
+                                  <CompanyTable2
                                     Missions={row?.original?.facture}
                                   />
                                 </ul>
@@ -555,4 +556,4 @@ console.log(selectedMission);
   );
 };
 
-export default ListFactureDrivers;
+export default ListFacturePartner;

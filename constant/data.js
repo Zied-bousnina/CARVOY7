@@ -68,7 +68,7 @@ export const menuItems = [
     },
     {
       childtitle: "Facture partenaires",
-      childlink: "admin/generateFacture",
+      childlink: "admin/ListFacturePartner",
     },
     {
       childtitle: "Facture conducteurs",
