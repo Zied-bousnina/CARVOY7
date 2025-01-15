@@ -63,6 +63,18 @@ const CompanyTable2 = ({ Missions, expandedRows = false }) => {
     {
       Header: "Montant total",
       accessor: "totalAmmount",
+      Cell: ({ value }) => {
+        if (value == null) return "—"; // Graceful fallback for null/undefined values
+
+        const formattedValue = new Intl.NumberFormat("fr-FR", {
+          style: "currency",
+          currency: "EUR",
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        }).format(value);
+
+        return formattedValue;
+      },
     },
 
     {

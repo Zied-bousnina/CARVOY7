@@ -215,8 +215,8 @@ export const menuItemsPartner = [
     child: [
 
       {
-        childtitle: "Facture conducteurs",
-        childlink: "partner/ListFactureDrivers",
+        childtitle: "Historique factures",
+        childlink: "partner/factures",
       },
     ],
   },
