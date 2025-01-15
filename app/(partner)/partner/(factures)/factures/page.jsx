@@ -67,14 +67,14 @@ const Factures = () => {
       name: "view",
       icon: "heroicons-outline:eye",
       doit: (id) => {
-        // router.push(`/admin/partnerDetail/${id}`);
+        router.push(`/partner/factureDetail/${id}`);
       },
     },
     {
       name: "edit",
       icon: "heroicons:pencil-square",
       doit: (id) => {
-        // router.push(`/admin/EditPartner/${id}`);
+        router.push(`/partner/factureDetail/${id}`);
       },
     },
     {
@@ -88,9 +88,10 @@ const Factures = () => {
 
   const COLUMNS = [
 
+
     {
       Header: "ID",
-      accessor: "numFacture",
+      accessor: "_id",
       Cell: ({ value }) => `#${value?.toString().slice(-5)}`,
     },
     {
@@ -191,6 +192,7 @@ const Factures = () => {
         key={i}
         onClick={() => {
           // deletePartner(row.row.values._id)
+          // console.log(row.row.values)
 
           item.doit(    row.row.values._id    )
           }}

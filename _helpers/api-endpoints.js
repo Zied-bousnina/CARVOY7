@@ -85,7 +85,7 @@ function server() {
             factureDriverById: "users/factureDriverById/{id}",
             PayeeFacture: "users/payeeFacture/{id}",
             payeeFactureDriver: "users/payeeFactureDriver/{id}",
-            FindFactureById : "users/facture/fetchFacturePartnerById/{id}",
+            FindFactureByPartnerId : "users/facture/fetchFacturePartnerById/{id}",
             PayerEnLignePartner: "users/facture/PayerEnLignePartner",
 
           },

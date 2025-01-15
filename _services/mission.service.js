@@ -41,7 +41,8 @@ export const missionService =  {
   FetchAllPartnership,
   GetPartnerDetailsById,
   UpdatePartnerShip,
-  PayerEnLignePartner
+  PayerEnLignePartner,
+  FindFactureByPartnerId
 
 
 }
@@ -215,6 +216,17 @@ export async function FindFacturesDetailsById (id) {
   }
 
   const response = await fetch(`${ApiConfigs.base_url+ ApiConfigs.apis.admin.facture.findFactureById.replace('{id}',id)}`,requestOptions)
+
+  return handleResponse(response)
+}
+
+export async function FindFactureByPartnerId (id) {
+  const requestOptions = {
+    method:'GET',
+    headers: authHeader()
+  }
+
+  const response = await fetch(`${ApiConfigs.base_url+ ApiConfigs.apis.admin.facture.FindFactureByPartnerId.replace('{id}',id)}`,requestOptions)
 
   return handleResponse(response)
 }
