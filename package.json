@@ -71,6 +71,7 @@
     "react-table": "^7.8.0",
     "react-tailwindcss-datepicker": "^1.5.1",
     "react-text-mask": "^5.5.0",
+    "react-to-print": "^3.0.4",
     "react-toastify": "^9.1.1",
     "react-transition-group": "^4.4.5",
     "reactstrap": "^9.2.3",
