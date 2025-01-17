@@ -24,32 +24,32 @@ const CompanyTable2 = ({ Missions, expandedRows = false }) => {
       name: "Voir",
       icon: "heroicons-outline:eye",
       doit: (id) => {
-        // router.push(`/admin/missionDetails/${id}`);
+        router.push(`/admin/factureDetail/${id}`);
 
       },
     },
-    {
-      name: "Modifier",
-      icon: "heroicons:pencil-square",
-      doit: (id) => {
-        // router.push(`/admin/editMission/${id}`);
+    // {
+    //   name: "Modifier",
+    //   icon: "heroicons:pencil-square",
+    //   doit: (id) => {
+    //     // router.push(`/admin/editMission/${id}`);
 
-      },
-    },
-    {
-      name: "Supprimer",
-      icon: "heroicons-outline:trash",
-      doit: (id) => {
-        // handleDeleteClick(id);
-      },
-    },
+    //   },
+    // },
+    // {
+    //   name: "Supprimer",
+    //   icon: "heroicons-outline:trash",
+    //   doit: (id) => {
+    //     // handleDeleteClick(id);
+    //   },
+    // },
   ];
 
   // Columns
   const COLUMNS = [
     {
       Header: "ID",
-      accessor: "numFacture",
+      accessor: "_id",
       Cell: ({ value }) => `#${value?.toString().slice(-5)}`,
     },
     {
@@ -139,7 +139,11 @@ const CompanyTable2 = ({ Missions, expandedRows = false }) => {
                 {actions.map((item, i) => (
                   <div
                     key={i}
-                    onClick={() => item.doit(row.row.values._id)}
+                    onClick={() => {
+                      console.log(row.row.values);
+                      item.doit(row.row.values._id)
+                    }
+                    }
                     className={`${
                       item.name === "Supprimer"
                         ? "bg-danger-500 text-danger-500 bg-opacity-30 hover:bg-opacity-100 hover:text-white"

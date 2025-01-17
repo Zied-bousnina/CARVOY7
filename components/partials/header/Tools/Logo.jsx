@@ -6,7 +6,7 @@ import useDarkMode from "@/hooks/useDarkMode";
 import Link from "next/link";
 import useWidth from "@/hooks/useWidth";
 import { ProfileService } from "@/_services/profile.service";
-const Logo = () => {
+const Logo = ({notClicked}) => {
   const [isDark] = useDarkMode();
   const { width, breakpoints } = useWidth();
   const [UserProfile, setUserProfile] = useState({});
