@@ -70,8 +70,10 @@ const GenerateFacture = () => {
       })
       .catch((err) => {
         setDevisByPartner([])
-        setErrorDevis(err)});
+        console.log(err)
+        setErrorDevis(err)
         settotalMontant(0)
+      });
   };
   const FetchAllPartnership = () => {
     return missionService
@@ -243,10 +245,13 @@ const fetch =()=>{
                 value={value}
                 required
               />
-              {errorDevis &&  <Alert
-            label={errorDevis}
-            className="alert-outline-danger"
-          /> }
+             {errorDevis && (
+  <Alert
+    label={typeof errorDevis === "string" ? errorDevis : "An unexpected error occurred"}
+    className="alert-outline-danger"
+  />
+)}
+
             </div>
           </div>
 

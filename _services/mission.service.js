@@ -469,7 +469,7 @@ export async function FindDevisByPartnerId (userData,id) {
     },
       body: JSON.stringify(userData)
     };
-console.log(user)
+
   const response = await fetch(`${ApiConfigs.base_url+ ApiConfigs.apis.admin.devis.FindDevisByPartnerId.replace('{id}',id)}`,requestOptions)
 
   return handleResponse(response)
