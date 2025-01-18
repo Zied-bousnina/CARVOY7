@@ -88,6 +88,25 @@ export const menuItems = [
   link: "admin/todo",
   isOpen: true,
 },
+
+{
+  title: "Settings",
+  icon: "heroicons-outline:document-text", // Document icon for "Facturation"
+  isOpen: true,
+  isHide: true,
+  child: [
+    {
+      childtitle: "Passerelle de paiement",
+      childlink: "admin/payment-gateway",
+    },
+
+    {
+      childtitle: "social Login Config",
+      childlink: "admin/socialLoginConfig",
+    },
+
+  ],
+},
 {
   title: "Profil utilisateur",
   icon: "heroicons-outline:user-circle", // User profile icon for "Profil utilisateur"

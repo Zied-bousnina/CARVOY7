@@ -420,7 +420,7 @@ const [immatriculation, setImmatriculation] = useState("");
           setError( {});
           setForm({});
 
-          router.push(`/admin/devis/${res?.demande?._id}`);
+          router.push(`/admin/mission`);
 
         })
         .catch((error) => {

@@ -16,6 +16,14 @@ function server() {
         updateEvent: "todo",
         deleteEvent: "todo",
       },
+      PaymentGateway: {
+        getConfig: "users/get-payment-gateway", // GET: Retrieve the Stripe configuration
+        saveConfig: "users/payment-gateway", // POST: Save or update the Stripe configuration
+      },
+      SocialLoginConfig: {
+        getConfig: "users/getsocial-login-config", // GET: Retrieve the social login configuration
+        saveConfig: "users/social-login-config", // POST: Save or update the social login configuration
+      },
         auth: {
             // signup:"user/signup",
             login:"users/login",
