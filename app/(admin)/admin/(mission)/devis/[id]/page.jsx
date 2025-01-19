@@ -27,7 +27,7 @@ const Devis = ({params}) => {
       title={  "Facturation et commentaire" }
       headerslot={false}>
 
-<BillingForm id={id}  />
+<BillingForm missionId={id}  />
 <StripeContainer
 id={id}
  />

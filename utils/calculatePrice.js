@@ -32,14 +32,36 @@ export function calculateBasePrice(distance) {
     prixKm = 0.7;
   } else if (distance <= 500) {
     prixKm = 0.65;
+  } else {
+    // For distances > 500, use the rate of 0.65 and add additional charges
+    prixKm = 0.65;
   }
 
+  // Base tariff calculation
   let tarif = (distance * prixKm) + fraisAcceptation;
 
-  // Add additional charges for distances over 50km
-  if (distance > 50) {
-    const additionalCharge = Math.floor((distance - 50) / 50) + 1;
-    tarif += additionalCharge;
+  // Add additional charges for specific ranges
+  if (distance > 50 && distance <= 100) {
+    tarif += 2;
+  } else if (distance > 100 && distance <= 150) {
+    tarif += 3;
+  } else if (distance > 150 && distance <= 200) {
+    tarif += 4;
+  } else if (distance > 200 && distance <= 250) {
+    tarif += 5;
+  } else if (distance > 250 && distance <= 300) {
+    tarif += 6;
+  } else if (distance > 300 && distance <= 350) {
+    tarif += 7;
+  } else if (distance > 350 && distance <= 400) {
+    tarif += 8;
+  } else if (distance > 400 && distance <= 450) {
+    tarif += 9;
+  } else if (distance > 450 && distance <= 500) {
+    tarif += 10;
+  } else if (distance > 500) {
+    const extraDistance = distance - 500;
+    tarif += Math.ceil(extraDistance / 50) * 1; // Add 1€ for every 50 km beyond 500 km
   }
 
   return tarif;

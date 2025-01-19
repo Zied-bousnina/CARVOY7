@@ -496,6 +496,7 @@ export async function PayerEnLignePartner(data){
      method: "POST",
      headers: {
          ...authHeader(),
+           'Content-Type': 'application/json'
 
      },
         body: JSON.stringify(data)
@@ -534,20 +535,43 @@ export async function createFacture(userData){
 
 
 
-function handleResponse(response) {
-    return response.text().then((text) => {
-      const data = text && JSON.parse(text);
-      if (!response.ok) {
-        if (response.status === 401) {
-          window.location.href = "/login";
-          localStorage.removeItem("user")
-        } else if (response.status === 403) {
-          window.location.href = "/";
-        }
-        const error = (data && data.message) || response.statusText;
-        return Promise.reject(error);
-      }
+// function handleResponse(response) {
+//   console.log(response)
+//     return response.text().then((text) => {
+//       const data = text && JSON.parse(text);
+//       if (!response.ok) {
+//         if (response.status === 401) {
+//           window.location.href = "/login";
+//           localStorage.removeItem("user")
+//         } else if (response.status === 403) {
+//           window.location.href = "/";
+//         }
+//         const error = (data && data.message) || response.statusText;
+//         return Promise.reject(error);
+//       }
 
-      return data;
-    });
-  }
+//       return data;
+//     });
+//   }
+function handleResponse(response) {
+  console.log("response",response)
+  if (response.status === 401) {
+    window.location.href = "/";
+    localStorage.removeItem("user")}
+  return response.text().then((text) => {
+    const data = text && JSON.parse(text);
+    console.log("data",response)
+    if (!response.ok) {
+      if (response.status === 401) {
+        window.location.href = "/";
+        localStorage.removeItem("user")
+      } else if (response.status === 403) {
+        window.location.href = "/";
+      }
+      const error = (data ) || response.statusText;
+      return Promise.reject(error);
+    }
+
+    return data;
+  });
+}

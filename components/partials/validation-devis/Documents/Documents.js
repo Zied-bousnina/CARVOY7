@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
 import { Button } from 'reactstrap';
 import './Documents.css';
-import carDocumentIconPlaceholder from './car.png'; // Default icon path
-import idDocumentIconPlaceholder from './id.png'; // Default icon path
 
 const Documents = ({ onDocumentUpload, validerCommande }) => {
-  const isLoad = false
+  const isLoad = false;
   const [documentIcons, setDocumentIcons] = useState({
-    vehicleRegistration: carDocumentIconPlaceholder,
-    identityProof: idDocumentIconPlaceholder,
+    vehicleRegistration: '/assets/images/car.png', // Reference to the public folder
+    identityProof: '/assets/images/id.png', // Reference to the public folder
   });
 
   const handleFileChange = (event, documentName) => {
@@ -59,17 +57,18 @@ const Documents = ({ onDocumentUpload, validerCommande }) => {
           </label>
         </div>
       </div>
+      {/* Uncomment the button below if needed */}
       {/* <Button
         onClick={validerCommande}
-       color="primary" className="submit-button">
-
-      {isLoad ? (
-        <div className="spinner-border text-light" role="status">
-          <span className="visually-hidden"></span>
-        </div>
-      ) : (
-        ' Valider ma commande'
-      )}
+        color="primary"
+        className="submit-button">
+        {isLoad ? (
+          <div className="spinner-border text-light" role="status">
+            <span className="visually-hidden"></span>
+          </div>
+        ) : (
+          'Valider ma commande'
+        )}
       </Button> */}
     </div>
   );

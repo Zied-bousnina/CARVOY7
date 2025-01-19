@@ -1,79 +1,74 @@
+/* General container styles */
 .service-options {
-    display: grid;
-    grid-template-areas:
-      'fuel charge'
-      'exteriorWash interiorCleaning garagePlate';
-    gap: 10px;
-    padding: 20px;
-    margin-top: 20px;
-    background-color: #fff;
-    border-radius: 8px;
-  }
-  .services-list {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); /* Three columns by default */
-    grid-template-rows: auto auto;
-    grid-template-areas:
-      "fuel charge ."
-      "exteriorWash interiorCleaning garagePlate";
-    gap: 20px;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 8px;
-  }
-
-
-  @media (max-width: 768px) {
-    .services-list {
-      grid-template-columns: 1fr; /* One column for smaller screens */
-      grid-template-areas:
-        "fuel"
-        "charge"
-        "exteriorWash"
-        "interiorCleaning"
-        "garagePlate";
-    }
-  }
-  .service-item {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 20px;
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  }
-
- /* Assign grid areas to each service */
-.service-item.fuel { grid-area: fuel; }
-.service-item.charge { grid-area: charge; }
-.service-item.exteriorWash { grid-area: exteriorWash; }
-.service-item.interiorCleaning { grid-area: interiorCleaning; }
-.service-item.garagePlate { grid-area: garagePlate; }
-
-/* Style changes for selected items */
-.service-item.selected {
-  background-color: #D6EAF8; /* Light blue background for selected state */
-  border: 1px solid #AED6F1;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-  .service-name {
-    font-weight: bold;
-    margin-bottom: 10px;
-  }
+.service-options-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: #2c3e50;
+}
 
-  .service-description {
-    font-size: 0.8rem;
-    color: #666;
-    margin-bottom: 10px; /* Increased bottom margin */
-  }
+/* Services list grid */
+.services-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
 
-  .service-price {
-    font-size: 1.2rem;
-    color: #000;
-    font-weight: bold;
-    align-self: flex-end;
-  }
+/* Service item styles */
+.service-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background: #ffffff;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.service-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Selected state */
+.service-item.selected {
+  border-color: #007bff;
+  background-color: #eaf4ff;
+  box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
+}
+
+/* Icon styles */
+.service-icon {
+  font-size: 2rem;
+  color: #007bff;
+  margin-bottom: 10px;
+}
+
+.service-name {
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+}
+
+.service-description {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 15px;
+}
+
+.service-price {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #34495e;
+}

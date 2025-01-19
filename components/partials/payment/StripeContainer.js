@@ -6,13 +6,15 @@ import { StripeService } from '@/_services/stripe.service';
 
 function StripeContainer({ id }) {
   const [stripePromise, setStripePromise] = useState(null);
+  console.log("missionId",id)
 
   useEffect(() => {
     const fetchStripeKey = async () => {
       try {
         // Fetch the publishable key from the database
         const data = await StripeService.GetStripeConfig();
-        const publishableKey = data?.publishableKey || process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+
+        const publishableKey = data?.data?.publishableKey || process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
 
         if (!publishableKey) {
           console.error('No publishable key found in database or .env file.');
@@ -45,7 +47,7 @@ function StripeContainer({ id }) {
 
   return (
     <Elements stripe={stripePromise}>
-      <PaymentForm id={id} />
+      <PaymentForm Missionid={id} />
     </Elements>
   );
 }

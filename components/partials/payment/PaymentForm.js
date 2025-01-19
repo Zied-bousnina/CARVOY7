@@ -23,7 +23,7 @@ const CARD_OPTIONS = {
   },
 };
 
-export default function PaymentForm({ data, id }) {
+export default function PaymentForm({ data, Missionid }) {
   const [isLoading, setIsLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [userInformation, setUserInformation] = useState({});
@@ -51,6 +51,7 @@ export default function PaymentForm({ data, id }) {
     getUserInformation();
   }, []);
   const Payee = (data) => {
+    console.log(data);
     setIsLoading(true);
     missionService
       .PayerEnLignePartner(data)
@@ -106,12 +107,12 @@ export default function PaymentForm({ data, id }) {
         const payload = {
           referenceNumber: e.target.referenceNumber.value,
           freeComment: e.target.freeComment.value,
-          partnerId: userInformation.user?._id,
-          missionId: userInformation._id,
+          partnerId: userAuth?.id,
+          missionId: Missionid,
           totalAmmount: totalTTC,
           id,
         };
-
+console.log(payload)
         Payee(payload)
         // const response = await axios.post(
         //   'https://convoyage.onrender.com/api/users/facture/PayerEnLignePartner',

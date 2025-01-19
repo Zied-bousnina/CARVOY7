@@ -36,3 +36,73 @@
     color: #004953; /* Bleu pétrole color */
     font-weight: bold;
   }
+  /* Container for the estimate box */
+.estimate-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-family: 'Poppins', sans-serif; /* Sleek and modern font */
+  padding: 1.5rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #f9f9f9, #ffffff);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Add hover effect for interactivity */
+.estimate-container:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Icon styling */
+.estimate-icon {
+  color: #0077c2; /* Professional blue */
+  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Content styling */
+.estimate-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.estimate-label {
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: #34495e;
+}
+
+.estimate-range {
+  font-weight: 400;
+  font-size: 1.1rem;
+  color: #2c3e50;
+  line-height: 1.6;
+}
+
+/* Highlight strong elements */
+.estimate-range strong {
+  color: #e74c3c; /* Eye-catching professional red */
+  font-weight: 600;
+}
+
+/* Optional animations for entry */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.estimate-container {
+  animation: fadeIn 0.5s ease-in-out;
+}
