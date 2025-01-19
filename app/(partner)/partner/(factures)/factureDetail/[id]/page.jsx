@@ -8,6 +8,7 @@ import { missionService } from "@/_services/mission.service";
 import { useParams, useRouter } from "next/navigation";
 import Loading from "@/components/Loading";
 import Logo from "@/components/partials/header/Tools/Logo";
+import { toast } from 'react-toastify';
 
 const statusMapping = {
   "in progress": "En cours",
@@ -21,8 +22,10 @@ const FactureDetail = ({ params }) => {
   const [isDark] = userDarkMode();
   const [isLoading, setIsLoading] = useState(false);
   const [factureDetails, setFactureDetails] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const fetchFactureDetail = async (id) => {
+    setFactureDetails({})
     try {
       const res = await missionService.FindFactureByPartnerId(id);
       setFactureDetails(res);
@@ -35,7 +38,31 @@ const FactureDetail = ({ params }) => {
     setIsLoading(true);
     fetchFactureDetail(id).finally(() => setIsLoading(false));
   }, [id]);
+const payeeFacture = async () => {
+   setIsSubmitting(true);
+      missionService
+        .PayeeFacture(id)
+        .then((res) => {
+          setIsSubmitting(false);
+          toast.success(" Facture payée avec succès", {
+            position: "top-right",
+            autoClose: 1500,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
 
+          fetchFactureDetail(id)
+        })
+        .catch((error) => {
+          setIsSubmitting(false);
+
+        });
+}
+console.log(factureDetails)
   const getStatusDisplay = (statusValue) => {
     const displayValue = statusMapping[statusValue] || statusValue;
     let bgColorClass = "";
@@ -77,7 +104,7 @@ const FactureDetail = ({ params }) => {
            <div className="lg:flex justify-between flex-wrap items-center mb-6">
             <h4>Preview</h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <button
+              {/* <button
                 onClick={() => {
                   // router.push(/admin/editMission/${id});
                 }}
@@ -87,7 +114,7 @@ const FactureDetail = ({ params }) => {
                   <Icon icon="heroicons:pencil-square" />
                 </span>
                 <span>Edit</span>
-              </button>
+              </button> */}
               <button
                 type="button"
                 onClick={() => window.print()}
@@ -98,6 +125,22 @@ const FactureDetail = ({ params }) => {
                 </span>
                 <span>Print</span>
               </button>
+              {/* <button
+  type="button"
+  onClick={() => payeeFacture()}
+  disabled={isSubmitting}
+  className={`invocie-btn inline-flex btn btn-sm whitespace-nowrap space-x-1 cursor-pointer bg-white dark:bg-slate-800 dark:text-slate-300 btn-md h-min text-sm font-normal text-slate-900 rtl:space-x-reverse ${
+    isSubmitting ? "opacity-50 cursor-not-allowed" : ""
+  }`}
+>
+  <span className="text-lg">
+    <Icon icon="heroicons:check-circle" />
+  </span>
+  <span>
+    {factureDetails?.facture?.payed ? "Marquer Non Payée" : "Marquer Payée"}
+  </span>
+</button> */}
+
             </div>
           </div>
 
@@ -116,6 +159,17 @@ const FactureDetail = ({ params }) => {
                   <h2 className="text-2xl font-bold">Facture</h2>
                   <p className="text-gray-500">N° de commande: {factureDetails?.numFacture}</p>
                   <p className="text-gray-500">Date: {new Date().toLocaleDateString("fr-FR")}</p>
+                  <p
+                    className={`font-bold ${
+                      factureDetails?.facture?.payed
+                        ? "text-success-500"
+                        : "text-danger-500"
+                    }`}
+                  >
+                    {factureDetails?.facture?.payed
+                      ? "Facture Payée"
+                      : "Facture Non Payée"}
+                  </p>
                 </div>
               </div>
 
@@ -149,10 +203,10 @@ const FactureDetail = ({ params }) => {
                       <td className="border border-gray-200 px-4 py-2">{item?.mission?.postalAddress || "N/A"}</td>
                       <td className="border border-gray-200 px-4 py-2">1</td>
                       <td className="border border-gray-200 px-4 py-2">{ new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(
-                                 item?.montant,
+                                 item?.montant || factureDetails?.facture?.totalAmmount,
           ) || '0,00'}</td>
                       <td className="border border-gray-200 px-4 py-2">{ new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(
-                                 item?.montant,
+                                 item?.montant || factureDetails?.facture?.totalAmmount,
           ) || '0,00'}</td>
                     </tr>
                   ))}
@@ -161,7 +215,7 @@ const FactureDetail = ({ params }) => {
 
               <div className="mt-6 text-right">
                 <p className="text-lg font-semibold">Total HT: { new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(
-                                 factureDetails?.facture?.totalAmmount,
+                                 factureDetails?.facture?.totalAmmount
           ) || '0,00'}
           </p>
                 <p className="text-lg font-semibold">Total TTC:  { new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(
