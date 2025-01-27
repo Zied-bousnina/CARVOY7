@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { formatTime } from "@/utils/dateUtils";
 import { socket } from "@/utils/socket";
 
-const Chat = ({ contact, messages, setMessages, onSendMessage }) => {
+const Chat = ({ contact, messages, setMessages, onSendMessage, onNewMessage }) => {
   const [message, setMessage] = useState("");
   const chatHeightRef = useRef(null);
   const { id: currentUserId } = useSelector((state) => state.userAuth);
@@ -17,6 +17,7 @@ const Chat = ({ contact, messages, setMessages, onSendMessage }) => {
     }
 
     socket.on("newMessage", (newMessage) => {
+      onNewMessage(true)
 
       if (newMessage.sender !== currentUserId && newMessage.recieverId===currentUserId) {
         // notificationSound.play().catch((error) => {

@@ -7,7 +7,7 @@ import Card from "@/components/ui/Card";
 import Icon from "@/components/ui/Icon";
 import Dropdown from "@/components/ui/Dropdown";
 import Button from "@/components/ui/Button";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   useTable,
   useRowSelect,
@@ -51,8 +51,12 @@ const Mission = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [MissionByPartner, setMissionByPartner] = useState(false);
   const [activeModal, setActiveModal] = useState(false);
-const [statusFilter, setStatusFilter] = useState(""); // Initialize the filter with an empty string
+  const searchParams = useSearchParams();
 
+  // Extract the `status` parameter from the URL
+  const initialStatusFilter = searchParams?.get("status") || "";
+  console.log("initialStatusFilter",initialStatusFilter)
+  const [statusFilter, setStatusFilter] = useState(initialStatusFilter); // Initialize the filter with an empty string
   const [selectedPartnerId, setSelectedPartnerId] = useState(null);
   const router = useRouter();
 

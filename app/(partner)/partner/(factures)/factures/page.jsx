@@ -7,7 +7,7 @@ import Card from "@/components/ui/Card";
 import Icon from "@/components/ui/Icon";
 import Dropdown from "@/components/ui/Dropdown";
 import Button from "@/components/ui/Button";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   useTable,
   useRowSelect,
@@ -53,7 +53,11 @@ const Factures = () => {
   const [activeModal, setActiveModal] = useState(false);
   const [selectedPartner, setSelectedPartner] = useState(null);
   const [selectedPartnerId, setSelectedPartnerId] = useState(null);
-  const [statusFilter, setStatusFilter] = useState("");
+  const searchParams = useSearchParams();
+
+  // Extract the `status` parameter from the URL
+  const initialStatusFilter = searchParams?.get("status") || "";
+  const [statusFilter, setStatusFilter] = useState(initialStatusFilter);
 
   const actions = [
     // {
@@ -145,7 +149,7 @@ const Factures = () => {
             <select
               className="form-control mt-1"
               value={statusFilter}
-            //   onChange={(e) => setStatusFilter(e.target.value)}
+              onChange={(e) => setStatusFilter(e.target.value)}
             >
               <option value="">Tous</option>
               <option value="true">Payé</option>

@@ -23,6 +23,17 @@ const MissionDetails = ({ params }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [MissionDetails, setMissionDetails] = useState({});
 
+  const [remunerationValue, setRemunerationValue] = useState(0); // For real-time updates
+
+  const [intervalType, setIntervalType] = useState("tiered"); // Default to "tiered"
+  const [fixedThreshold, setFixedThreshold] = useState(100); // Default fixed remuneration value
+  const [tieredThresholds, setTieredThresholds] = useState([
+    { min: 0, max: 50, remuneration: 100 },
+    { min: 51, max: 100, remuneration: 200 },
+    { min: 101, max: 150, remuneration: 300 },
+  ]); // Example tiered configuration
+
+
   const FetchMissionDetail = (id) => {
     return missionService
       .FindRequestDemandeById(id)
@@ -46,6 +57,47 @@ const MissionDetails = ({ params }) => {
         setIsLoading(false);
       });
   };
+
+  const calculateRemuneration = (value) => {
+    if (intervalType === "tiered") {
+      // Find the matching tranche
+      const tranche = tieredThresholds.find(
+        (threshold) => value >= threshold.min && value <= threshold.max
+      );
+      if (tranche) {
+        setRemunerationValue(tranche.remuneration); // Set the remuneration based on the tranche
+      } else {
+        setRemunerationValue(0); // Default value if no tranche matches
+      }
+    } else if (intervalType === "fixed") {
+      setRemunerationValue(fixedThreshold); // Apply the fixed configuration
+    }
+  };
+
+  const saveConfiguration = () => {
+    // Save configuration (e.g., tranches) to the backend
+    const config = {
+      intervalType,
+      fixedThreshold,
+      tieredThresholds,
+    };
+
+    console.log("Saving Configuration:", config);
+
+    // TODO: Replace with API call
+    // fetch('/api/save-tiered-config', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify(config),
+    // });
+  };
+
+    // Recalculate remuneration whenever intervalType, fixedThreshold, or tieredThresholds change
+    useEffect(() => {
+      if (MissionDetails?.distance !== undefined) {
+        calculateRemuneration(MissionDetails.distance);
+      }
+    }, [intervalType, fixedThreshold, tieredThresholds]);
 
   useEffect(() => {
     groupAsyncFunctions(id);
@@ -88,7 +140,115 @@ const MissionDetails = ({ params }) => {
       ) : (
         <>
           <div className="lg:flex justify-between flex-wrap items-center mb-6">
-            <h4>Preview</h4>
+          {/* Configuration Section */}
+          <div className="mb-6">
+            <h4 className="text-lg font-semibold">Configurer les tranches ou montant fixe</h4>
+            <div className="flex flex-col space-y-4">
+              {/* Select Interval Type */}
+              <div>
+                <label className="block text-sm font-medium mb-2">Type d'intervalle :</label>
+                <select
+                  value={intervalType}
+                  onChange={(e) => setIntervalType(e.target.value)}
+                  className="form-select"
+                >
+                  <option value="fixed">Montant fixe</option>
+                  <option value="tiered">Tranches</option>
+                </select>
+              </div>
+
+              {/* Fixed Remuneration */}
+              {intervalType === "fixed" && (
+                <div>
+                  <label className="block text-sm font-medium mb-2">Montant fixe (en €) :</label>
+                  <input
+                    type="number"
+                    value={fixedThreshold}
+                    onChange={(e) => setFixedThreshold(Number(e.target.value))}
+                    className="form-input"
+                    placeholder="Montant fixe"
+                  />
+                </div>
+              )}
+
+              {/* Tiered Configuration */}
+              {intervalType === "tiered" && (
+                <div>
+                  <label className="block text-sm font-medium mb-2">Ajouter des tranches :</label>
+                  {tieredThresholds.map((threshold, index) => (
+                    <div key={index} className="flex items-center space-x-2 mb-2">
+                      <input
+                        type="number"
+                        value={threshold.min}
+                        onChange={(e) =>
+                          setTieredThresholds((prev) =>
+                            prev.map((t, i) =>
+                              i === index ? { ...t, min: Number(e.target.value) } : t
+                            )
+                          )
+                        }
+                        className="form-input"
+                        placeholder="Min"
+                      />
+                      <input
+                        type="number"
+                        value={threshold.max}
+                        onChange={(e) =>
+                          setTieredThresholds((prev) =>
+                            prev.map((t, i) =>
+                              i === index ? { ...t, max: Number(e.target.value) } : t
+                            )
+                          )
+                        }
+                        className="form-input"
+                        placeholder="Max"
+                      />
+                      <input
+                        type="number"
+                        value={threshold.remuneration}
+                        onChange={(e) =>
+                          setTieredThresholds((prev) =>
+                            prev.map((t, i) =>
+                              i === index
+                                ? { ...t, remuneration: Number(e.target.value) }
+                                : t
+                            )
+                          )
+                        }
+                        className="form-input"
+                        placeholder="Rémunération (€)"
+                      />
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setTieredThresholds((prev) =>
+                            prev.filter((_, i) => i !== index)
+                          )
+                        }
+                        className="btn btn-danger btn-sm"
+                      >
+                        Supprimer
+                      </button>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setTieredThresholds([...tieredThresholds, { min: 0, max: 0, remuneration: 0 }])
+                    }
+                    className="btn btn-primary btn-sm"
+                  >
+                    Ajouter une tranche
+                  </button>
+                </div>
+              )}
+            </div>
+            <button onClick={saveConfiguration} className="btn btn-success mt-4">
+              Sauvegarder la configuration
+            </button>
+          </div>
+
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <button
                 onClick={() => {
@@ -132,14 +292,36 @@ const MissionDetails = ({ params }) => {
         <strong>Vehicle Type:</strong> <span className="text-gray-700">{MissionDetails?.vehicleType || "N/A"}</span>
       </p>
       <p>
-        <strong>Remuneration Amount:</strong>{" "}
-        <span className="text-gray-700">
+                      <strong>Remuneration Amount:</strong>{" "}
+                      <span className="text-gray-700">
+                        {remunerationValue
+                          ? Number(remunerationValue).toLocaleString("fr-FR", {
+                              style: "currency",
+                              currency: "EUR",
+                            })
+                          : "N/A"}
+                      </span>
+                    </p>
+                    {intervalType === "tiered" && (
+                      <div>
+                        <p>
+                          <strong>Tranches configurées :</strong>
+                        </p>
+                        <ul className="list-disc pl-5">
+                          {tieredThresholds.map((threshold, index) => (
+                            <li key={index} className="text-gray-700">
+                              {threshold.min} - {threshold.max} km:{" "}
+                              {threshold.remuneration.toLocaleString("fr-FR", {
+                                style: "currency",
+                                currency: "EUR",
+                              })}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
 
-          {MissionDetails?.price ?
-          Number(MissionDetails.price).toLocaleString('fr-FR', {style:'currency', currency: 'EUR'})
-           : "N/A"}
-        </span>
-      </p>
+
       <p>
         <strong>Distance:</strong>{" "}
         <span className="text-gray-700">

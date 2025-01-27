@@ -183,7 +183,7 @@ headerslot={true}
         <div className="lg:col-span-12 col-span-12">
         <Card
         headerslot={false}
-        title="Évolution Comparée : Chiffre d'Affaires (€) et Nombre de Missions">
+        title="Évolution Comparée : Montants Payés Vs Nbre Missons">
        <BasicArea height={350} missionStats={MissionStats} />
       </Card>
         </div>

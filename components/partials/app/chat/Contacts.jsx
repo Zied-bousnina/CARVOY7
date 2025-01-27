@@ -12,7 +12,7 @@ const Contacts = ({ contact, onClick }) => {
     kbis,
   } = contact;
 
-  const lastMessage = chat?.lastMessage || "No messages yet";
+  const lastMessage = chat?.lastMessage || "Pas encore de message...";
   const unreadMessages = chat?.unreadCount || 0;
 
   // Helper to generate initials from the name

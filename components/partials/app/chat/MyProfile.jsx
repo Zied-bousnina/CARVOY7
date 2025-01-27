@@ -58,17 +58,17 @@ const MyProfile = () => {
                   <span className="status bg-success-500 inline-block h-[10px] w-[10px] rounded-full ml-3"></span>
                 </span>
                 <span className="block text-slate-500 dark:text-slate-300 text-xs font-normal">
-                  Available
+                Disponible
                 </span>
               </div>
             </div>
           </div>
           <div className="flex-none">
             <div
-              className="h-8 w-8 bg-slate-100 dark:bg-slate-900 dark:text-slate-400 flex flex-col justify-center items-center text-xl rounded-full cursor-pointer"
-              onClick={() => dispatch(toggleProfile(true))}
+              className="h-8 w-8 bg-slate-100 dark:bg-slate-900 dark:text-slate-400 flex flex-col justify-center items-center text-xl rounded-full "
+              // onClick={() => dispatch(toggleProfile(true))}
             >
-              <Icon icon="heroicons-outline:dots-horizontal" />
+              {/* <Icon icon="heroicons-outline:dots-horizontal" /> */}
             </div>
           </div>
         </div>

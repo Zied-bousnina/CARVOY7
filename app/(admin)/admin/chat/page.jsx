@@ -17,17 +17,18 @@ const ChatPage = () => {
   const [activeChat, setActiveChat] = useState(null);
   const [activeChatMessages, setActiveChatMessages] = useState([]);
 
+
   // Fetch contacts when the component loads
+  const fetchContacts = async () => {
+    try {
+      const results = await chatService.searchPartners(""); // Fetch all contacts
+      setContacts(results);
+      setFilteredContacts(results); // Initially set all contacts to filtered
+    } catch (error) {
+      console.error("Failed to fetch contacts", error);
+    }
+  };
   useEffect(() => {
-    const fetchContacts = async () => {
-      try {
-        const results = await chatService.searchPartners(""); // Fetch all contacts
-        setContacts(results);
-        setFilteredContacts(results); // Initially set all contacts to filtered
-      } catch (error) {
-        console.error("Failed to fetch contacts", error);
-      }
-    };
 
     fetchContacts();
   }, []);
@@ -60,8 +61,12 @@ const ChatPage = () => {
   }, [activeChat]);
 
   // Handle sending a new message
+  const handleNewMessage= async ()=> {
+    fetchContacts()
+  }
   const handleSendMessage = async (newMessage) => {
-   
+    fetchContacts()
+
     try {
       // Send the message to the backend
       const sentMessage = await chatService.sendMessage(activeChat._id, newMessage);
@@ -95,7 +100,7 @@ const ChatPage = () => {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search contacts..."
+                placeholder="Rechercher des contacts..."
                 className="w-full flex-1 block bg-transparent placeholder:font-normal placeholder:text-slate-400 py-2 focus:ring-0 focus:outline-none dark:text-slate-200 dark:placeholder:text-slate-400"
               />
             </div>
@@ -128,6 +133,7 @@ const ChatPage = () => {
               messages={activeChatMessages}
               setMessages={setActiveChatMessages}
               onSendMessage={handleSendMessage}
+              onNewMessage={handleNewMessage}
             />
           ) : (
             <Blank />

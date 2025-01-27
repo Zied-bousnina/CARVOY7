@@ -1,5 +1,6 @@
 import React from "react";
 import dynamic from "next/dynamic";
+import Link from "next/link";
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
 const shapeLine1 = {
@@ -280,39 +281,48 @@ console.log("missionStats",missionStats)
     title: "Total Missions",
     count: missionStats?.total,
     bg: "bg-[#E5F9FF] dark:bg-slate-900	",
+    router: "/admin/mission",
   },
   {
     name: shapeLine2,
     title: "Missions en cours",
     count: missionStats?.inProgress,
     bg: "bg-[#FFEDE5] dark:bg-slate-900	",
+    router: "/admin/mission?status=in progress",
   },
   {
     name: shapeLine3,
     title: "Missions en attente",
     count:  missionStats?.pending ?  missionStats?.pending :0    ,
     bg: "bg-[#EAE5FF] dark:bg-slate-900	",
+    router: "/admin/mission?status=En attente",
   },
   {
     name: shapeLine4,
     title: "Total Paiements effectués",
     count: `${Number(Ammount)?.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })}`,
     bg: "bg-[#cccc] dark:bg-slate-900	",
+    router: "/admin/ListFacturePartner",
   },
 ];
   return (
     <>
       {statistics.map((item, i) => (
+         <Link
+         href={item.router}
+         >
         <div className={`py-[18px] px-4 rounded-[6px] ${item.bg}`} key={i}>
           <div className="flex items-center space-x-6 rtl:space-x-reverse">
             <div className="flex-none">
+
               <Chart
                 options={item.name.options}
                 series={item.name.series}
                 type="area"
                 height={48}
                 width={48}
-              />
+                />
+
             </div>
             <div className="flex-1">
               <div className="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
@@ -324,6 +334,7 @@ console.log("missionStats",missionStats)
             </div>
           </div>
         </div>
+          </Link>
       ))}
     </>
   );

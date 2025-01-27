@@ -1,5 +1,6 @@
 import React from "react";
 import dynamic from "next/dynamic";
+import Link from "next/link";
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
 const shapeLine1 = {
@@ -280,29 +281,37 @@ const GroupChartPartner = ({missionStats,Ammount,CardStats}) => {
     title: "Factures payées",
     count: CardStats?.factures?.payees,
     bg: "bg-[#E5F9FF] dark:bg-slate-900	",
+    router: "/partner/factures?status=false"
   },
   {
     name: shapeLine2,
     title: "Facture impayées",
     count: CardStats?.factures?.nonPayees,
     bg: "bg-[#FFEDE5] dark:bg-slate-900	",
+    router: "/partner/factures?status=true"
+
   },
   {
     name: shapeLine3,
     title: "Missions accomplis",
     count:  CardStats?.missions?.accomplies  ,
     bg: "bg-[#EAE5FF] dark:bg-slate-900	",
+     router: "/partner/mission"
   },
   {
     name: shapeLine4,
     title: "Mission Rejetees",
     count: CardStats?.missions?.rejetees  ,
     bg: "bg-[#cccc] dark:bg-slate-900	",
+     router: "/partner/mission"
   },
 ];
   return (
     <>
       {statistics.map((item, i) => (
+        <Link
+        href={item.router}
+        >
         <div className={`py-[18px] px-4 rounded-[6px] ${item.bg}`} key={i}>
           <div className="flex items-center space-x-6 rtl:space-x-reverse">
             <div className="flex-none">
@@ -324,6 +333,7 @@ const GroupChartPartner = ({missionStats,Ammount,CardStats}) => {
             </div>
           </div>
         </div>
+        </Link>
       ))}
     </>
   );

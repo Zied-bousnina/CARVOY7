@@ -8,10 +8,12 @@ import { notifications } from "@/constant/data";
 import Card from "@/components/ui/Card";
 import { UserService } from "@/_services/user.service";
 import { formatDistanceToNow } from 'date-fns';
+import { useRouter } from "next/navigation";
+
 const NotificationPage = () => {
   const [UserNotification, setUserNotification] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-
+  const router = useRouter()
 
   const FindCurrentUserNotification = () => {
     return UserService.GetCurrentUser()
@@ -43,7 +45,7 @@ const NotificationPage = () => {
   };
 
   useEffect(() => {
-    
+
     groupAsyncFunctions();
   }, []); // Empty array to only run on mount
   const sortedNotifications = UserNotification?.slice().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
@@ -66,6 +68,12 @@ const NotificationPage = () => {
           ? "bg-slate-100 dark:bg-slate-700 dark:bg-opacity-70 text-slate-800"
           : "text-slate-600 dark:text-slate-300"
       } block w-full px-4 py-2 text-sm cursor-pointer`}
+      onClick={() => {
+        // Handle notification click
+        router.push(`/admin/missionDetails/${notification?._id}`);
+
+      }
+      }
     >
       <div className="flex ltr:text-left rtl:text-right">
         <div className="flex-none ltr:mr-3 rtl:ml-3">
