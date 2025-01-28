@@ -55,6 +55,14 @@ state.onligne = decodedToken.onligne || false;
                 action.payload.router.push("/partner");
                 break;
             }
+            switch (decodedToken.firstLogin) {
+              case true:
+                action.payload.router.push("/changePassword");
+                break;
+              default:
+                action.payload.router.push("/partner");
+                break;
+            }
 
             break;
           case "ADMIN":

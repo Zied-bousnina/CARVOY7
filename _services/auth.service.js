@@ -114,7 +114,7 @@ console.log(response)
      method: "POST",
      headers: {
          ...authHeader(),
-         'Content-Type': 'multipart/form-data'
+         'Content-Type': 'application/json'
      },
        body: JSON.stringify(userData)
      };
