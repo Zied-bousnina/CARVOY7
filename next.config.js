@@ -4,7 +4,10 @@ const nextConfig = {
     appDir: true,
   },
   output: 'export',
-  //output: "standalone",
+  output: "standalone",
+  images: {
+    domains: ['media.licdn.com','res.cloudinary.com'], // Allow LinkedIn images
+  },
 };
 
 module.exports = nextConfig;

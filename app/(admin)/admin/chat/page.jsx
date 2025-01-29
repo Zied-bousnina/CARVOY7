@@ -9,6 +9,7 @@ import MyProfile from "@/components/partials/app/chat/MyProfile";
 import Blank from "@/components/partials/app/chat/Blank";
 import Chat from "@/components/partials/app/chat/Chat";
 import { chatService } from "@/_services/chat.service";
+import { ProfileService } from "@/_services/profile.service";
 
 const ChatPage = () => {
   const [contacts, setContacts] = useState([]);
@@ -16,6 +17,7 @@ const ChatPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeChat, setActiveChat] = useState(null);
   const [activeChatMessages, setActiveChatMessages] = useState([]);
+  // Empty array to only run on mount
 
 
   // Fetch contacts when the component loads

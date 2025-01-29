@@ -6,15 +6,22 @@ import { useDispatch, useSelector } from "react-redux";
 import { handleLogout } from "@/components/partials/auth/store";
 import { useRouter } from "next/navigation";
 import { ProfileService } from "@/_services/profile.service";
+import Image from "next/image";
 const ProfileLabel = (UserProfile) => {
   return (
     <div className="flex items-center">
       <div className="flex-1 ltr:mr-[10px] rtl:ml-[10px]">
         <div className="lg:h-8 lg:w-8 h-7 w-7 rounded-full">
-          <img
-            src={UserProfile?.avatar}
-            alt=""
+        <Image
+            src={UserProfile?.avatar || '/default-avatar.png'} // Fallback image
+            alt="Profile"
+            width={32} // Set width
+            height={32} // Set height
             className="block w-full h-full object-cover rounded-full"
+            onError={(e) => {
+              e.target.src = '/default-avatar.png'; // Fallback image on error
+            }}
+            unoptimized
           />
         </div>
       </div>

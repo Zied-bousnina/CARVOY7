@@ -46,8 +46,8 @@ function server() {
             ByIdRemoveNotification  : 'users/users/RemoveSocketById/{id}',
           },
           profile: {
-            AddProfile: 'users/profile/upload-profile',
-            EditProfile_Web: 'users/profile/Edit_profile_web',
+            AddProfile: 'profile/upload-profile',
+            EditProfile_Web: 'profile/Edit_profile_web',
             EditProfile_WebPartner : 'users/profile/Edit_profile_web',
             GetProfile: 'profile',
 

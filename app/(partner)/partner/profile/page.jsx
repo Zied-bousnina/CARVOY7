@@ -1,170 +1,230 @@
 "use client";
 import Link from "next/link";
+import { useState, useEffect } from "react";
+import Image from "next/image";
 import Icon from "@/components/ui/Icon";
 import Card from "@/components/ui/Card";
-import BasicArea from "@/components/partials/chart/appex-chart/BasicArea";
+import BasicArea from "@/components/partials/chart/appex-chart/BasicArea"; // Ensure this path is correct
 import { ProfileService } from "@/_services/profile.service";
-import { useEffect, useState } from "react";
 
-const profile = () => {
-
-  const [Missions, setMissions] = useState([]);
+const Profile = () => {
   const [UserProfile, setUserProfile] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [updatedProfile, setUpdatedProfile] = useState({});
+  const [selectedImage, setSelectedImage] = useState(null);
 
-
-  const FindProfile = () => {
-    return ProfileService.GetProfile()
+  // Fetch profile data
+  const fetchProfile = () => {
+    ProfileService.GetProfile()
       .then((res) => {
-
-        setUserProfile(res       ); // Update the state with the correct value
+        setUserProfile(res);
+        setUpdatedProfile(res); // Pre-fill form with existing data
       })
-      .catch((err) => {
-
-      })
-      .finally(() => {
-
-      });
-  };
-
-
-
-  const groupAsyncFunctions = () => {
-    setIsLoading(true);
-    Promise.all([FindProfile()])
-      .then(() => {})
-      .catch((err) => {
-
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+      .catch((err) => console.error(err));
   };
 
   useEffect(() => {
+    fetchProfile();
+  }, []);
 
-    groupAsyncFunctions();
-  }, []); // Empty array to only run on mount
+  // Handle image selection
+  const handleImageChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setSelectedImage(URL.createObjectURL(file)); // Preview image
+      setUpdatedProfile({ ...updatedProfile, avatar: file });
+    }
+  };
 
+  // Handle input change
+  const handleInputChange = (e) => {
+    setUpdatedProfile({ ...updatedProfile, [e.target.name]: e.target.value });
+  };
+
+  // Save updated profile
+  const handleSave = () => {
+    setIsLoading(true);
+
+    // Create form data for uploading image
+    const formData = new FormData();
+    // Object.keys(updatedProfile).forEach((key) => {
+    //   formData.append(key, updatedProfile[key]);
+    // });
+    // const formData = new FormData();
+    Object.keys(updatedProfile).forEach((key) => {
+      if (Array.isArray(updatedProfile[key])) {
+        updatedProfile[key].forEach((value) => {
+          formData.append(key, value);
+        });
+      } else {
+        formData.append(key, updatedProfile[key]);
+      }
+    });
+  console.log("FormData Sent:", Object.fromEntries(formData.entries())); // Debugging
+
+console.log(updatedProfile)
+    ProfileService.EditProfile_Web(formData)
+      .then(() => {
+        fetchProfile(); // Refresh profile
+        setEditMode(false);
+      })
+      .catch((err) => console.error(err))
+      .finally(() => setIsLoading(false));
+  };
 
   return (
     <div>
-      <div className="space-y-5 profile-page">
-        <div className="profiel-wrap px-[35px] pb-10 md:pt-[84px] pt-10 rounded-lg bg-white dark:bg-slate-800 lg:flex lg:space-y-0 space-y-6 justify-between items-end relative z-[1]">
-          <div className="bg-slate-900 dark:bg-slate-700 absolute left-0 top-0 md:h-1/2 h-[150px] w-full z-[-1] rounded-t-lg"></div>
-          <div className="profile-box flex-none md:text-start text-center">
-            <div className="md:flex items-end md:space-x-6 rtl:space-x-reverse">
-              <div className="flex-none">
-                <div className="md:h-[186px] md:w-[186px] h-[140px] w-[140px] md:ml-0 md:mr-0 ml-auto mr-auto md:mb-0 mb-4 rounded-full ring-4 ring-slate-100 relative">
-                  <img
-                    src=
-                      {UserProfile?.avatar}
+      <div className="profile-page space-y-5">
+        <div className="profiel-wrap bg-white dark:bg-slate-800 px-[35px] pb-10 pt-10 rounded-lg relative">
+          <div className="bg-slate-900 absolute top-0 left-0 h-[150px] w-full rounded-t-lg"></div>
 
-                    alt=""
-                    className="w-full h-full object-cover rounded-full"
-                  />
-                  <Link
-                    href="#"
-                    className="absolute right-2 h-8 w-8 bg-slate-50 text-slate-600 rounded-full shadow-sm flex flex-col items-center justify-center md:top-[140px] top-[100px]"
-                  >
-                    <Icon icon="heroicons:pencil-square" />
-                  </Link>
-                </div>
-              </div>
-              <div className="flex-1">
-                <div className="text-2xl font-medium text-slate-900 dark:text-slate-200 mb-[3px]">
-                  {UserProfile?.user?.name}
-                </div>
-                <div className="text-sm font-light text-slate-600 dark:text-slate-400">
-                {UserProfile?.user?.role}
-                </div>
-              </div>
+          <div className="profile-box text-center">
+            <div className="relative w-[140px] h-[140px] mx-auto mb-4 rounded-full ring-4 ring-slate-100">
+              <Image
+                src={selectedImage || UserProfile?.avatar || "/assets/images/users/user-1.jpg"}
+                alt="Profile"
+                width={140}
+                height={140}
+                className="w-full h-full object-cover rounded-full"
+                unoptimized
+              />
+              {editMode && (
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="absolute inset-0 opacity-0 cursor-pointer"
+                  onChange={handleImageChange}
+                />
+              )}
+            </div>
+
+            <div className="text-2xl font-medium text-slate-900 dark:text-slate-200">
+
+               { UserProfile?.user?.name}
+
+            </div>
+
+            <div className="text-sm text-slate-600 dark:text-slate-400">
+
+               { UserProfile?.user?.role}
+
             </div>
           </div>
 
-          {/* <div className="profile-info-500 md:flex md:text-start text-center flex-1 max-w-[516px] md:space-y-0 space-y-4">
-            <div className="flex-1">
-              <div className="text-base text-slate-900 dark:text-slate-300 font-medium mb-1">
-                $32,400
-              </div>
-              <div className="text-sm text-slate-600 font-light dark:text-slate-300">
-                Total Balance
-              </div>
-            </div>
-
-            <div className="flex-1">
-              <div className="text-base text-slate-900 dark:text-slate-300 font-medium mb-1">
-                200
-              </div>
-              <div className="text-sm text-slate-600 font-light dark:text-slate-300">
-                Board Card
-              </div>
-            </div>
-
-            <div className="flex-1">
-              <div className="text-base text-slate-900 dark:text-slate-300 font-medium mb-1">
-                3200
-              </div>
-              <div className="text-sm text-slate-600 font-light dark:text-slate-300">
-                Calender Events
-              </div>
-            </div>
-          </div> */}
+          <div className="text-center mt-4">
+            {editMode ? (
+              <button
+                className="bg-green-500 text-white px-4 py-2 rounded mr-2"
+                onClick={handleSave}
+                disabled={isLoading}
+              >
+                {isLoading ? "Saving..." : "Save"}
+              </button>
+            ) : (
+              <button
+                className="bg-blue-500 text-white px-4 py-2 rounded"
+                onClick={() => setEditMode(true)}
+              >
+                Edit Profile
+              </button>
+            )}
+          </div>
         </div>
+
         <div className="grid grid-cols-12 gap-6">
           <div className="lg:col-span-4 col-span-12">
             <Card title="Info">
               <ul className="list space-y-8">
-                <li className="flex space-x-3 rtl:space-x-reverse">
-                  <div className="flex-none text-2xl text-slate-600 dark:text-slate-300">
-                    <Icon icon="heroicons:envelope" />
-                  </div>
+                <li className="flex space-x-3">
+                  <Icon icon="heroicons:envelope" />
                   <div className="flex-1">
-                    <div className="uppercase text-xs text-slate-500 dark:text-slate-300 mb-1 leading-[12px]">
-                      EMAIL
-                    </div>
-                    <a
-                      href="mailto:someone@example.com"
-                      className="text-base text-slate-600 dark:text-slate-50"
-                    >
-                       {UserProfile?.user?.email}
-                    </a>
+                    <div className="text-xs text-slate-500 uppercase mb-1">EMAIL</div>
+
+                      <a href={`mailto:${UserProfile?.user?.email}`} className="text-base text-slate-600">
+                        {UserProfile?.user?.email}
+                      </a>
+
                   </div>
                 </li>
 
-                <li className="flex space-x-3 rtl:space-x-reverse">
-                  <div className="flex-none text-2xl text-slate-600 dark:text-slate-300">
-                    <Icon icon="heroicons:phone-arrow-up-right" />
-                  </div>
+                <li className="flex space-x-3">
+                  <Icon icon="heroicons:phone-arrow-up-right" />
                   <div className="flex-1">
-                    <div className="uppercase text-xs text-slate-500 dark:text-slate-300 mb-1 leading-[12px]">
-                      PHONE
-                    </div>
-                    <a
-                      href="tel:0189749676767"
-                      className="text-base text-slate-600 dark:text-slate-50"
-                    >
-                       {UserProfile?.tel}
-                    </a>
+                    <div className="text-xs text-slate-500 uppercase mb-1">PHONE</div>
+                    {editMode ? (
+                      <input
+                        type="text"
+                        name="tel"
+                        value={updatedProfile?.tel || ""}
+                        onChange={handleInputChange}
+                        className="border rounded p-1 w-full"
+                      />
+                    ) : (
+                      <a href={`tel:${UserProfile?.tel}`} className="text-base text-slate-600">
+                        {UserProfile?.tel}
+                      </a>
+                    )}
                   </div>
                 </li>
 
-                <li className="flex space-x-3 rtl:space-x-reverse">
-                  <div className="flex-none text-2xl text-slate-600 dark:text-slate-300">
-                    <Icon icon="heroicons:map" />
-                  </div>
+                <li className="flex space-x-3">
+                  <Icon icon="heroicons:map" />
                   <div className="flex-1">
-                    <div className="uppercase text-xs text-slate-500 dark:text-slate-300 mb-1 leading-[12px]">
-                      LOCATION
-                    </div>
-                    <div className="text-base text-slate-600 dark:text-slate-50">
-                      Home#  {UserProfile?.address}
-                    </div>
+                    <div className="text-xs text-slate-500 uppercase mb-1">VILLE</div>
+                    {editMode ? (
+                      <input
+                        type="text"
+                        name="city"
+                        value={updatedProfile?.city || ""}
+                        onChange={handleInputChange}
+                        className="border rounded p-1 w-full"
+                      />
+                    ) : (
+                      <div className="text-base text-slate-600">{UserProfile?.city}</div>
+                    )}
+                  </div>
+                </li>
+
+                <li className="flex space-x-3">
+                  <Icon icon="heroicons:globe-alt" />
+                  <div className="flex-1">
+                    <div className="text-xs text-slate-500 uppercase mb-1">PAYS</div>
+                    {editMode ? (
+                      <input
+                        type="text"
+                        name="country"
+                        value={updatedProfile?.country || ""}
+                        onChange={handleInputChange}
+                        className="border rounded p-1 w-full"
+                      />
+                    ) : (
+                      <div className="text-base text-slate-600">{UserProfile?.country}</div>
+                    )}
+                  </div>
+                </li>
+
+                <li className="flex space-x-3">
+                  <Icon icon="heroicons:map-pin" />
+                  <div className="flex-1">
+                    <div className="text-xs text-slate-500 uppercase mb-1">CODE POSTAL</div>
+                    {editMode ? (
+                      <input
+                        type="text"
+                        name="postalCode"
+                        value={updatedProfile?.postalCode || ""}
+                        onChange={handleInputChange}
+                        className="border rounded p-1 w-full"
+                      />
+                    ) : (
+                      <div className="text-base text-slate-600">{UserProfile?.postalCode}</div>
+                    )}
                   </div>
                 </li>
               </ul>
             </Card>
           </div>
+
           <div className="lg:col-span-8 col-span-12">
             <Card title="User Overview">
               <BasicArea height={190} />
@@ -176,4 +236,4 @@ const profile = () => {
   );
 };
 
-export default profile;
+export default Profile;

@@ -31,10 +31,10 @@ export async function EditProfile_Web(userData){
        method: "POST",
        headers: {
            ...authHeader(),
-           'Accept': 'application/json',
-           'Content-Type': 'multipart/form-data'
+          //  'Accept': 'application/json',
+          //  'Content-Type': 'multipart/form-data'
        },
-         body: JSON.stringify(userData)
+         body: userData
        };
     const response = await fetch(`${ApiConfigs.base_url + ApiConfigs.apis.profile.EditProfile_Web}`, requestOptions)
 
@@ -47,9 +47,9 @@ export async function EditProfile_WebPartner(userData){
        headers: {
            ...authHeader(),
            'Accept': 'application/json',
-           'Content-Type': 'multipart/form-data'
+          //  'Content-Type': 'multipart/form-data'
        },
-         body: JSON.stringify(userData)
+         body: userData
        };
     const response = await fetch(`${ApiConfigs.base_url + ApiConfigs.apis.profile.EditProfile_WebPartner}`, requestOptions)
 
@@ -63,7 +63,7 @@ export async function GetProfile () {
     }
 
     const response = await fetch(`${ApiConfigs.base_url+ ApiConfigs.apis.profile.GetProfile}`,requestOptions)
-    
+
 
     return handleResponse(response)
   }

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Icon from "@/components/ui/Icon";
 import { CSSTransition } from "react-transition-group";
 import { useSelector, useDispatch } from "react-redux";
@@ -31,11 +31,45 @@ const allStatus = [
 ];
 
 import SimpleBar from "simplebar-react";
+import { ProfileService } from "@/_services/profile.service";
+import Image from "next/image";
 const MyProfile = () => {
   const { openProfile } = useSelector((state) => state.chat);
   const [status, setStatus] = useState("online");
   const nodeRef = useRef(null);
   const dispatch = useDispatch();
+  const [UserProfile, setUserProfile] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+
+  const FindProfile = () => {
+    return ProfileService.GetProfile()
+      .then((res) => {
+
+        setUserProfile(res       ); // Update the state with the correct value
+      })
+      .catch((err) => {
+
+      })
+      .finally(() => {
+
+      });
+  };
+ const groupAsyncFunctions = () => {
+    setIsLoading(true);
+    Promise.all([FindProfile()])
+      .then(() => {})
+      .catch((err) => {
+
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
+
+  useEffect(() => {
+
+    groupAsyncFunctions();
+  }, []); // Empty array to only run on mount
 
   return (
     <div>
@@ -45,11 +79,22 @@ const MyProfile = () => {
             <div className="flex space-x-3 rtl:space-x-reverse">
               <div className="flex-none">
                 <div className="h-10 w-10 rounded-full">
-                  <img
+                  {/* <img
                     src="/assets/images/users/user-1.jpg"
                     alt=""
                     className="w-full h-full object-cover rounded-full"
-                  />
+                  /> */}
+                   <Image
+            src={UserProfile?.avatar || '/assets/images/users/user-1.jpg'} // Fallback image
+            alt="Profile"
+            width={32} // Set width
+            height={32} // Set height
+            className=" w-full h-full object-cover rounded-full"
+            onError={(e) => {
+              e.target.src = '/assets/images/users/user-1.jpg'; // Fallback image on error
+            }}
+            unoptimized
+          />
                 </div>
               </div>
               <div className="flex-1 text-start">

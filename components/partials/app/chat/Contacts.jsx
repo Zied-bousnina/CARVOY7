@@ -1,3 +1,4 @@
+import Image from "next/image";
 import React from "react";
 
 const Contacts = ({ contact, onClick }) => {
@@ -24,11 +25,22 @@ const Contacts = ({ contact, onClick }) => {
 
   // Check for avatar or create initials
   const avatarContent = basicInfo?.avatar ? (
-    <img
-      src={basicInfo.avatar}
-      alt={name}
-      className="block w-full h-full object-cover rounded-full"
-    />
+    // <img
+    //   src={basicInfo.avatar}
+    //   alt={name}
+    //   className="block w-full h-full object-cover rounded-full"
+    // />
+    <Image
+    src={basicInfo.avatar || '/assets/images/users/user-1.jpg'} // Fallback image
+    alt="Profile"
+    width={32} // Set width
+    height={32} // Set height
+    className="block w-full h-full object-cover rounded-full"
+    onError={(e) => {
+      e.target.src = '/assets/images/users/user-1.jpg'; // Fallback image on error
+    }}
+    unoptimized
+  />
   ) : (
     <div className="flex items-center justify-center w-full h-full bg-gray-300 text-white font-medium text-sm rounded-full">
       {getInitials(name)}
