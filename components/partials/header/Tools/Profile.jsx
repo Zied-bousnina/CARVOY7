@@ -85,6 +85,7 @@ const Profile = () => {
       label: "Chat",
       icon: "heroicons-outline:chat",
       action: () => {
+        console.log(UserProfile)
         router.push(`/${UserProfile?.user?.role.toLowerCase()}/chat`);
       },
     },
