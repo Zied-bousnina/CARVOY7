@@ -69,6 +69,13 @@ function server() {
             FindCategorieById: 'users/categorie/{id}',
 
           },
+          BusinessDetails:{
+            getBusiness: 'users/business/fetch',
+            saveBusiness: 'users/business/save',
+            deleteBusiness: 'users/business/delete',
+
+
+          },
           mission: {
             create: 'users/createDemande',
             createNewVersion: 'users/createDemandeNewVersion',

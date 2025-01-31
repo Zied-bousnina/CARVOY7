@@ -23,6 +23,9 @@ import Flatpickr from "react-flatpickr";
 import Alert from "@/components/ui/Alert";
 import { set } from "date-fns";
 import Logo from "@/components/partials/header/Tools/Logo";
+import { UserService } from "@/_services/user.service";
+
+
 const GenerateFacture = () => {
   const [form, setForm] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -40,6 +43,70 @@ const GenerateFacture = () => {
   const [totalMontant, settotalMontant] = useState(0);
   const tvaRate = 20;
   const [selectedMissions, setSelectedMissions] = useState([]); // Store selected missions
+  // const [editingField, setEditingField] = useState(null);
+  const [isEditing, setIsEditing] = useState(false); // Track if user is editing
+
+  const [businessDetails, setBusinessDetails] = useState({
+    address: "140 bis Rue DE RENNES",
+    city: "PARIS 75006",
+    phone: "06 51913143",
+    siret: "98066356100028",
+  });
+
+  const [editingField, setEditingField] = useState(null);
+
+  const handleInputChange = (e) => {
+    setBusinessDetails({
+      ...businessDetails,
+      [e.target.name]: e.target.value,
+    });
+  };
+  useEffect(() => {
+    const fetchDetails = async () => {
+      try {
+        const response = await UserService.GetBusinessDetails();
+        setBusinessDetails(response.businessDetails);
+      } catch (error) {
+        console.error("Error fetching business details", error);
+      }
+    };
+
+    fetchDetails();
+  }, []);
+  const saveDetails = () => {
+    console.log("Saving business details", businessDetails);
+
+    UserService.SaveBusinessDetails(businessDetails)
+        .then(response => {
+            console.log("Response from API:", response);
+            toast.success("Business details saved successfully!", {
+                position: "top-right",
+                autoClose: 1500,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+        })
+        .catch(error => {
+            console.error("Error saving business details", error);
+            toast.error("An error occurred while saving business details", {
+                position: "top-right",
+                autoClose: 1500,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+        })
+        .finally(() => {
+            console.log("Save process completed.");
+        });
+};
 
   const calculateTVA = (montantHT, tvaRate) => {
 
@@ -313,10 +380,36 @@ const fetch =()=>{
               <div className="flex justify-between items-center border-b pb-4 mb-4">
                 <div>
                  <Logo notClicked={false}/>
-                  <p className="text-gray-600">140 bis Rue DE RENNES</p>
-                  <p className="text-gray-600">PARIS 75006</p>
-                  <p className="text-gray-600">Téléphone: 06 51913143</p>
-                  <p className="text-gray-600">SIRET: 98066356100028</p>
+
+                 {["address", "city", "phone", "siret"].map((field) => (
+              <p
+                key={field}
+                className="cursor-pointer text-gray-600"
+                onClick={() => {
+                  setEditingField(field);
+                  setIsEditing(true); // Show save button
+                }}
+              >
+                {editingField === field ? (
+                  <input
+                    type="text"
+                    name={field}
+                    value={businessDetails[field]}
+                    onChange={handleInputChange}
+                    onBlur={() => setEditingField(null)}
+                    autoFocus
+                    className="border p-1"
+                  />
+                ) : (
+                  businessDetails[field] || "Click to modify"
+                )}
+              </p>
+            ))}
+             {isEditing && (
+          <div className="text-right">
+            <Button text="Save" className="btn-dark" onClick={saveDetails} />
+          </div>
+        )}
                 </div>
                 <div className="text-right">
                   <h2 className="text-2xl font-bold">Facture</h2>

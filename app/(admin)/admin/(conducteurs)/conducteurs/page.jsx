@@ -91,6 +91,11 @@ const Conducteurs = () => {
       Cell: ({ value }) => `#${value?.toString().slice(-5)}`,
     },
     {
+      Header: "UinqueID ",
+      accessor: "uniqueId",
+      Cell: ({ value }) => `#${value}`,
+    },
+    {
       Header: "Nom",
       accessor: "name",
     },
@@ -191,15 +196,15 @@ const Conducteurs = () => {
   const FetchAllPartnership = () => {
     return DriverService.FetchAllDrivers()
       .then((res) => {
-      
+
         setDriveLists(res.driver
         ); // Update the state with the correct value
       })
       .catch((err) => {
-      
+
       })
       .finally(() => {
-      
+
       });
   };
 
@@ -210,7 +215,7 @@ const Conducteurs = () => {
     Promise.all([FetchAllPartnership()])
       .then(() => {})
       .catch((err) => {
-        
+
       })
       .finally(() => {
         setIsLoading(false);
@@ -224,7 +229,7 @@ const Conducteurs = () => {
     setIsLoading(true);
     UserService.DeleteUserByAdmin(id)
       .then((res) => {
-        
+
         FetchAllPartnership(); // Refresh the table
         setActiveModal(false); // Close the modal
       })

@@ -92,6 +92,11 @@ const Partenaires = () => {
       Cell: ({ value }) => `#${value?.toString().slice(-5)}`,
     },
     {
+      Header: "UinqueID ",
+      accessor: "uniqueId",
+      Cell: ({ value }) => `#${value}`,
+    },
+    {
       Header: "Siret",
       accessor: "siret",
     },

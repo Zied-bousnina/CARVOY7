@@ -8,8 +8,49 @@ export const UserService =  {
     GetAllUserDetails,
     BlockUser,
     UnBlockUser,
-    DeleteUserByAdmin
+    DeleteUserByAdmin,
+    GetBusinessDetails,    //  Fetch Business Details
+    SaveBusinessDetails,   //  Create or Update Business Details
+    DeleteBusinessDetails  //  Delete Business Details
 
+}
+// 🔹 Fetch Business Details
+export async function GetBusinessDetails() {
+  const requestOptions = {
+      method: 'GET',
+      headers: authHeader()
+  };
+
+  const response = await fetch(`${ApiConfigs.base_url + ApiConfigs.apis.admin.BusinessDetails.getBusiness}`, requestOptions);
+  return handleResponse(response);
+}
+
+// 🔹 Create or Update Business Details
+export async function SaveBusinessDetails(businessDetails) {
+  console.log("heyyyyyy", businessDetails)
+  const requestOptions = {
+      method: 'POST',
+      headers: {
+          ...authHeader(),
+          'Content-Type': 'application/json'
+
+      },
+      body: JSON.stringify(businessDetails)
+  };
+
+  const response = await fetch(`${ApiConfigs.base_url + ApiConfigs.apis.admin.BusinessDetails.saveBusiness}`, requestOptions);
+  return handleResponse(response);
+}
+
+// 🔹 Delete Business Details
+export async function DeleteBusinessDetails() {
+  const requestOptions = {
+      method: 'DELETE',
+      headers: authHeader()
+  };
+
+  const response = await fetch(`${ApiConfigs.base_url + ApiConfigs.apis.admin.BusinessDetails.deleteBusiness}`, requestOptions);
+  return handleResponse(response);
 }
 
 

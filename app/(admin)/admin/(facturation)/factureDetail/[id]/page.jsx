@@ -9,6 +9,7 @@ import { useParams, useRouter } from "next/navigation";
 import Loading from "@/components/Loading";
 import Logo from "@/components/partials/header/Tools/Logo";
 import { toast } from 'react-toastify';
+import { UserService } from "@/_services/user.service";
 
 const statusMapping = {
   "in progress": "En cours",
@@ -23,7 +24,24 @@ const FactureDetail = ({ params }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [factureDetails, setFactureDetails] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [businessDetails, setBusinessDetails] = useState({
+    address: "140 bis Rue DE RENNES",
+    city: "PARIS 75006",
+    phone: "06 51913143",
+    siret: "98066356100028",
+  });
+  useEffect(() => {
+    const fetchDetails = async () => {
+      try {
+        const response = await UserService.GetBusinessDetails();
+        setBusinessDetails(response.businessDetails);
+      } catch (error) {
+        console.error("Error fetching business details", error);
+      }
+    };
 
+    fetchDetails();
+  }, []);
   const fetchFactureDetail = async (id) => {
     setFactureDetails({})
     try {
@@ -152,10 +170,10 @@ console.log(factureDetails)
               <div className="flex justify-between items-center border-b pb-4 mb-4">
                 <div>
                  <Logo/>
-                  <p className="text-gray-600">140 bis Rue DE RENNES</p>
-                  <p className="text-gray-600">PARIS 75006</p>
-                  <p className="text-gray-600">Téléphone: 06 51913143</p>
-                  <p className="text-gray-600">SIRET: 98066356100028</p>
+                  <p className="text-gray-600">{businessDetails?.address}</p>
+                  <p className="text-gray-600">{businessDetails?.city}</p>
+                  <p className="text-gray-600">{businessDetails?.phone}</p>
+                  <p className="text-gray-600">{businessDetails?.siret}</p>
                 </div>
                 <div className="text-right">
                   <h2 className="text-2xl font-bold">Facture</h2>
