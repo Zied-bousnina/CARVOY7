@@ -93,7 +93,7 @@ const Conducteurs = () => {
     {
       Header: "UinqueID ",
       accessor: "uniqueId",
-      Cell: ({ value }) => `#${value}`,
+      Cell: ({ value }) => `${value}`,
     },
     {
       Header: "Nom",
