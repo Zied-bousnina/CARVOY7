@@ -42,7 +42,8 @@ export const missionService =  {
   GetPartnerDetailsById,
   UpdatePartnerShip,
   PayerEnLignePartner,
-  FindFactureByPartnerId
+  FindFactureByPartnerId,
+  updateTrancheConfiguration
 
 
 }
@@ -508,6 +509,23 @@ export async function PayerEnLignePartner(data){
 
  }
 
+
+export async function updateTrancheConfiguration(data,id){
+  const requestOptions =  {
+     method: "POST",
+     headers: {
+         ...authHeader(),
+           'Content-Type': 'application/json'
+
+     },
+        body: JSON.stringify(data)
+
+     };
+  const response = await fetch(`${ApiConfigs.base_url + ApiConfigs.apis.admin.mission.updateTrancheConfiguration.replace('{id}',id) }`, requestOptions)
+
+  return handleResponse(response);
+
+ }
 export async function createFacture(userData){
   const requestOptions =  {
      method: "POST",

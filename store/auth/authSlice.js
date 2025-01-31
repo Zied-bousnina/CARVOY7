@@ -44,24 +44,15 @@ state.driverIsVerified = decodedToken.driverIsVerified || false;
 state.firstLogin = decodedToken.firstLogin || false;
 state.isBlocked = decodedToken.isBlocked || false;
 state.onligne = decodedToken.onligne || false;
-        console.log("connected++++++++++++++",decodedToken)
+        console.log("connected++++++++++++++",decodedToken.firstLoginByThirdParty)
         switch (decodedToken.role) {
           case "PARTNER":
-            switch (decodedToken.firstLoginByThirdParty) {
-              case true:
-                action.payload.router.push("/firstLoginByThirdParty");
-                break;
-              default:
-                action.payload.router.push("/partner");
-                break;
-            }
-            switch (decodedToken.firstLogin) {
-              case true:
-                action.payload.router.push("/changePassword");
-                break;
-              default:
-                action.payload.router.push("/partner");
-                break;
+            if (decodedToken.firstLoginByThirdParty) {
+              action.payload.router.push("/firstLoginByThirdParty");
+            } else if (decodedToken.firstLogin) {
+              action.payload.router.push("/changePassword");
+            } else {
+              action.payload.router.push("/partner");
             }
 
             break;

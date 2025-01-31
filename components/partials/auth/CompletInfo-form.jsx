@@ -22,6 +22,9 @@ const router = useRouter();
       ...form,
       [name]: value,
     });
+    if (name === "type") {
+      setError((prevError) => ({ ...prevError, name: undefined }));
+    }
   };
 
   const onChangeHandlerFile = (e) => {
@@ -33,7 +36,11 @@ const router = useRouter();
 
   const validateStep1 = () => {
     const errors = {};
-    if (!form.name) errors.name = "Nom de l'entreprise est requis";
+    if (!form.type) errors.type = "Veuillez sélectionner un type";
+    if (form.type === "entreprise" && !form.name) {
+      errors.name = "Nom de l'entreprise est requis";
+    }
+
     if (!form.contactName) errors.contactName = "Nom de la personne de contact est requis";
     if (!form.addressPartner) errors.addressPartner = "Adresse est requise";
 
@@ -208,14 +215,29 @@ console.log(form)
       <form onSubmit={onSubmit} className="space-y-5">
         {currentStep === 1 && (
           <>
-            <Textinput
-              label="Nom de l'entreprise"
-              name="name"
-              type="text"
-              placeholder="Entrez le nom de l'entreprise"
+            <label className="block text-sm font-medium text-gray-700">Type d'utilisateur</label>
+            <select
+              name="type"
               onChange={onChangeHandler}
-              error={error.name}
-            />
+              value={form.type}
+              className="border p-2 w-full rounded"
+            >
+              <option value="">Sélectionner</option>
+              <option value="entreprise">Entreprise</option>
+              <option value="particulier">Particulier</option>
+            </select>
+            {error.type && <p className="text-red-500 text-sm">{error.type}</p>}
+
+            {form.type === "entreprise" && (
+              <Textinput
+                label="Nom de l'entreprise"
+                name="name"
+                type="text"
+                placeholder="Entrez le nom de l'entreprise"
+                onChange={onChangeHandler}
+                error={error.name}
+              />
+            )}
             <Textinput
               label="Personne de contact"
               name="contactName"

@@ -40,7 +40,7 @@ async function createEvent(eventData) {
 }
 
 async function updateEvent(eventId, updates) {
-  
+
   const requestOptions = {
     method: "PUT",
     headers: {

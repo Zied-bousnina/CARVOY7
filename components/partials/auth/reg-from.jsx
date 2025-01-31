@@ -15,6 +15,7 @@ const RegForm = () => {
   const [error, setError] = useState({});
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
 const router = useRouter();
   const onChangeHandler = (e) => {
     const { name, value } = e.target;
@@ -22,6 +23,9 @@ const router = useRouter();
       ...form,
       [name]: value,
     });
+    if (name === "type") {
+      setError((prevError) => ({ ...prevError, name: undefined }));
+    }
   };
 
   const onChangeHandlerFile = (e) => {
@@ -33,12 +37,17 @@ const router = useRouter();
 
   const validateStep1 = () => {
     const errors = {};
-    if (!form.name) errors.name = "Nom de l'entreprise est requis";
+    if (!form.type) errors.type = "Veuillez sélectionner un type";
+    if (form.type === "entreprise" && !form.name) {
+      errors.name = "Nom de l'entreprise est requis";
+    }
+
+
     if (!form.contactName) errors.contactName = "Nom de la personne de contact est requis";
     if (!form.addressPartner) errors.addressPartner = "Adresse est requise";
     if (!form.email) errors.email = "Email est requis";
     if (!form.phoneNumber) errors.phoneNumber = "Numéro de téléphone est requis";
-
+console.log(form.type === "entreprise" && !form.name)
     setError(errors);
     return Object.keys(errors).length === 0;
   };
@@ -91,11 +100,11 @@ const router = useRouter();
 
   };
   const Register = (data) => {
-   
+
     setIsSubmitting(true);
     AuthService.Register(data)
       .then((res) => {
-        
+
         setIsSubmitting(false);
         // You can show a success message here
         toast.success("        Partner created successfully!          ", {
@@ -113,7 +122,7 @@ const router = useRouter();
             password:form.password,
           })
                 .then((ress) => {
-                
+
 
                   dispatch(authActions.login({token: ress.token, router:router}))
                   toast.success("Bienvenue", {
@@ -134,7 +143,7 @@ const router = useRouter();
 
       })
       .catch((error) => {
-        
+
 
 
   if (error) {
@@ -180,14 +189,29 @@ const router = useRouter();
       <form onSubmit={onSubmit} className="space-y-5">
         {currentStep === 1 && (
           <>
-            <Textinput
-              label="Nom de l'entreprise"
-              name="name"
-              type="text"
-              placeholder="Entrez le nom de l'entreprise"
+             <label className="block text-sm font-medium text-gray-700">Type d'utilisateur</label>
+            <select
+              name="type"
               onChange={onChangeHandler}
-              error={error.name}
-            />
+              value={form.type}
+              className="border p-2 w-full rounded"
+            >
+              <option value="">Sélectionner</option>
+              <option value="entreprise">Entreprise</option>
+              <option value="particulier">Particulier</option>
+            </select>
+            {error.type && <p className="text-red-500 text-sm">{error.type}</p>}
+
+            {form.type === "entreprise" && (
+              <Textinput
+                label="Nom de l'entreprise"
+                name="name"
+                type="text"
+                placeholder="Entrez le nom de l'entreprise"
+                onChange={onChangeHandler}
+                error={error.name}
+              />
+            )}
             <Textinput
               label="Personne de contact"
               name="contactName"

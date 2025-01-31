@@ -77,6 +77,7 @@ function server() {
             deleteMission: 'users/mission/deleteMission/{missionId}',
             findMissionById: 'users/findDemandById/{id}',
             getUserInformationById: 'users/getMissionById/{id}',
+            updateTrancheConfiguration: 'users/updateTrancheConfiguration/{id}',
 
 
           },

@@ -39,6 +39,8 @@ const GenerateFacture = () => {
   const [DevisByPartner, setDevisByPartner] = useState([]);
   const [totalMontant, settotalMontant] = useState(0);
   const tvaRate = 20;
+  const [selectedMissions, setSelectedMissions] = useState([]); // Store selected missions
+
   const calculateTVA = (montantHT, tvaRate) => {
 
     const TVA = montantHT * (tvaRate / 100);
@@ -49,6 +51,16 @@ const GenerateFacture = () => {
       montantTTC
     };
   };
+  const handleMissionSelection = (missionId) => {
+    setSelectedMissions((prev) => {
+      if (prev.includes(missionId)) {
+        return prev.filter((id) => id !== missionId);
+      } else {
+        return [...prev, missionId];
+      }
+    });
+  };
+
   const FetchDevisByPartner = (data,id) => {
     setErrorDevis("")
     setDevisByPartner([])
@@ -88,6 +100,14 @@ const GenerateFacture = () => {
       })
       .catch((err) => console.error("Error fetching partners:", err));
   };
+  const calculateTotalAmount = () => {
+    return DevisByPartner
+      .filter((item) => selectedMissions.includes(item._id)) // Only selected missions
+      .reduce((total, devis) => total + parseFloat(calculateTVA(devis.montant, tvaRate).montantTTC), 0);
+  };
+  useEffect(() => {
+    settotalMontant(calculateTotalAmount());
+  }, [selectedMissions]); // Recalculate when selection changes
 
   const groupAsyncFunctions = () => {
     setIsLoading(true);
@@ -160,6 +180,7 @@ const fetch =()=>{
         from:formatDateToYYYYMMDD(startDate),
         to:formatDateToYYYYMMDD(endDate),
         totalAmount:totalMontant,
+        missions: selectedMissions,
     };
 
     console.log({ data, value });
@@ -320,29 +341,38 @@ const fetch =()=>{
               </div>
 
               <table className="w-full mt-6 border-collapse border border-gray-200">
-                <thead className="bg-gray-100">
-                  <tr>
-                    <th className="border border-gray-200 px-4 py-2">Description</th>
-                    <th className="border border-gray-200 px-4 py-2">QTE</th>
-                    <th className="border border-gray-200 px-4 py-2">Prix Unitaire</th>
-                    <th className="border border-gray-200 px-4 py-2">Montant</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {DevisByPartner?.map((item, index) => (
-                    <tr key={index}>
-                      <td className="border border-gray-200 px-4 py-2">{item?.mission?.postalAddress || "N/A"}</td>
-                      <td className="border border-gray-200 px-4 py-2">1</td>
-                      <td className="border border-gray-200 px-4 py-2">{ new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(
-                                 item?.montant,
-          ) || '0,00'}</td>
-                      <td className="border border-gray-200 px-4 py-2">{ new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(
-                                 item?.montant,
-          ) || '0,00'}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+  <thead className="bg-gray-100">
+    <tr>
+      <th className="border border-gray-200 px-4 py-2">Sélectionner</th>
+      <th className="border border-gray-200 px-4 py-2">Description</th>
+      <th className="border border-gray-200 px-4 py-2">QTE</th>
+      <th className="border border-gray-200 px-4 py-2">Prix Unitaire</th>
+      <th className="border border-gray-200 px-4 py-2">Montant</th>
+    </tr>
+  </thead>
+  <tbody>
+    {DevisByPartner?.map((item, index) => (
+      <tr key={index}>
+        <td className="border border-gray-200 px-4 py-2 text-center">
+          <input
+            type="checkbox"
+            checked={selectedMissions.includes(item._id)}
+            onChange={() => handleMissionSelection(item._id)}
+          />
+        </td>
+        <td className="border border-gray-200 px-4 py-2">{item?.mission?.postalAddress || "N/A"}</td>
+        <td className="border border-gray-200 px-4 py-2">1</td>
+        <td className="border border-gray-200 px-4 py-2">
+          {new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(item?.montant || 0)}
+        </td>
+        <td className="border border-gray-200 px-4 py-2">
+          {new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(item?.montant || 0)}
+        </td>
+      </tr>
+    ))}
+  </tbody>
+</table>
+
 
               <div className="mt-6 text-right">
                 <p className="text-lg font-semibold">Total HT: { new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(

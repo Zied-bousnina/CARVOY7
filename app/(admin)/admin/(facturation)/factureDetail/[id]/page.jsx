@@ -62,6 +62,8 @@ const payeeFacture = async () => {
 
         });
 }
+const totalMontant = factureDetails?.devis?.reduce((sum, item) => sum + (item?.montant || 0), 0);
+
 console.log(factureDetails)
   const getStatusDisplay = (statusValue) => {
     const displayValue = statusMapping[statusValue] || statusValue;
@@ -215,11 +217,17 @@ console.log(factureDetails)
 
               <div className="mt-6 text-right">
                 <p className="text-lg font-semibold">Total HT: { new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(
-                                 factureDetails?.facture?.totalAmmount,
+                                 factureDetails?.facture?.totalAmmount ?  factureDetails?.facture?.totalAmmount
+                                 :
+                                 totalMontant
+                                 ,
           ) || '0,00'}
           </p>
                 <p className="text-lg font-semibold">Total TTC:  { new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(
-            factureDetails?.facture?.totalAmmount  * 1.20 || 0
+           ( factureDetails?.facture?.totalAmmount ?  factureDetails?.facture?.totalAmmount
+            :
+            totalMontant)
+              * 1.20 || 0
         )} </p>
               </div>
             </Card>

@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { ProfileService } from "@/_services/profile.service";
 import Image from "next/image";
 const ProfileLabel = (UserProfile) => {
+  console.log(UserProfile)
   return (
     <div className="flex items-center">
       <div className="flex-1 ltr:mr-[10px] rtl:ml-[10px]">
@@ -27,7 +28,10 @@ const ProfileLabel = (UserProfile) => {
       </div>
       <div className="flex-none text-slate-600 dark:text-white text-sm font-normal items-center lg:flex hidden overflow-hidden text-ellipsis whitespace-nowrap">
         <span className="overflow-hidden text-ellipsis whitespace-nowrap w-[85px] block">
-        {UserProfile?.user?.name}
+        {UserProfile?.user?.name ?
+          UserProfile?.user?.name
+          : UserProfile?.user?.contactName
+        }
         </span>
         <span className="text-base inline-block ltr:ml-[10px] rtl:mr-[10px]">
           <Icon icon="heroicons-outline:chevron-down"></Icon>

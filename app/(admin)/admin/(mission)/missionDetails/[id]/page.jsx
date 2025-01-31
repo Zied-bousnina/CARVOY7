@@ -39,6 +39,7 @@ const MissionDetails = ({ params }) => {
       .FindRequestDemandeById(id)
       .then((res) => {
         setMissionDetails(res?.demande); // Update the state with the correct value
+        setFixedThreshold(res?.demande?.price)
       })
       .catch((err) => {
         console.error(err);
@@ -74,23 +75,27 @@ const MissionDetails = ({ params }) => {
     }
   };
 
-  const saveConfiguration = () => {
-    // Save configuration (e.g., tranches) to the backend
+  const saveConfiguration = async () => {
     const config = {
+      id, // Send mission ID
       intervalType,
-      fixedThreshold,
-      tieredThresholds,
+      price: fixedThreshold, // Use price instead of `fixedThreshold`
+      factureIncluded: true, // Add option to include in invoice
+      tranches: tieredThresholds, // Send tranches
     };
-
-    console.log("Saving Configuration:", config);
-
-    // TODO: Replace with API call
-    // fetch('/api/save-tiered-config', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify(config),
-    // });
+console.log(config)
+    try {
+      const response = await missionService.updateTrancheConfiguration(config,id);
+      if (response) {
+        console.log("Configuration saved successfully", response);
+        alert("Configuration mise à jour avec succès !");
+      }
+    } catch (error) {
+      console.error("Error saving configuration:", error);
+      alert("Erreur lors de la mise à jour de la configuration.");
+    }
   };
+
 
     // Recalculate remuneration whenever intervalType, fixedThreshold, or tieredThresholds change
     useEffect(() => {
