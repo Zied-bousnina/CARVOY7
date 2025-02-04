@@ -30,6 +30,7 @@
     "@stripe/stripe-js": "^5.2.0",
     "@svg-maps/world": "^1.0.1",
     "@tippyjs/react": "^4.2.6",
+    "@vercel/analytics": "^1.4.1",
     "antd": "^5.23.0",
     "apexcharts": "^3.33.2",
     "axios": "^1.7.7",

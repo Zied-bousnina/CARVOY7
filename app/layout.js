@@ -7,11 +7,13 @@ import "leaflet/dist/leaflet.css";
 import "./scss/app.scss";
 import { Provider } from "react-redux";
 import store from "../store";
+import { Analytics } from "@vercel/analytics/react"
 export default function RootLayout({ children }) {
   return (
     <>
       <html lang="en">
         <body className="font-inter  custom-tippy dashcode-app">
+          <Analytics  />
           <Provider store={store}>{children}</Provider>
         </body>
       </html>
