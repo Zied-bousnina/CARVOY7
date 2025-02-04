@@ -37,8 +37,8 @@ const ChatPage = () => {
     const lowerCaseQuery = searchQuery.toLowerCase();
     const filtered = contacts?.filter(
       (contact) =>
-        contact.name.toLowerCase().includes(lowerCaseQuery) ||
-        contact.email.toLowerCase().includes(lowerCaseQuery)
+        contact?.name?.toLowerCase().includes(lowerCaseQuery) ||
+        contact?.email?.toLowerCase().includes(lowerCaseQuery)
     );
     setFilteredContacts(filtered);
   }, [searchQuery, contacts]);
