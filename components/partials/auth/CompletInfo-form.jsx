@@ -7,6 +7,7 @@ import { AuthService } from "@/_services/auth.service";
 import { useSelector, useDispatch } from "react-redux";
 import { authActions } from "@/store/auth/authSlice";
 import { useRouter } from "next/navigation";
+import Alert from "@/components/ui/Alert";
 
 const CompleteInfoForm = () => {
     const dispatch = useDispatch();
@@ -16,16 +17,35 @@ const CompleteInfoForm = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
 const router = useRouter();
-  const onChangeHandler = (e) => {
-    const { name, value } = e.target;
-    setForm({
-      ...form,
-      [name]: value,
-    });
-    if (name === "type") {
-      setError((prevError) => ({ ...prevError, name: undefined }));
-    }
-  };
+const onChangeHandler = (e) => {
+  const { name, value } = e.target;
+
+  setForm((prevForm) => {
+      const updatedForm = {
+          ...prevForm,
+          [name]: value,
+      };
+
+      // If type changes to "particulier", remove siret and kbis
+      if (name === "type" && value === "particulier") {
+          delete updatedForm.siret;
+          delete updatedForm.kbis;
+      }
+
+      return updatedForm;
+  });
+
+  // Clear errors related to siret and kbis when changing type
+  if (name === "type") {
+      setError((prevError) => {
+          const updatedError = { ...prevError };
+          delete updatedError.siret;
+          delete updatedError.kbis;
+          return updatedError;
+      });
+  }
+};
+
 
   const onChangeHandlerFile = (e) => {
     setForm({
@@ -52,9 +72,10 @@ const router = useRouter();
 
   const validateStep2 = () => {
     const errors = {};
-    if (!form.siret) errors.siret = "Numéro SIRET est requis";
-    if (!form.kbis) errors.kbis = "K-Bis est requis";
-
+    if (form.type === "entreprise") {
+      if (!form.siret) errors.siret = "Numéro SIRET est requis";
+      if (!form.kbis) errors.kbis = "K-Bis est requis";
+    }
 
 
 
@@ -70,9 +91,22 @@ const router = useRouter();
 
   const handlePrevious = () => {
     setCurrentStep(1);
+    console.log("handlePrevious", form);
+    setForm((prevForm) => ({
+      ...prevForm,
+      type: prevForm.type || "",
+      name: prevForm.name || "",
+      contactName: prevForm.contactName || "",
+      addressPartner: prevForm.addressPartner || "",
+      phoneNumber: prevForm.phoneNumber || "",
+    }));
   };
 
   const onSubmit = (e) => {
+    console.log("onSubmit", form);
+    setForm((prevForm) => ({...prevForm,
+      siret: prevForm.siret || "",
+    }));
     e.preventDefault();
 
     if (!validateStep2()) return;
@@ -83,6 +117,7 @@ const router = useRouter();
     });
 
     setIsSubmitting(true);
+    console.log("setIsSubmitting", true);
 
     // Simulate API call
 console.log(form)
@@ -93,6 +128,8 @@ console.log(form)
   const Register = (data) => {
 
     setIsSubmitting(true);
+    console.log("setIsSubmitting", true);
+
     AuthService.CompletePartnerProfile(data)
       .then((res) => {
 
@@ -109,6 +146,8 @@ console.log(form)
 
       })
       .catch((error) => {
+        setIsSubmitting(false);
+    console.log("setIsSubmitting", false);
 
 
 
@@ -144,6 +183,8 @@ console.log(form)
   }
 
       }).finally(() => {
+        setIsSubmitting(false)
+    console.log("setIsSubmitting", false);
 
 
       }
@@ -152,6 +193,8 @@ console.log(form)
   const refreshAuthToken = (data) => {
 
     setIsSubmitting(true);
+    console.log("setIsSubmitting", true);
+
     AuthService.refreshAuthToken()
       .then((res) => {
 
@@ -170,11 +213,15 @@ console.log(form)
       })
       .catch((error) => {
 
+        setIsSubmitting(false);
+    console.log("setIsSubmitting", false);
 
 
   if (error) {
     const backendErrors = error;
     setError(backendErrors);
+    setIsSubmitting(false);
+    console.log("setIsSubmitting", false);
 
     // Display each error message using toast
     Object.keys(backendErrors).forEach((key) => {
@@ -191,6 +238,9 @@ console.log(form)
     });
   } else {
     // Handle generic error message
+    setIsSubmitting(false);
+    console.log("setIsSubmitting", false);
+
     toast.error("Une erreur interne est survenue. Veuillez réessayer plus tard.", {
       position: "top-right",
       autoClose: 1500,
@@ -205,6 +255,8 @@ console.log(form)
 
       }).finally(() => {
         setIsSubmitting(false);
+    console.log("setIsSubmitting", false);
+
 
       }
       );
@@ -212,6 +264,13 @@ console.log(form)
   return (
     <div>
       <ToastContainer />
+      {Object.keys(error).length > 0 && (
+  <Alert
+    label={Object.values(error).join(", ")} // Combine all error messages
+    className="alert-danger light-mode"
+  />
+)}
+
       <form onSubmit={onSubmit} className="space-y-5">
         {currentStep === 1 && (
           <>
@@ -236,6 +295,7 @@ console.log(form)
                 placeholder="Entrez le nom de l'entreprise"
                 onChange={onChangeHandler}
                 error={error.name}
+                value={form.name || ""}
               />
             )}
             <Textinput
@@ -245,6 +305,7 @@ console.log(form)
               placeholder="Entrez le nom de la personne de contact"
               onChange={onChangeHandler}
               error={error.contactName}
+              value={form.contactName || ""}
             />
             <Textinput
               label="Adresse"
@@ -253,6 +314,7 @@ console.log(form)
               placeholder="Entrez l'adresse"
               onChange={onChangeHandler}
               error={error.addressPartner}
+              value={form.addressPartner || ""}
             />
 
             <Textinput
@@ -262,6 +324,7 @@ console.log(form)
               placeholder="Entrez le numéro de téléphone"
               onChange={onChangeHandler}
               error={error.phoneNumber}
+              value={form.phoneNumber || ""}
             />
             <button type="submit"  className="btn btn-dark block w-full text-center" onClick={handleNext} >Suivant</button>
           </>
@@ -269,21 +332,26 @@ console.log(form)
 
         {currentStep === 2 && (
           <>
-            <Textinput
-              label="SIRET"
-              name="siret"
-              type="text"
-              placeholder="Entrez le numéro SIRET"
-              onChange={onChangeHandler}
-              error={error.siret}
-            />
-            <Textinput
-              label="K-Bis"
-              name="kbis"
-              type="file"
-              onChange={onChangeHandlerFile}
-              error={error.kbis}
-            />
+           {form.type === "entreprise" && (
+  <>
+    <Textinput
+      label="SIRET"
+      name="siret"
+      type="text"
+      placeholder="Entrez le numéro SIRET"
+      onChange={onChangeHandler}
+      error={error.siret}
+      value={form.siret || ""}
+    />
+    <Textinput
+      label="K-Bis"
+      name="kbis"
+      type="file"
+      onChange={onChangeHandlerFile}
+      error={error.kbis}
+    />
+  </>
+)}
 
 
             <div className="flex justify-between ">
