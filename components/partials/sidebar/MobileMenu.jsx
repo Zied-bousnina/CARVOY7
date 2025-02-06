@@ -52,12 +52,21 @@ const MobileMenu = ({ className = "custom-class" }) => {
   const [skin] = useSkin();
   const [isDark] = useDarkMode();
   const [mobileMenu, setMobileMenu] = useMobileMenu();
+  const [Role, setRole] = useState("");
+
+  useEffect(() => {
+    if (userAuth.role === "PARTNER") {
+      setRole("/partner");
+    } else if (userAuth.role === "ADMIN") {
+      setRole("/admin");
+    }
+  }, [userAuth.role]);
   return (
     <div
       className={`${className} fixed  top-0 bg-white dark:bg-slate-800 shadow-lg  h-full   w-[248px]`}
     >
       <div className="logo-segment flex justify-between items-center bg-white dark:bg-slate-800 z-[9] h-[85px]  px-4 ">
-        <Link href="/">
+        <Link href={Role}>
           <div className="flex items-center space-x-4">
             <div className="logo-icon">
               {!isDark && !isSemiDark ? (
