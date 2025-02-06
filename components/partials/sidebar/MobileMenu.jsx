@@ -9,21 +9,32 @@ import useDarkMode from "@/hooks/useDarkMode";
 import Link from "next/link";
 import useMobileMenu from "@/hooks/useMobileMenu";
 import Icon from "@/components/ui/Icon";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { handleLogout } from "@/components/partials/auth/store";
 
 const MobileMenu = ({ className = "custom-class" }) => {
   const scrollableNodeRef = useRef();
   const [scroll, setScroll] = useState(false);
   const userAuth = useSelector((state) => state.userAuth);
+  const dispatch = useDispatch();
 
    const [menuItemsToDisplay, setMenuItemsToDisplay] = useState(menuItems);
-    useEffect(() => {
-      if (userAuth.role === "PARTNER") {
-        setMenuItemsToDisplay(menuItemsPartner);
-      } else if (userAuth.role === "ADMIN") {
-        setMenuItemsToDisplay(menuItems);
-      }
-    }, [userAuth.role]);
+   useEffect(() => {
+    let updatedMenu = userAuth.role === "PARTNER" ? menuItemsPartner : menuItems;
+
+    // Append Logout Button
+    updatedMenu = [
+      ...updatedMenu,
+      {
+        title: "Déconnexion",
+        icon: "heroicons-outline:logout",
+        action: () => dispatch(handleLogout(false)), // Call logout action
+      },
+    ];
+
+    setMenuItemsToDisplay(updatedMenu);
+  }, [userAuth.role, dispatch]);
+
 
   useEffect(() => {
     const handleScroll = () => {

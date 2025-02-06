@@ -61,14 +61,24 @@ const Navmenu = ({ menus }) => {
           >
             {/* single menu with no childred*/}
             {!item.child && !item.isHeadr && (
-              <Link className="menu-link" href={item.link}>
-                <span className="menu-icon flex-grow-0">
-                  <Icon icon={item.icon} />
-                </span>
-                <div className="text-box flex-grow">{item.title}</div>
-                {item.badge && <span className="menu-badge">{item.badge}</span>}
-              </Link>
-            )}
+  <div
+    className="menu-link cursor-pointer"
+    onClick={() => {
+      if (item.action) {
+        item.action(); // Call the logout function
+      } else {
+        router.push(item.link);
+      }
+    }}
+  >
+    <span className="menu-icon flex-grow-0">
+      <Icon icon={item.icon} />
+    </span>
+    <div className="text-box flex-grow">{item.title}</div>
+    {item.badge && <span className="menu-badge">{item.badge}</span>}
+  </div>
+)}
+
             {/* only for menulabel */}
             {item.isHeadr && !item.child && (
               <div className="menulabel">{item.title}</div>

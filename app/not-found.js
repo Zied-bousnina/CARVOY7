@@ -1,7 +1,20 @@
-import React from "react";
+"use client"
+import React, {useState} from "react";
 import Link from "next/link";
+import { useSelector } from "react-redux";
+import { useEffect } from "react";
 
 const PageNotFound = () => {
+  const userAuth = useSelector((state) => state.userAuth);
+
+   const [menuItemsToDisplay, setMenuItemsToDisplay] = useState("");
+    useEffect(() => {
+      if (userAuth.role === "PARTNER") {
+        setMenuItemsToDisplay("/partner");
+      } else if (userAuth.role === "ADMIN") {
+        setMenuItemsToDisplay("/admin");
+      }
+    }, [userAuth.role]);
   return (
     <div className="min-h-screen flex flex-col justify-center items-center text-center py-20 dark:bg-slate-900">
       <img src="/assets/images/all-img/404-2.svg" alt="" />
@@ -13,7 +26,7 @@ const PageNotFound = () => {
       </div>
       <div className="max-w-[300px] mx-auto w-full">
         <Link
-          href="/"
+          href={menuItemsToDisplay}
           className="btn bg-white hover:bg-opacity-75 transition-all duration-150 block text-center"
         >
           Retour A L'accueil

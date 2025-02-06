@@ -3,6 +3,7 @@ import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { menuItems } from "@/constant/data";
 import Icon from "@/components/ui/Icon";
+import { useSelector } from "react-redux";
 
 const Breadcrumbs = () => {
   const location = usePathname();
@@ -10,7 +11,16 @@ const Breadcrumbs = () => {
 
   const [isHide, setIsHide] = useState(null);
   const [groupTitle, setGroupTitle] = useState("");
+  const userAuth = useSelector((state) => state.userAuth);
 
+  const [menuItemsToDisplay, setMenuItemsToDisplay] = useState("");
+   useEffect(() => {
+     if (userAuth.role === "PARTNER") {
+       setMenuItemsToDisplay('/partner');
+     } else if (userAuth.role === "ADMIN") {
+       setMenuItemsToDisplay("/admin");
+     }
+   }, [userAuth.role]);
   useEffect(() => {
     const currentMenuItem = menuItems.find(
       (item) => item.link === locationName
@@ -34,7 +44,7 @@ const Breadcrumbs = () => {
         <div className="md:mb-6 mb-4 flex space-x-3 rtl:space-x-reverse">
           <ul className="breadcrumbs">
             <li className="text-primary-500">
-              <Link href="/dashboard" className="text-lg">
+              <Link href={menuItemsToDisplay} className="text-lg">
                 <Icon icon="heroicons-outline:home" />
               </Link>
               <span className="breadcrumbs-icon rtl:transform rtl:rotate-180">

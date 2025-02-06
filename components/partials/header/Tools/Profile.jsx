@@ -7,6 +7,7 @@ import { handleLogout } from "@/components/partials/auth/store";
 import { useRouter } from "next/navigation";
 import { ProfileService } from "@/_services/profile.service";
 import Image from "next/image";
+
 const ProfileLabel = (UserProfile) => {
   console.log(UserProfile)
   return (
