@@ -104,6 +104,15 @@ export const menuItems = [
       childtitle: "social Login Config",
       childlink: "admin/socialLoginConfig",
     },
+    {
+      childtitle: "google Maps Config",
+      childlink: "admin/googleMapsConfig",
+    },
+    {
+      childtitle: "Immatriculation Config",
+      childlink: "admin/ImmatriculationConfig",
+    },
+
 
   ],
 },

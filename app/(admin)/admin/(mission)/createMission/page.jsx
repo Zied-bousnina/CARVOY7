@@ -24,6 +24,7 @@ import ServiceOptions from "@/components/partials/validation-devis/ServicesOptio
 import Documents from "@/components/partials/validation-devis/Documents/Documents";
 import { missionService } from "@/_services/mission.service";
 import VehicleInfoCard from "@/components/partials/mission/VehicleInfoCard";
+import { SocialService } from "@/_services/SocialLoginConfig.service";
 
 const MapMission = dynamic(() => import("@/components/partials/map/MapMission"), {
   ssr: false,
@@ -90,6 +91,8 @@ const [selectedServices, setSelectedServices] = useState({});
 const [costdriver, setcostdriver] = useState(0)
 const [uploadedDocuments, setUploadedDocuments] = useState({});
 const [price, setPrice] = useState(0);
+const [googleMapsApiKey, setGoogleMapsApiKey] = useState(null);
+
 const [vehicleDetails, setVehicleDetails] = useState({
   vehicle: '',
   transport: '',
@@ -97,33 +100,57 @@ const [vehicleDetails, setVehicleDetails] = useState({
   distance: ''
 });
 const [immatriculation, setImmatriculation] = useState("");
+const [immatApiKey, setImmatApiKey] = useState(null);
   const [vehicleData, setVehicleData] = useState(null);
-  const fetchVehicleData = async () => {
-    const token = "TokenDemo";
-    const host_name = "apiplaqueimmatriculation.com";
-    const format = "json";
+   useEffect(() => {
+      SocialService.GetSocialConfig()
+        .then((data) => {
+          if (data.googleMaps?.apiKey) {
+            setGoogleMapsApiKey(data.googleMaps.apiKey);
+          }
+          if (data.immatApi?.apiKey) {
+            setImmatApiKey(data.immatApi.apiKey);
+          }
+        })
+        .catch(() => setGoogleMapsApiKey(null));
+    }, []);
 
-    const apiUrl = `http://api.apiplaqueimmatriculation.com/carte-grise?host_name=${host_name}&immatriculation=${immatriculation}&token=${token}&format=${format}`;
+    const fetchVehicleData = async () => {
+      // if (!immatriculation.trim()) {
+      //   toast.error("Veuillez entrer une plaque d'immatriculation valide.");
+      //   return;
+      // }
 
-    try {
-      const response = await fetch(apiUrl, {
-        method: "POST",
-        headers: { Accept: "application/json" },
-      });
-
-      if (!response.ok) {
-        throw new Error("API request failed.");
+      if (!immatApiKey) {
+        console.warn("⚠️ No API Key found, using local data.");
+        setVehicleData(localData);
+        return;
       }
 
-      const data = await response.json();
-      setVehicleData(data.data);
-      setError("");
-    } catch (apiError) {
-      console.error("API failed. Using local data.", apiError);
-      setVehicleData(localData);
-      setError("Using local data due to API failure.");
-    }
-  };
+      const apiUrl = `https://api.apiplaqueimmatriculation.com/carte-grise?immatriculation=${immatriculation}&token=${immatApiKey}&format=json`;
+
+      try {
+        const response = await fetch(apiUrl, { method: "POST", headers: { Accept: "application/json" } });
+
+        if (!response.ok) throw new Error("API request failed");
+
+        const data = await response.json();
+        if (data.message && data.message.includes("Abonnement expiré")) {
+          console.warn("⚠️ Subscription expired. Using local data.");
+
+          setVehicleData(localData);
+          setError("Abonnement expiré. Utilisation des données locales.");
+          return;
+        }
+        setVehicleData(data.data);
+
+        setError("");
+      } catch (apiError) {
+        console.error("API failed. Using local data.", apiError);
+        setVehicleData(localData);
+        setError("Utilisation des données locales en raison de l'échec de l'API.");
+      }
+    };
   // const [error, setError] = useState("");
   const [formData, setFormData] = useState({
     startPoint: "",
@@ -300,23 +327,54 @@ const [immatriculation, setImmatriculation] = useState("");
       return;
     }
 
-    setIsLoading(true); // Start loading
+    setIsLoading(true);
 
     try {
-      const response = await axios.get(`https://nominatim.openstreetmap.org/reverse?lat=30.2558585&lon=10.255&format=json`);
-      console.log("response",response)
+      if (googleMapsApiKey) {
+        // ✅ Use Google Places API if API Key exists
+        const response = await fetch(
+          `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${query}&key=${googleMapsApiKey}&language=fr`
+        );
+        const data = await response.json();
 
-      if (isStartingPoint) {
-        setStartingPointSuggestions(response.data);
+        if (data.status === "OK") {
+          const suggestions = data.predictions.map((place) => ({
+            display_name: place.description,
+            place_id: place.place_id, // Needed to get exact location later
+          }));
+
+          if (isStartingPoint) {
+            setStartingPointSuggestions(suggestions);
+          } else {
+            setDestinationSuggestions(suggestions);
+          }
+        }
       } else {
-        setDestinationSuggestions(response.data);
+        // ❌ Fallback to OpenStreetMap (Nominatim) if Google API is unavailable
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/search?q=${query}&format=json&addressdetails=1&limit=5`
+        );
+        const data = await response.json();
+
+        const suggestions = data.map((place) => ({
+          display_name: place.display_name,
+          latitude: place.lat,
+          longitude: place.lon,
+        }));
+
+        if (isStartingPoint) {
+          setStartingPointSuggestions(suggestions);
+        } else {
+          setDestinationSuggestions(suggestions);
+        }
       }
     } catch (error) {
       console.error("Error fetching location suggestions:", error);
     } finally {
-      setIsLoading(false); // End loading
+      setIsLoading(false);
     }
   };
+
     const formatAddress = (displayName) => {
       const parts = displayName.split(',').map(part => part.trim());
       let streetNumber = '';
@@ -341,17 +399,62 @@ const [immatriculation, setImmatriculation] = useState("");
       return `${streetNumber} ${streetName}, ${postalCode}, ${city}`;
     };
 
-  const handleSuggestionClick = (suggestion) => {
-    const formattedAddress = formatAddress(suggestion.display_name  );
-    setstartingPoint({
-      display_name: formattedAddress ,
-      latitude: suggestion.lat,
-      longitude: suggestion.lon,
-    });
-    setStartingPointSuggestions([]);
-    setSearchQuery(formattedAddress);
+    const handleSuggestionClick = async (suggestion, isStartingPoint) => {
+  if (googleMapsApiKey && suggestion.place_id) {
+    try {
+      const response = await fetch(
+        `https://maps.googleapis.com/maps/api/place/details/json?place_id=${suggestion.place_id}&key=${googleMapsApiKey}`
+      );
+      const data = await response.json();
 
-  };
+      if (data.status === "OK") {
+        const location = data.result.geometry.location;
+        const formattedAddress = data.result.formatted_address;
+
+        const locationData = {
+          display_name: formattedAddress,
+          latitude: location.lat,
+          longitude: location.lng,
+        };
+
+        if (isStartingPoint) {
+          setstartingPoint(locationData);
+          setSearchQuery(formattedAddress);
+          setStartingPointSuggestions([]);
+        } else {
+          setdestination(locationData);
+          setDestinationSearchQuery(formattedAddress);
+          setDestinationSuggestions([]);
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching place details:", error);
+    }
+  } else {
+    // OpenStreetMap fallback
+    if (suggestion.latitude && suggestion.longitude) {
+      const locationData = {
+        display_name: suggestion.display_name,
+        latitude: suggestion.latitude,
+        longitude: suggestion.longitude,
+      };
+
+      if (isStartingPoint) {
+        setstartingPoint(locationData);
+        setSearchQuery(suggestion.display_name);
+        setStartingPointSuggestions([]);
+      } else {
+        setdestination(locationData);
+        setDestinationSearchQuery(suggestion.display_name);
+        setDestinationSuggestions([]);
+      }
+    } else {
+      console.error("Error: Missing latitude and longitude in suggestion");
+    }
+  }
+};
+
+
   const handleSuggestionDestinationClick = (suggestion) => {
     const formattedAddress = formatAddress(suggestion.display_name);
     setdestination({
@@ -493,61 +596,93 @@ setSearchQuery('');
 </button>
 )}
 {startingPointSuggestions.length > 0 && (
-<ul className="bg-white shadow-md rounded-lg mt-2 border border-gray-200 divide-y divide-gray-200">
-<li
-className="px-4 py-2 cursor-pointer hover:bg-gray-100 text-blue-500"
-onClick={() => {
-navigator.geolocation.getCurrentPosition(async (position) => {
-const { latitude, longitude } = position.coords;
-try {
-const response = await axios.get(
-  `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
-);
-const result = response.data;
-if (result) {
-  setstartingPoint({
-    display_name: result.display_name,
-    latitude: latitude,
-    longitude: longitude,
-  });
+  <ul className="absolute z-50 bg-white shadow-lg rounded-lg mt-2 w-full border border-gray-200">
+    {/* Position actuelle */}
+    <li
+      className="flex items-center px-4 py-2 cursor-pointer hover:bg-gray-100 text-blue-500"
+      onClick={() => {
+        if (!navigator.geolocation) {
+          toast.error("La géolocalisation n'est pas prise en charge par votre navigateur.");
+          return;
+        }
 
-  setStartingPointSuggestions([]);
-}
-} catch (error) {
-console.error('Error fetching current position:', error);
-}
-});
-}}
->
-Position actuelle
-</li>
-{startingPointSuggestions.map((suggestion, index) => (
-<li
-key={index}
-onClick={() => {
-console.log("suggestion",suggestion)
-handleSuggestionClick(suggestion)}}
-className="px-4 py-2 flex items-center cursor-pointer hover:bg-gray-100"
->
-<svg
-xmlns="http://www.w3.org/2000/svg"
-className="h-5 w-5 text-gray-400 mr-2"
-fill="currentColor"
-viewBox="0 0 20 20"
->
-<path
-fillRule="evenodd"
-d="M10 2a6 6 0 00-6 6c0 3.72 6 10 6 10s6-6.28 6-10a6 6 0 00-6-6zm0 8a2 2 0 110-4 2 2 0 010 4z"
-clipRule="evenodd"
-/>
-</svg>
-<span className="text-gray-700">
-{formatAddress(suggestion.display_name)}
-</span>
-</li>
-))}
-</ul>
+        toast.info("Détection de votre position...", { autoClose: 1000 });
+
+        navigator.geolocation.getCurrentPosition(
+          async (position) => {
+            const { latitude, longitude } = position.coords;
+
+            try {
+              let locationData;
+
+              if (googleMapsApiKey) {
+                const googleResponse = await fetch(
+                  `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${googleMapsApiKey}`
+                );
+                const googleData = await googleResponse.json();
+
+                if (googleData.status === "OK" && googleData.results.length > 0) {
+                  locationData = {
+                    display_name: googleData.results[0].formatted_address,
+                    latitude,
+                    longitude,
+                  };
+                }
+              } else {
+                const osmResponse = await axios.get(
+                  `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
+                );
+                const osmData = osmResponse.data;
+
+                locationData = {
+                  display_name: osmData.display_name,
+                  latitude,
+                  longitude,
+                };
+              }
+
+              if (locationData) {
+                setstartingPoint(locationData);
+                setSearchQuery(locationData.display_name);
+                setStartingPointSuggestions([]);
+                toast.success("Position détectée avec succès !");
+              }
+            } catch (error) {
+              console.error("Erreur lors de la récupération de la position:", error);
+              toast.error("Impossible de récupérer votre position.");
+            }
+          },
+          (error) => {
+            console.error("Erreur de géolocalisation:", error);
+            toast.error("Accès à la localisation refusé ou indisponible.");
+          }
+        );
+      }}
+    >
+      <span className="font-semibold">📍 Position actuelle</span>
+    </li>
+
+    {/* Suggestions List */}
+    {startingPointSuggestions.map((suggestion, index) => (
+      <li
+        key={index}
+        onClick={() => handleSuggestionClick(suggestion, true)} // ✅ Ensure true for startingPoint
+        className="flex items-center px-4 py-2 cursor-pointer hover:bg-gray-100"
+      >
+        <span className="text-gray-700">
+          <span className="font-semibold">{suggestion.display_name.split(",")[0]}</span>
+          {suggestion.display_name.split(",").slice(1).join(",")}
+        </span>
+      </li>
+    ))}
+
+    {/* Google Branding */}
+    <li className="px-4 py-2 text-gray-400 text-sm text-right italic">
+      powered by <span className="font-semibold">Google</span>
+    </li>
+  </ul>
 )}
+
 
   {error?.name && <div className="text-red-500">{error.name}</div>}
 </div>
@@ -588,58 +723,86 @@ setDestinationSearchQuery('');
 </button>
 )}
 {destinationSuggestions.length > 0 && (
-<ul className="bg-white shadow-md rounded-lg mt-2 border border-gray-200 divide-y divide-gray-200">
-<li
-className="px-4 py-2 cursor-pointer hover:bg-gray-100 text-blue-500"
-onClick={() => {
-navigator.geolocation.getCurrentPosition(async (position) => {
-const { latitude, longitude } = position.coords;
-try {
-const response = await axios.get(
-  `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
-);
-const result = response.data;
-if (result) {
-  setdestination({
-    display_name: result.display_name,
-    latitude: latitude,
-    longitude: longitude,
-  });
-  setDestinationSuggestions([]);
-}
-} catch (error) {
-console.error('Error fetching current position:', error);
-}
-});
-}}
->
-Position actuelle
-</li>
-{destinationSuggestions.map((suggestion, index) => (
-<li
-key={index}
-onClick={() => handleSuggestionDestinationClick(suggestion)}
-className="px-4 py-2 flex items-center cursor-pointer hover:bg-gray-100"
->
-<svg
-xmlns="http://www.w3.org/2000/svg"
-className="h-5 w-5 text-gray-400 mr-2"
-fill="currentColor"
-viewBox="0 0 20 20"
->
-<path
-fillRule="evenodd"
-d="M10 2a6 6 0 00-6 6c0 3.72 6 10 6 10s6-6.28 6-10a6 6 0 00-6-6zm0 8a2 2 0 110-4 2 2 0 010 4z"
-clipRule="evenodd"
-/>
-</svg>
-<span className="text-gray-700">
-{formatAddress(suggestion.display_name)}
-</span>
-</li>
-))}
-</ul>
+  <ul className="absolute z-50 bg-white shadow-lg rounded-lg mt-2 w-full border border-gray-200">
+    <li
+      className="flex items-center px-4 py-2 cursor-pointer hover:bg-gray-100 text-blue-500"
+      onClick={() => {
+        if (!navigator.geolocation) {
+          toast.error("La géolocalisation n'est pas prise en charge par votre navigateur.");
+          return;
+        }
+
+        toast.info("Détection de votre position...", { autoClose: 1000 });
+
+        navigator.geolocation.getCurrentPosition(
+          async (position) => {
+            const { latitude, longitude } = position.coords;
+
+            try {
+              let locationData;
+
+              if (googleMapsApiKey) {
+                const googleResponse = await fetch(
+                  `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${googleMapsApiKey}`
+                );
+                const googleData = await googleResponse.json();
+
+                if (googleData.status === "OK" && googleData.results.length > 0) {
+                  locationData = {
+                    display_name: googleData.results[0].formatted_address,
+                    latitude,
+                    longitude,
+                  };
+                }
+              } else {
+                const osmResponse = await axios.get(
+                  `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
+                );
+                const osmData = osmResponse.data;
+
+                locationData = {
+                  display_name: osmData.display_name,
+                  latitude,
+                  longitude,
+                };
+              }
+
+              if (locationData) {
+                setdestination(locationData);
+                setDestinationSearchQuery(locationData.display_name);
+                setDestinationSuggestions([]);
+                toast.success("Position détectée avec succès !");
+              }
+            } catch (error) {
+              console.error("Erreur lors de la récupération de la position:", error);
+              toast.error("Impossible de récupérer votre position.");
+            }
+          },
+          (error) => {
+            console.error("Erreur de géolocalisation:", error);
+            toast.error("Accès à la localisation refusé ou indisponible.");
+          }
+        );
+      }}
+    >
+      <span className="font-semibold">📍 Position actuelle</span>
+    </li>
+
+    {destinationSuggestions.map((suggestion, index) => (
+      <li
+        key={index}
+        onClick={() => handleSuggestionClick(suggestion, false)} // ✅ Ensure false for destination
+        className="flex items-center px-4 py-2 cursor-pointer hover:bg-gray-100"
+      >
+        <span className="text-gray-700">
+          <span className="font-semibold">{suggestion.display_name.split(",")[0]}</span>
+          {suggestion.display_name.split(",").slice(1).join(",")}
+        </span>
+      </li>
+    ))}
+  </ul>
 )}
+
 
   {error?.contactName && <div className="text-red-500">{error.contactName}</div>}
 </div>

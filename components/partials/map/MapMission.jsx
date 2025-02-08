@@ -2,33 +2,25 @@ import { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from "react-leaflet";
 import L from "leaflet";
 import "leaflet-routing-machine";
+import { LoadScript, GoogleMap, Marker as GoogleMarker } from "@react-google-maps/api";
+import { SocialService } from "@/_services/SocialLoginConfig.service"; // API to fetch Google Maps Key
 
 const MapMission = ({ startingPoint, setStartingPoint, destination, setDestination, setSearchQuery }) => {
+  const [googleMapsApiKey, setGoogleMapsApiKey] = useState(null);
   const [currentLocation, setCurrentLocation] = useState([48.709438, 2.503570]);
   const [mapInstance, setMapInstance] = useState(null);
   const [routeControl, setRouteControl] = useState(null);
-  const [route, setRoute] = useState(null);
 
-  // Marker Icons
-  let DefaultIcon = L.icon({
-    iconUrl: "/assets/images/mapicon/Marker-location.png",
-    iconSize: [60, 60],
-    iconAnchor: [22, 94],
-    popupAnchor: [-3, -76],
-    shadowSize: [50, 64],
-    shadowAnchor: [4, 62],
-    className: "my-custom-class",
-  });
-
-  let DestinationIcon = L.icon({
-    iconUrl: "/assets/images/mapicon/marker-courier.png",
-    iconSize: [60, 60],
-    iconAnchor: [22, 94],
-    popupAnchor: [-3, -76],
-    shadowSize: [50, 64],
-    shadowAnchor: [4, 62],
-    className: "my-custom-class",
-  });
+  // Fetch Google Maps API Key
+  useEffect(() => {
+    SocialService.GetSocialConfig()
+      .then((data) => {
+        if (data.googleMaps?.apiKey) {
+          setGoogleMapsApiKey(data.googleMaps.apiKey);
+        }
+      })
+      .catch(() => setGoogleMapsApiKey(null));
+  }, []);
 
   // Get current location
   useEffect(() => {
@@ -38,68 +30,45 @@ const MapMission = ({ startingPoint, setStartingPoint, destination, setDestinati
     });
   }, []);
 
-  // Update route when points change
-  useEffect(() => {
-    if (mapInstance && (startingPoint || destination)) {
-      if (routeControl) {
-        mapInstance.removeControl(routeControl);
-      }
+  // ------------------------ Leaflet (Fallback) ------------------------
+  let DefaultIcon = L.icon({
+    iconUrl: "/assets/images/mapicon/Marker-location.png",
+    iconSize: [60, 60],
+  });
 
-      const newRouteControl = L.Routing.control({
-        waypoints: [
-          startingPoint ? L.latLng(startingPoint.latitude, startingPoint.longitude) : null,
-          destination ? L.latLng(destination.latitude, destination.longitude) : null,
-        ].filter(Boolean),
-        routeWhileDragging: true,
-        show: true,
-        lineOptions: {
-          styles: [{ color: "#6c63ff", weight: 5 }],
-        },
-      }).addTo(mapInstance);
+  let DestinationIcon = L.icon({
+    iconUrl: "/assets/images/mapicon/marker-courier.png",
+    iconSize: [60, 60],
+  });
 
-      setRouteControl(newRouteControl);
-    }
-  }, [mapInstance, startingPoint, destination]);
-
-  // Handle map clicks to set points
   const reverseGeocode = async (lat, lon) => {
-    const response = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`);
-    const data = await response.json();
-    return data.display_name;
-  };
+    if (googleMapsApiKey) {
+      // ✅ Use Google Geocoding API if Google Maps is available
+      const response = await fetch(
+        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lon}&key=${googleMapsApiKey}`
+      );
+      const data = await response.json();
 
-  const formatAddress = (displayName) => {
-    const parts = displayName.split(',').map(part => part.trim());
-    let streetNumber = '';
-    let streetName = '';
-    let postalCode = '';
-    let city = '';
-
-    parts.forEach(part => {
-      if (/^\d{5}$/.test(part)) {
-        postalCode = part;
-      } else if (/^\d+\s/.test(part)) {
-        streetNumber = part.split(' ')[0];
-        streetName = part.split(' ').slice(1).join(' ');
-      } else if (!streetName && !postalCode && !city) {
-        streetName = part;
-      } else if (!city) {
-        city = part;
+      if (data.status === "OK" && data.results.length > 0) {
+        return data.results[0].formatted_address; // Return full formatted address
       }
-    });
-
-    return `${streetNumber} ${streetName}, ${postalCode}, ${city}`;
+    } else {
+      // ❌ Fallback to OpenStreetMap (Nominatim)
+      const response = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`);
+      const data = await response.json();
+      return data.display_name; // Return OpenStreetMap address format
+    }
   };
+
 
   const MapClickHandler = () => {
     useMapEvents({
       click(e) {
         const { lat, lng } = e.latlng;
-
         if (!startingPoint) {
           reverseGeocode(lat, lng).then((display_name) => {
             setStartingPoint({ latitude: lat, longitude: lng, display_name });
-            setSearchQuery(formatAddress(display_name));
+            setSearchQuery(display_name);
           });
         } else if (!destination) {
           reverseGeocode(lat, lng).then((display_name) => {
@@ -112,37 +81,72 @@ const MapMission = ({ startingPoint, setStartingPoint, destination, setDestinati
     return null;
   };
 
+  // ------------------------ Google Maps ------------------------
+  const handleGoogleMapClick = async (event) => {
+    const lat = event.latLng.lat();
+    const lng = event.latLng.lng();
+
+    if (!startingPoint) {
+      const display_name = await reverseGeocode(lat, lng);
+      setStartingPoint({ latitude: lat, longitude: lng, display_name });
+      setSearchQuery(display_name);
+    } else if (!destination) {
+      const display_name = await reverseGeocode(lat, lng);
+      setDestination({ latitude: lat, longitude: lng, display_name });
+    }
+  };
+
+  // ------------------------ Conditional Rendering ------------------------
   return (
     <div className="w-full h-[500px]">
-      <MapContainer
-        center={currentLocation}
-        zoom={13}
-        scrollWheelZoom={true}
-        style={{ height: "100%", width: "100%" }}
-        whenCreated={(map) => setMapInstance(map)}
-      >
-        <TileLayer
-          attribution={"Google Maps"}
-          url="http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}"
-          maxZoom={20}
-          subdomains={["mt0", "mt1", "mt2", "mt3"]}
-        />
+      {googleMapsApiKey ? (
+        // ✅ Use Google Maps if API key is available
+        <LoadScript googleMapsApiKey={googleMapsApiKey}>
+          <GoogleMap
+            mapContainerStyle={{ height: "100%", width: "100%" }}
+            center={{ lat: currentLocation[0], lng: currentLocation[1] }}
+            zoom={13}
+            onClick={handleGoogleMapClick}
+          >
+            {startingPoint && (
+              <GoogleMarker position={{ lat: startingPoint.latitude, lng: startingPoint.longitude }} />
+            )}
+            {destination && (
+              <GoogleMarker position={{ lat: destination.latitude, lng: destination.longitude }} />
+            )}
+          </GoogleMap>
+        </LoadScript>
+      ) : (
+        // ❌ Fallback to Leaflet if Google Maps API Key is missing
+        <MapContainer
+          center={currentLocation}
+          zoom={13}
+          scrollWheelZoom={true}
+          style={{ height: "100%", width: "100%" }}
+          whenCreated={(map) => setMapInstance(map)}
+        >
+          <TileLayer
+            attribution={"Google Maps"}
+            url="http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}"
+            maxZoom={20}
+            subdomains={["mt0", "mt1", "mt2", "mt3"]}
+          />
 
-        {startingPoint && (
-          <Marker position={[startingPoint.latitude, startingPoint.longitude]} icon={DefaultIcon}>
-            <Popup>{startingPoint.display_name}</Popup>
-          </Marker>
-        )
-        }
+          {startingPoint && (
+            <Marker position={[startingPoint.latitude, startingPoint.longitude]} icon={DefaultIcon}>
+              <Popup>{startingPoint.display_name}</Popup>
+            </Marker>
+          )}
 
-        {destination && (
-          <Marker position={[destination.latitude, destination.longitude]} icon={DestinationIcon}>
-            <Popup>{destination.display_name}</Popup>
-          </Marker>
-        )}
+          {destination && (
+            <Marker position={[destination.latitude, destination.longitude]} icon={DestinationIcon}>
+              <Popup>{destination.display_name}</Popup>
+            </Marker>
+          )}
 
-        <MapClickHandler />
-      </MapContainer>
+          <MapClickHandler />
+        </MapContainer>
+      )}
     </div>
   );
 };
