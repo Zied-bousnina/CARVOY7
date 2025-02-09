@@ -16,6 +16,7 @@ function server() {
         updateEvent: "todo",
         deleteEvent: "todo",
       },
+      activity:"users/activity",
       PaymentGateway: {
         getConfig: "users/get-payment-gateway", // GET: Retrieve the Stripe configuration
         saveConfig: "users/payment-gateway", // POST: Save or update the Stripe configuration

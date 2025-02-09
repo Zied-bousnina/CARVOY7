@@ -11,7 +11,8 @@ export const UserService =  {
     DeleteUserByAdmin,
     GetBusinessDetails,    //  Fetch Business Details
     SaveBusinessDetails,   //  Create or Update Business Details
-    DeleteBusinessDetails  //  Delete Business Details
+    DeleteBusinessDetails,  //  Delete Business Details
+    GetUserActivity
 
 }
 // 🔹 Fetch Business Details
@@ -72,6 +73,16 @@ export async function GetCurrentUser () {
     }
 
     const response = await fetch(`${ApiConfigs.base_url+ ApiConfigs.apis.auth.GetAllUsers}`,requestOptions)
+
+    return handleResponse(response)
+  }
+  export async function GetUserActivity () {
+    const requestOptions = {
+      method:'GET',
+      headers: authHeader()
+    }
+
+    const response = await fetch(`${ApiConfigs.base_url+ ApiConfigs.apis.activity}`,requestOptions)
 
     return handleResponse(response)
   }

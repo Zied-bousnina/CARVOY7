@@ -47,6 +47,7 @@ export default function RootLayout({ children }) {
 
   useEffect(() => {
     if (userAuth.role !== "PARTNER" && userAuth.isLoggedIn) {
+      console.log("rollllllllllllllllllllllllllle")
       router.push("/");
     }
   }, [userAuth]);

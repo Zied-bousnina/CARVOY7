@@ -91,7 +91,7 @@ export const menuItems = [
 
 {
   title: "Settings",
-  icon: "heroicons-outline:document-text", // Document icon for "Facturation"
+  icon: "heroicons-outline:cog", // Document icon for "Facturation"
   isOpen: true,
   isHide: true,
   child: [
@@ -115,6 +115,12 @@ export const menuItems = [
 
 
   ],
+},
+{
+  title: "Activity",
+  icon: "heroicons-outline:document-text", // User profile icon for "Profil utilisateur"
+  link: "admin/activity",
+  isOpen: true,
 },
 {
   title: "Profil utilisateur",
